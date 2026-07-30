@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://60seaq170jqq"]
+
+[ext_resource type="Script" uid="uid://bacbx1g8cvuw0" path="res://entities/playables/_shared/components/abilities/mercy_guardian_angel/playable_mercy_guardian_angel_ability_component.gd" id="1_dx86l"]
+[ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/helpers/identity/entity_identity.gd" id="2_yl0p3"]
+
+[sub_resource type="Resource" id="Resource_y1bgy"]
+script = ExtResource("2_yl0p3")
+
+[node name="PlayableMercyGuardianAngelAbilityComponent" type="Node" unique_id=892267797]
+script = ExtResource("1_dx86l")
+entity_identity = SubResource("Resource_y1bgy")
+target_finding_ray_collision_mask = 3
+slingshot_ray_collision_mask = 3

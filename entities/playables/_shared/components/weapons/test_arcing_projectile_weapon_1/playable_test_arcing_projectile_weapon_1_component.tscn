@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://bmuqad506y2ec"]
+
+[ext_resource type="Script" uid="uid://cjmlc8a064ogt" path="res://entities/playables/_shared/components/weapons/test_arcing_projectile_weapon_1/playable_test_arcing_projectile_weapon_1_component.gd" id="1_fw7oh"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_xsagh"]
+
+[sub_resource type="TorusMesh" id="TorusMesh_uf4bl"]
+inner_radius = 0.2
+outer_radius = 0.4
+
+[node name="PlayableTestArcingProjectileWeapon1Component" type="Node3D" unique_id=831655461]
+script = ExtResource("1_fw7oh")
+
+[node name="MeshInstancePivot" type="Node3D" parent="." unique_id=1867229992]
+unique_name_in_owner = true
+
+[node name="MeshInstance" type="MeshInstance3D" parent="MeshInstancePivot" unique_id=160166102]
+transform = Transform3D(0.2, 0, 0, 0, -8.742278e-09, 0.2, 0, -0.2, -8.742278e-09, 0, 0, 0)
+mesh = SubResource("CylinderMesh_xsagh")
+
+[node name="MuzzleMeshInstance" type="MeshInstance3D" parent="MeshInstancePivot/MeshInstance" unique_id=250077043]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 4.371139e-08)
+mesh = SubResource("TorusMesh_uf4bl")
+
+[node name="BulletStartPositionAnchor" type="Marker3D" parent="." unique_id=488357030]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)

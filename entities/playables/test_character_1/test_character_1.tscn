@@ -1,0 +1,102 @@
+[gd_scene format=3 uid="uid://qt11qx64as1o"]
+
+[ext_resource type="PackedScene" uid="uid://coqcni43ymjxa" path="res://entities/_shared/components/entity/entity_component.tscn" id="1_ybfop"]
+[ext_resource type="Resource" uid="uid://ch1uqhr4e8qym" path="res://entities/playables/test_character_1/test_character_1_identity.tres" id="2_3s4ss"]
+[ext_resource type="PackedScene" uid="uid://cbeqj73rklldr" path="res://entities/_shared/components/camera/entity_camera_component.tscn" id="3_qc732"]
+[ext_resource type="PackedScene" uid="uid://dgavxxiu7xo4s" path="res://entities/_shared/components/rotation_by_input/entity_rotation_by_input_component.tscn" id="4_7it47"]
+[ext_resource type="PackedScene" uid="uid://dpm4llvw6alin" path="res://entities/_shared/components/cb_3d_utils/entity_character_body_3d_utils_component.tscn" id="4_ybfop"]
+[ext_resource type="PackedScene" uid="uid://d01sromo7yggt" path="res://entities/_shared/components/health/entity_health_component.tscn" id="5_7it47"]
+[ext_resource type="PackedScene" uid="uid://dgqseji4pi27a" path="res://entities/_shared/components/status_receiver/entity_status_receiver_component.tscn" id="6_wkwh7"]
+[ext_resource type="PackedScene" uid="uid://60seaq170jqq" path="res://entities/playables/_shared/components/abilities/mercy_guardian_angel/playable_mercy_guardian_angel_ability_component.tscn" id="8_64usw"]
+[ext_resource type="PackedScene" uid="uid://b8re4b4rl6xul" path="res://entities/playables/_shared/components/weapons/test_projectile_weapon_1/playable_test_projectile_weapon_1_component.tscn" id="8_qc732"]
+[ext_resource type="PackedScene" uid="uid://gikkd26lo3hc" path="res://entities/playables/_shared/components/ultimates/luna_snow/playable_luna_snow_ultimate_component.tscn" id="10_ykcux"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_w7sju"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qx6pw"]
+albedo_color = Color(0.0808393, 0.7259566, 0.7286518, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_oo4x4"]
+material = SubResource("StandardMaterial3D_qx6pw")
+size = Vector3(0.2, 0.2, 100)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jd5x5"]
+
+[node name="TestCharacter1" type="CharacterBody3D" unique_id=855105009 groups=["allies", "entities"]]
+collision_mask = 3
+
+[node name="EntityComponent" parent="." unique_id=532691025 node_paths=PackedStringArray("entity", "exp_health_component", "exp_status_receiver_component") instance=ExtResource("1_ybfop")]
+entity = NodePath("..")
+identity = ExtResource("2_3s4ss")
+exp_health_component = NodePath("../Components/EntityHealthComponent")
+exp_status_receiver_component = NodePath("../Components/EntityStatusReceiverComponent")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=909298792]
+mesh = SubResource("CapsuleMesh_w7sju")
+
+[node name="VisualIndicator" type="MeshInstance3D" parent="MeshInstance3D" unique_id=683804340]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -50)
+visible = false
+mesh = SubResource("BoxMesh_oo4x4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=147772800]
+shape = SubResource("CapsuleShape3D_jd5x5")
+
+[node name="Components" type="Node3D" parent="." unique_id=922078828]
+
+[node name="EntityCameraComponent" parent="Components" unique_id=825915530 node_paths=PackedStringArray("entity") instance=ExtResource("3_qc732")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0757844, 0.7157023, 0)
+entity = NodePath("../..")
+
+[node name="EntityRotationByInputComponent" parent="Components" unique_id=1377482824 node_paths=PackedStringArray("entity") instance=ExtResource("4_7it47")]
+entity = NodePath("../..")
+
+[node name="EntityCharacterBody3DUtilsComponent" parent="Components" unique_id=40130539 node_paths=PackedStringArray("entity") instance=ExtResource("4_ybfop")]
+entity = NodePath("../..")
+
+[node name="EntityHealthComponent" parent="Components" unique_id=930351444 instance=ExtResource("5_7it47")]
+entity_identity = ExtResource("2_3s4ss")
+
+[node name="EntityStatusReceiverComponent" parent="Components" unique_id=1530625951 instance=ExtResource("6_wkwh7")]
+entity_identity = ExtResource("2_3s4ss")
+
+[node name="Capacities" type="Node3D" parent="Components" unique_id=747146008]
+
+[node name="PlayableTestProjectileWeapon1" parent="Components/Capacities" unique_id=450953173 node_paths=PackedStringArray("entity", "camera_component") instance=ExtResource("8_qc732")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8213911, 0, 0)
+entity = NodePath("../../..")
+entity_identity = ExtResource("2_3s4ss")
+camera_component = NodePath("../../EntityCameraComponent")
+
+[node name="PlayableMercyGuardianAngelAbilityComponent" parent="Components/Capacities" unique_id=496493999 node_paths=PackedStringArray("entity", "cb_3d_utils_component", "camera_component") instance=ExtResource("8_64usw")]
+entity = NodePath("../../..")
+entity_identity = ExtResource("2_3s4ss")
+cb_3d_utils_component = NodePath("../../EntityCharacterBody3DUtilsComponent")
+camera_component = NodePath("../../EntityCameraComponent")
+
+[node name="PlayableLunaSnowUltimateComponent" parent="Components/Capacities" unique_id=285167825 node_paths=PackedStringArray("entity_mesh") instance=ExtResource("10_ykcux")]
+entity_identity = ExtResource("2_3s4ss")
+entity_mesh = NodePath("../../../MeshInstance3D")
+healing_amount = 20.0
+
+[node name="UI" type="Control" parent="." unique_id=1133008706]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Crosshair" type="ColorRect" parent="UI" unique_id=1657220023]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2

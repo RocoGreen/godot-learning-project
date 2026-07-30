@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://lskivaa3dmuk"]
+
+[ext_resource type="PackedScene" uid="uid://tc022fnndjdg" path="res://entities/playables/_shared/bullets/arcing_projectile/playable_arcing_projectile_bullet.tscn" id="1_5i4vb"]
+[ext_resource type="Script" uid="uid://fq3ehralrmra" path="res://entities/playables/_shared/components/weapons/test_arcing_projectile_weapon_1/bullet/playable_test_arcing_projectile_weapon_1_component_bullet.gd" id="2_rcjau"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_nxycw"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_w2ayk"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_n7yqc"]
+radius = 5.0
+
+[node name="PlayableTestArcingProjectileWeapon1ComponentBullet" unique_id=1719682859 instance=ExtResource("1_5i4vb")]
+script = ExtResource("2_rcjau")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="0" unique_id=398908759]
+mesh = SubResource("SphereMesh_nxycw")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="1" unique_id=1627141959]
+shape = SubResource("SphereShape3D_w2ayk")
+
+[node name="SplashTest" type="ShapeCast3D" parent="." index="2" unique_id=386607850]
+unique_name_in_owner = true
+shape = SubResource("SphereShape3D_n7yqc")
+exclude_parent = false
+target_position = Vector3(0, 0, 0)
+collision_mask = 3
+
+[node name="LifeDurationTimer" type="Timer" parent="." index="3" unique_id=414955641]
+wait_time = 6.0
+one_shot = true
+autostart = true
+
+[connection signal="collided" from="." to="." method="_on_collided"]
+[connection signal="timeout" from="LifeDurationTimer" to="." method="_on_life_duration_timer_timeout"]

@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://tc022fnndjdg"]
+
+[ext_resource type="Script" uid="uid://cccsiwol6w55x" path="res://entities/playables/_shared/bullets/arcing_projectile/playable_arcing_projectile_bullet.gd" id="1_vc45o"]
+
+[node name="PlayableArcingProjectileBullet" type="CharacterBody3D" unique_id=1719682859]
+top_level = true
+collision_layer = 0
+collision_mask = 3
+script = ExtResource("1_vc45o")

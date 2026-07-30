@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://d01sromo7yggt"]
+
+[ext_resource type="Script" uid="uid://bf5npfkxcd3fm" path="res://entities/_shared/components/health/entity_health_component.gd" id="1_m6onw"]
+
+[node name="EntityHealthComponent" type="Node" unique_id=930351444]
+script = ExtResource("1_m6onw")
+
+[connection signal="damaged" from="." to="." method="_on_damaged"]
+[connection signal="healed" from="." to="." method="_on_healed"]

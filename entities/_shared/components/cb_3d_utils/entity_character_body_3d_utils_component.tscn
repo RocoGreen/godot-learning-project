@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dpm4llvw6alin"]
+
+[ext_resource type="Script" uid="uid://ct5hfk2inpoyt" path="res://entities/_shared/components/cb_3d_utils/entity_character_body_3d_utils_component.gd" id="1_ftrok"]
+
+[node name="EntityCharacterBody3DUtilsComponent" type="Node" unique_id=40130539]
+script = ExtResource("1_ftrok")

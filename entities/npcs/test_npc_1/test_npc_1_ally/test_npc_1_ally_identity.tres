@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="EntityIdentity" format=3 uid="uid://c3pk1dstwptg3"]
+
+[ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/helpers/identity/entity_identity.gd" id="1_xujfk"]
+
+[resource]
+script = ExtResource("1_xujfk")
+name = &"Test NPC 1 Ally"
+metadata/_custom_type_script = "uid://cur8p8fjl0qvd"

@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://bk0l1pqky6xip"]
+
+[ext_resource type="Script" uid="uid://dj1ditpt6fwo1" path="res://entities/playables/_shared/bullets/projectile/playable_projectile_bullet.gd" id="1_t33m8"]
+
+[node name="PlayableProjectileBullet" type="CharacterBody3D" unique_id=1668462563]
+top_level = true
+collision_layer = 0
+collision_mask = 3
+script = ExtResource("1_t33m8")

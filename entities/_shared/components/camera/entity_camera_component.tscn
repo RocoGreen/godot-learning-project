@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://cbeqj73rklldr"]
+
+[ext_resource type="Script" uid="uid://d23vx765nh511" path="res://entities/_shared/components/camera/entity_camera_component.gd" id="1_mhf5v"]
+
+[node name="EntityCameraComponent" type="Marker3D" unique_id=825915530]
+gizmo_extents = 0.5
+script = ExtResource("1_mhf5v")
+get_camera_aim_point_by_ray_default_collision_mask = 3
+
+[node name="CameraPivot" type="SpringArm3D" parent="." unique_id=484096846]
+unique_name_in_owner = true
+collision_mask = 7
+spring_length = 3.0
+
+[node name="Camera" type="Camera3D" parent="CameraPivot" unique_id=1169416169]
+unique_name_in_owner = true
+current = true

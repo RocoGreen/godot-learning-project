@@ -1,0 +1,72 @@
+[gd_scene format=3 uid="uid://cg7m86w1c5614"]
+
+[ext_resource type="PackedScene" uid="uid://qt11qx64as1o" path="res://entities/playables/test_character_1/test_character_1.tscn" id="1_87hen"]
+[ext_resource type="PackedScene" uid="uid://c473237cvi31t" path="res://entities/npcs/test_npc_1/test_npc_1_ally/test_npc_1_ally.tscn" id="2_5p6cq"]
+[ext_resource type="PackedScene" uid="uid://71et6jogo4aq" path="res://entities/npcs/test_npc_1/test_npc_1_enemy/test_npc_1_enemy.tscn" id="3_nyck6"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_87hen"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_5p6cq"]
+sky_material = SubResource("ProceduralSkyMaterial_87hen")
+
+[sub_resource type="Environment" id="Environment_nyck6"]
+background_mode = 2
+sky = SubResource("Sky_5p6cq")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_2b12u"]
+size = Vector3(100, 2, 100)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_87hen"]
+size = Vector3(100, 2, 100)
+
+[sub_resource type="BoxMesh" id="BoxMesh_5p6cq"]
+size = Vector3(1, 4, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nyck6"]
+size = Vector3(1, 4, 10)
+
+[node name="TestMap1" type="Node3D" unique_id=1188322325]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=2035782906]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 11, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1671812760]
+environment = SubResource("Environment_nyck6")
+
+[node name="Floor" type="StaticBody3D" parent="." unique_id=1904330677]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+collision_layer = 2
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=1629725224]
+mesh = SubResource("BoxMesh_2b12u")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=941143591]
+shape = SubResource("BoxShape3D_87hen")
+
+[node name="Wall" type="StaticBody3D" parent="." unique_id=1852635538]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -1.6878839)
+collision_layer = 2
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Wall" unique_id=20771297]
+mesh = SubResource("BoxMesh_5p6cq")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall" unique_id=1778531228]
+shape = SubResource("BoxShape3D_nyck6")
+
+[node name="Entities" type="Node3D" parent="." unique_id=1004089302]
+
+[node name="TestCharacter1" parent="Entities" unique_id=855105009 instance=ExtResource("1_87hen")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1, 0)
+
+[node name="TestNPC1Ally" parent="Entities" unique_id=1120564623 instance=ExtResource("2_5p6cq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, 5)
+
+[node name="TestNPC1Enemy" parent="Entities" unique_id=1296699483 instance=ExtResource("3_nyck6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1, 5)

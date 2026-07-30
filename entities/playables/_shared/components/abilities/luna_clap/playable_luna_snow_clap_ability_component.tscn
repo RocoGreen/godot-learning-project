@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://bs5dguomkd64k"]
+
+[ext_resource type="Script" uid="uid://cbm0mmefq0hy" path="res://entities/playables/_shared/components/abilities/luna_clap/playable_luna_snow_clap_ability_component.gd" id="1_x2nfb"]
+[ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/helpers/identity/entity_identity.gd" id="2_r3qpi"]
+
+[sub_resource type="Resource" id="Resource_r3qpi"]
+script = ExtResource("2_r3qpi")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_avwrd"]
+size = Vector3(1, 1, 24)
+
+[node name="PlayableLunaSnowClapAbilityComponent" type="Node3D" unique_id=1450733872]
+script = ExtResource("1_x2nfb")
+entity_identity = SubResource("Resource_r3qpi")
+
+[node name="Detectors" type="Node3D" parent="." unique_id=2128538855]
+
+[node name="TargetDetectorPivot" type="Node3D" parent="Detectors" unique_id=2057206974]
+unique_name_in_owner = true
+
+[node name="TargetDetector" type="ShapeCast3D" parent="Detectors/TargetDetectorPivot" unique_id=1024121747]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12)
+shape = SubResource("BoxShape3D_avwrd")
+exclude_parent = false
+target_position = Vector3(0, 0, 0)
+
+[node name="CenterTargetDetector" type="RayCast3D" parent="Detectors" unique_id=909560825]
+unique_name_in_owner = true
+exclude_parent = false
+target_position = Vector3(0, 0, -1000)
+collision_mask = 3
+debug_shape_thickness = 5
+
+[node name="Timers" type="Node" parent="." unique_id=1071135806]
+
+[node name="DurationTimer" type="Timer" parent="Timers" unique_id=1649007060]
+unique_name_in_owner = true
+wait_time = 7.5
+one_shot = true
+
+[node name="LagTimer" type="Timer" parent="Timers" unique_id=1910409468]
+unique_name_in_owner = true
+one_shot = true
+
+[connection signal="timeout" from="Timers/DurationTimer" to="." method="_on_duration_timer_timeout"]
+[connection signal="timeout" from="Timers/LagTimer" to="." method="_on_lag_timer_timeout"]

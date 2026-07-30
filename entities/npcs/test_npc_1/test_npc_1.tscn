@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://btrysidewnsmy"]
+
+[ext_resource type="Script" uid="uid://cdo0f65gd7uly" path="res://entities/npcs/test_npc_1/test_npc_1.gd" id="1_jfmlv"]
+[ext_resource type="PackedScene" uid="uid://coqcni43ymjxa" path="res://entities/_shared/components/entity/entity_component.tscn" id="1_npl2p"]
+[ext_resource type="PackedScene" uid="uid://d01sromo7yggt" path="res://entities/_shared/components/health/entity_health_component.tscn" id="2_u5y6i"]
+[ext_resource type="Resource" uid="uid://d1qa7jd7mrywx" path="res://entities/npcs/test_npc_1/test_npc_1_identity.tres" id="3_7fnp4"]
+[ext_resource type="PackedScene" uid="uid://dgqseji4pi27a" path="res://entities/_shared/components/status_receiver/entity_status_receiver_component.tscn" id="5_7fnp4"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_7fnp4"]
+size = Vector3(1, 2, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_t7buu"]
+size = Vector3(1, 2, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_jfmlv"]
+
+[node name="TestNPC1" type="StaticBody3D" unique_id=1120564623 groups=["entities"]]
+collision_mask = 3
+script = ExtResource("1_jfmlv")
+
+[node name="EntityComponent" parent="." unique_id=532691025 node_paths=PackedStringArray("entity", "exp_health_component", "exp_status_receiver_component") instance=ExtResource("1_npl2p")]
+entity = NodePath("..")
+identity = ExtResource("3_7fnp4")
+exp_health_component = NodePath("../Components/EntityHealthComponent")
+exp_status_receiver_component = NodePath("../Components/EntityStatusReceiverComponent")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=619815100]
+mesh = SubResource("BoxMesh_7fnp4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1789113522]
+shape = SubResource("BoxShape3D_t7buu")
+
+[node name="Components" type="Node" parent="." unique_id=106603770]
+
+[node name="EntityHealthComponent" parent="Components" unique_id=930351444 instance=ExtResource("2_u5y6i")]
+unique_name_in_owner = true
+entity_identity = ExtResource("3_7fnp4")
+
+[node name="EntityStatusReceiverComponent" parent="Components" unique_id=1530625951 instance=ExtResource("5_7fnp4")]
+entity_identity = ExtResource("3_7fnp4")
+
+[node name="TopIndicators" type="Node3D" parent="." unique_id=1769069705]
+
+[node name="HealthIndicator" type="Label3D" parent="TopIndicators" unique_id=1970596243]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6768754, 0)
+billboard = 1
+text = "000 / 000"
+
+[node name="TeamIndicator" type="MeshInstance3D" parent="TopIndicators" unique_id=1564625014]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+mesh = SubResource("SphereMesh_jfmlv")
+
+[connection signal="health_changed" from="Components/EntityHealthComponent" to="." method="_on_health_changed"]

@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="EntityIdentity" format=3 uid="uid://ch1uqhr4e8qym"]
+
+[ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/helpers/identity/entity_identity.gd" id="1_rvfij"]
+
+[resource]
+script = ExtResource("1_rvfij")
+name = &"Test Character 1"
+metadata/_custom_type_script = "uid://cur8p8fjl0qvd"

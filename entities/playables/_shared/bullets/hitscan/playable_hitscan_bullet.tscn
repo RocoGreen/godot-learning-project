@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://b7g7bcq6b8n2c"]
+
+[ext_resource type="Script" uid="uid://d2f1xwiyc8p2u" path="res://entities/playables/_shared/bullets/hitscan/playable_hitscan_bullet.gd" id="1_2ob8m"]
+
+[node name="PlayableHitscanBullet" type="RayCast3D" unique_id=192270950]
+enabled = false
+exclude_parent = false
+collision_mask = 3
+script = ExtResource("1_2ob8m")

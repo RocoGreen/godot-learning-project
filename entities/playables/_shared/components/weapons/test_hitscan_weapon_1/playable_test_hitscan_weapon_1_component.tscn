@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://b7mippff1gx04"]
+
+[ext_resource type="Script" uid="uid://mxi1pb2ax5hi" path="res://entities/playables/_shared/components/weapons/test_hitscan_weapon_1/playable_test_hitscan_weapon_1_component.gd" id="1_hisl2"]
+[ext_resource type="PackedScene" uid="uid://b7g7bcq6b8n2c" path="res://entities/playables/_shared/bullets/hitscan/playable_hitscan_bullet.tscn" id="2_7sp81"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_tks7e"]
+
+[sub_resource type="TorusMesh" id="TorusMesh_yn3c5"]
+inner_radius = 0.2
+outer_radius = 0.4
+
+[node name="PlayableTestHitscanWeapon1Component" type="Node3D" unique_id=171433440]
+script = ExtResource("1_hisl2")
+
+[node name="MeshInstancePivot" type="Node3D" parent="." unique_id=2036014488]
+unique_name_in_owner = true
+
+[node name="MeshInstance" type="MeshInstance3D" parent="MeshInstancePivot" unique_id=1448476849]
+transform = Transform3D(0.2, 0, 0, 0, -8.742278e-09, 0.2, 0, -0.2, -8.742278e-09, 0, 0, 0)
+mesh = SubResource("CylinderMesh_tks7e")
+
+[node name="MuzzleMeshInstance" type="MeshInstance3D" parent="MeshInstancePivot/MeshInstance" unique_id=1075019809]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 4.371139e-08)
+mesh = SubResource("TorusMesh_yn3c5")
+
+[node name="BulletStartPositionAnchor" type="Marker3D" parent="." unique_id=377606162]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
+
+[node name="Bullet" parent="BulletStartPositionAnchor" unique_id=192270950 instance=ExtResource("2_7sp81")]
+unique_name_in_owner = true
+enabled = true
+
+[connection signal="hit" from="BulletStartPositionAnchor/Bullet" to="." method="_on_bullet_hit"]

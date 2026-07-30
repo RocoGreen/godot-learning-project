@@ -1,0 +1,82 @@
+[gd_scene format=3 uid="uid://b8re4b4rl6xul"]
+
+[ext_resource type="Script" uid="uid://b5l31p1wkwaue" path="res://entities/playables/_shared/components/weapons/test_projectile_weapon_1/playable_test_projectile_weapon_1_component.gd" id="1_b6vej"]
+[ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/helpers/identity/entity_identity.gd" id="2_grybm"]
+
+[sub_resource type="Resource" id="Resource_agpej"]
+script = ExtResource("2_grybm")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_misiy"]
+
+[sub_resource type="TorusMesh" id="TorusMesh_r46u3"]
+inner_radius = 0.2
+outer_radius = 0.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vnait"]
+albedo_color = Color(1, 0.5176471, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_4l1uk"]
+material = SubResource("StandardMaterial3D_vnait")
+size = Vector3(0.1, 0.1, -20)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2pdw2"]
+albedo_color = Color(0.12584916, 0.56080973, 0.99999994, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_4l1uk"]
+material = SubResource("StandardMaterial3D_2pdw2")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4l1uk"]
+albedo_color = Color(0.9446619, 0.02739985, 1.1551381e-06, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_2pdw2"]
+material = SubResource("StandardMaterial3D_4l1uk")
+
+[node name="PlayableTestProjectileWeapon1" type="Node3D" unique_id=450953173]
+script = ExtResource("1_b6vej")
+entity_identity = SubResource("Resource_agpej")
+
+[node name="MeshInstancePivot" type="Node3D" parent="." unique_id=264623288]
+unique_name_in_owner = true
+
+[node name="MeshInstance" type="MeshInstance3D" parent="MeshInstancePivot" unique_id=129981856]
+transform = Transform3D(0.2, 0, 0, 0, -8.742278e-09, 0.2, 0, -0.2, -8.742278e-09, 0, 0, 0)
+mesh = SubResource("CylinderMesh_misiy")
+
+[node name="MuzzleMeshInstance" type="MeshInstance3D" parent="MeshInstancePivot/MeshInstance" unique_id=416804236]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 4.371139e-08)
+mesh = SubResource("TorusMesh_r46u3")
+
+[node name="BulletStartTransformAnchorPivot" type="Marker3D" parent="." unique_id=181763488]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
+
+[node name="BulletStartTransformAnchor" type="Node3D" parent="BulletStartTransformAnchorPivot" unique_id=726555406]
+unique_name_in_owner = true
+
+[node name="BulletStartDirectionIndicator" type="MeshInstance3D" parent="BulletStartTransformAnchorPivot/BulletStartTransformAnchor" unique_id=1094933886]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
+visible = false
+mesh = SubResource("BoxMesh_4l1uk")
+
+[node name="MuzzleForwardRayCast" type="RayCast3D" parent="BulletStartTransformAnchorPivot/BulletStartTransformAnchor" unique_id=1050746770]
+unique_name_in_owner = true
+enabled = false
+exclude_parent = false
+target_position = Vector3(0, 0, -1000)
+collision_mask = 7
+
+[node name="RaysPointIndicators" type="Node3D" parent="." unique_id=513278522]
+
+[node name="RayPointFromCameraForwardIndicator" type="MeshInstance3D" parent="RaysPointIndicators" unique_id=235274684]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+top_level = true
+visible = false
+mesh = SubResource("SphereMesh_4l1uk")
+
+[node name="RayPointFromMuzzleForwardIndicator" type="MeshInstance3D" parent="RaysPointIndicators" unique_id=329583671]
+unique_name_in_owner = true
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 1, 0, 0)
+top_level = true
+visible = false
+mesh = SubResource("SphereMesh_2pdw2")

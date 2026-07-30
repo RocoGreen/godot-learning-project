@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://gikkd26lo3hc"]
+
+[ext_resource type="Script" uid="uid://duqa1k651ak55" path="res://entities/playables/_shared/components/ultimates/luna_snow/playable_luna_snow_ultimate_component.gd" id="1_u3u0j"]
+[ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/helpers/identity/entity_identity.gd" id="2_ns3p3"]
+
+[sub_resource type="Resource" id="Resource_ns3p3"]
+script = ExtResource("2_ns3p3")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u3u0j"]
+albedo_color = Color(1, 0.7529412, 0.79607844, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_ns3p3"]
+material = SubResource("StandardMaterial3D_u3u0j")
+top_radius = 10.0
+height = 0.001
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_rln61"]
+radius = 10.0
+
+[node name="PlayableLunaSnowUltimateComponent" type="Area3D" unique_id=794912583]
+collision_layer = 0
+script = ExtResource("1_u3u0j")
+entity_identity = SubResource("Resource_ns3p3")
+
+[node name="DancefloorPivot" type="Marker3D" parent="." unique_id=1328140372]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+gizmo_extents = 0.5
+
+[node name="Dancefloor" type="MeshInstance3D" parent="DancefloorPivot" unique_id=1182220728]
+unique_name_in_owner = true
+visible = false
+mesh = SubResource("CylinderMesh_ns3p3")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1688937494]
+shape = SubResource("SphereShape3D_rln61")
+
+[node name="DurationTimer" type="Timer" parent="." unique_id=2036308600]
+unique_name_in_owner = true
+wait_time = 8.0
+one_shot = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
+[connection signal="timeout" from="DurationTimer" to="." method="_on_duration_timer_timeout"]

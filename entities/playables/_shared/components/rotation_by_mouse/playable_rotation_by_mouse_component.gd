@@ -1,6 +1,6 @@
 @tool
 
-class_name EntityRotationByInputComponent
+class_name PlayableRotationByMouseComponent
 extends Node
 
 

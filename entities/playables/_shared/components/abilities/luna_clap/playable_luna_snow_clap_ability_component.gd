@@ -24,7 +24,7 @@ extends Node3D
 			if entity_identity:
 				entity_identity.changed.connect(_on_entity_identity_changed);
 
-@export var camera_component: EntityCameraComponent:
+@export var camera_component: PlayableCameraComponent:
 	set(new_camera_component):
 		camera_component = new_camera_component;
 		

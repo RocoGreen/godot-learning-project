@@ -9,7 +9,7 @@ enum _Mode {
 @export_group("Dependencies")
 @export var entity: PhysicsBody3D;
 @export var entity_identity: EntityIdentity = EntityIdentity.new();
-@export var camera_component: EntityCameraComponent;
+@export var camera_component: PlayableCameraComponent;
 
 var _mode: _Mode = _Mode.HEAL;
 

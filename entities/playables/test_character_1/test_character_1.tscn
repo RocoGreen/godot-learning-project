@@ -2,9 +2,9 @@
 
 [ext_resource type="PackedScene" uid="uid://coqcni43ymjxa" path="res://entities/_shared/components/entity/entity_component.tscn" id="1_ybfop"]
 [ext_resource type="Resource" uid="uid://ch1uqhr4e8qym" path="res://entities/playables/test_character_1/test_character_1_identity.tres" id="2_3s4ss"]
-[ext_resource type="PackedScene" uid="uid://cbeqj73rklldr" path="res://entities/_shared/components/camera/entity_camera_component.tscn" id="3_qc732"]
-[ext_resource type="PackedScene" uid="uid://dgavxxiu7xo4s" path="res://entities/_shared/components/rotation_by_input/entity_rotation_by_input_component.tscn" id="4_7it47"]
-[ext_resource type="PackedScene" uid="uid://dpm4llvw6alin" path="res://entities/_shared/components/cb_3d_utils/entity_character_body_3d_utils_component.tscn" id="4_ybfop"]
+[ext_resource type="PackedScene" uid="uid://cbeqj73rklldr" path="res://entities/playables/_shared/components/camera/playable_camera_component.tscn" id="3_qc732"]
+[ext_resource type="PackedScene" uid="uid://dgavxxiu7xo4s" path="res://entities/playables/_shared/components/rotation_by_mouse/playable_rotation_by_mouse_component.tscn" id="4_7it47"]
+[ext_resource type="PackedScene" uid="uid://dpm4llvw6alin" path="res://entities/playables/_shared/components/cb_3d_utils/playable_character_body_3d_utils_component.tscn" id="4_ybfop"]
 [ext_resource type="PackedScene" uid="uid://d01sromo7yggt" path="res://entities/_shared/components/health/entity_health_component.tscn" id="5_7it47"]
 [ext_resource type="PackedScene" uid="uid://dgqseji4pi27a" path="res://entities/_shared/components/status_receiver/entity_status_receiver_component.tscn" id="6_wkwh7"]
 [ext_resource type="PackedScene" uid="uid://60seaq170jqq" path="res://entities/playables/_shared/components/abilities/mercy_guardian_angel/playable_mercy_guardian_angel_ability_component.tscn" id="8_64usw"]
@@ -44,14 +44,14 @@ shape = SubResource("CapsuleShape3D_jd5x5")
 
 [node name="Components" type="Node3D" parent="." unique_id=922078828]
 
-[node name="EntityCameraComponent" parent="Components" unique_id=825915530 node_paths=PackedStringArray("entity") instance=ExtResource("3_qc732")]
+[node name="PlayableCameraComponent" parent="Components" unique_id=825915530 node_paths=PackedStringArray("entity") instance=ExtResource("3_qc732")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0757844, 0.7157023, 0)
 entity = NodePath("../..")
 
-[node name="EntityRotationByInputComponent" parent="Components" unique_id=1377482824 node_paths=PackedStringArray("entity") instance=ExtResource("4_7it47")]
+[node name="PlayableRotationByMouseComponent" parent="Components" unique_id=1377482824 node_paths=PackedStringArray("entity") instance=ExtResource("4_7it47")]
 entity = NodePath("../..")
 
-[node name="EntityCharacterBody3DUtilsComponent" parent="Components" unique_id=40130539 node_paths=PackedStringArray("entity") instance=ExtResource("4_ybfop")]
+[node name="PlayableCharacterBody3DUtilsComponent" parent="Components" unique_id=40130539 node_paths=PackedStringArray("entity") instance=ExtResource("4_ybfop")]
 entity = NodePath("../..")
 
 [node name="EntityHealthComponent" parent="Components" unique_id=930351444 instance=ExtResource("5_7it47")]
@@ -66,13 +66,13 @@ entity_identity = ExtResource("2_3s4ss")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8213911, 0, 0)
 entity = NodePath("../../..")
 entity_identity = ExtResource("2_3s4ss")
-camera_component = NodePath("../../EntityCameraComponent")
+camera_component = NodePath("../../PlayableCameraComponent")
 
 [node name="PlayableMercyGuardianAngelAbilityComponent" parent="Components/Capacities" unique_id=496493999 node_paths=PackedStringArray("entity", "cb_3d_utils_component", "camera_component") instance=ExtResource("8_64usw")]
 entity = NodePath("../../..")
 entity_identity = ExtResource("2_3s4ss")
-cb_3d_utils_component = NodePath("../../EntityCharacterBody3DUtilsComponent")
-camera_component = NodePath("../../EntityCameraComponent")
+cb_3d_utils_component = NodePath("../../PlayableCharacterBody3DUtilsComponent")
+camera_component = NodePath("../../PlayableCameraComponent")
 
 [node name="PlayableLunaSnowUltimateComponent" parent="Components/Capacities" unique_id=285167825 node_paths=PackedStringArray("entity_mesh") instance=ExtResource("10_ykcux")]
 entity_identity = ExtResource("2_3s4ss")

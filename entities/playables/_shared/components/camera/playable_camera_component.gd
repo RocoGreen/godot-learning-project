@@ -1,6 +1,6 @@
 @tool
 
-class_name EntityCameraComponent
+class_name PlayableCameraComponent
 extends Marker3D
 
 

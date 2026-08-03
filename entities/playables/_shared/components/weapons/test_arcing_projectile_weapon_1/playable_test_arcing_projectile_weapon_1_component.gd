@@ -5,7 +5,7 @@ const _BULLET: PackedScene = preload("uid://lskivaa3dmuk");
 
 @export_group("Dependencies")
 @export var entity: PhysicsBody3D;
-@export var camera_component: EntityCameraComponent;
+@export var camera_component: PlayableCameraComponent;
 
 @onready var _bullet_start_position_anchor: Node3D = %BulletStartPositionAnchor;
 

@@ -26,7 +26,7 @@ const _BULLET: PackedScene = preload("uid://cdsjsn66l8dfo");
 		if Engine.is_editor_hint():
 			update_configuration_warnings();
 
-@export var camera_component: EntityCameraComponent:
+@export var camera_component: PlayableCameraComponent:
 	set(new_camera_component):
 		camera_component = new_camera_component;
 		

@@ -24,14 +24,14 @@ extends Node
 			if entity_identity:
 				entity_identity.changed.connect(_on_entity_identity_changed);
 
-@export var cb_3d_utils_component: EntityCharacterBody3DUtilsComponent:
+@export var cb_3d_utils_component: PlayableCharacterBody3DUtilsComponent:
 	set(new_cb_3d_utils_component):
 		cb_3d_utils_component = new_cb_3d_utils_component;
 		
 		if Engine.is_editor_hint():
 			update_configuration_warnings();
 
-@export var camera_component: EntityCameraComponent:
+@export var camera_component: PlayableCameraComponent:
 	set(new_camera_component):
 		camera_component = new_camera_component;
 		

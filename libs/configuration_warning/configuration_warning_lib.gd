@@ -33,13 +33,13 @@ static func get_for_entity_identity(identity: EntityIdentity) -> PackedStringArr
 
 ## Note: To call again when exported variable changes (by using a setter).
 static func get_for_cb_3d_utils_component(
-		cb_3d_utils_component: EntityCharacterBody3DUtilsComponent
+		cb_3d_utils_component: PlayableCharacterBody3DUtilsComponent
 ) -> PackedStringArray:
 	var warnings: PackedStringArray = PackedStringArray();
 
 	if not is_instance_valid(cb_3d_utils_component):
 		warnings.append(
-				"An exported variable expecting an `EntityCharacterBody3DUtilsComponent` " + 
+				"An exported variable expecting an `PlayableCharacterBody3DUtilsComponent` " + 
 				"is not set/valid."
 		);
 
@@ -48,13 +48,13 @@ static func get_for_cb_3d_utils_component(
 
 ## Note: To call again when exported variable changes (by using a setter).
 static func get_for_camera_component(
-		camera_component: EntityCameraComponent
+		camera_component: PlayableCameraComponent
 ) -> PackedStringArray:
 	var warnings: PackedStringArray = PackedStringArray();
 
 	if not is_instance_valid(camera_component):
 		warnings.append(
-				"An exported variable expecting an `EntityCameraComponent` is not set/valid."
+				"An exported variable expecting an `PlayableCameraComponent` is not set/valid."
 		);
 
 	return warnings;

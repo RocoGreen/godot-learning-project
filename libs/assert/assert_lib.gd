@@ -32,23 +32,23 @@ static func assert_if_entity_identity_not_found(entity_identity: EntityIdentity)
 	);
 
 
-static func assert_if_camera_component_not_found(camera_component: EntityCameraComponent) -> void:
+static func assert_if_camera_component_not_found(camera_component: PlayableCameraComponent) -> void:
 	assert(
-			is_instance_of(camera_component, EntityCameraComponent),
+			is_instance_of(camera_component, PlayableCameraComponent),
 
-			"Expected `camera_component` variable to hold a `EntityCameraComponent` " +
+			"Expected `camera_component` variable to hold a `PlayableCameraComponent` " +
 			"but is `%s`. " % str(camera_component) +
 			"Please check the debugger for more information."
 	);
 
 
 static func assert_if_cb_3d_utils_component_not_found(
-		cb_3d_utils_component: EntityCharacterBody3DUtilsComponent
+		cb_3d_utils_component: PlayableCharacterBody3DUtilsComponent
 ) -> void:
 	assert(
-			is_instance_of(cb_3d_utils_component, EntityCharacterBody3DUtilsComponent),
+			is_instance_of(cb_3d_utils_component, PlayableCharacterBody3DUtilsComponent),
 
 			"Expected `cb_3d_utils_component` variable to hold a " +
-			"`EntityCharacterBody3DUtilsComponent` but is `%s`. " % str(cb_3d_utils_component) +
+			"`PlayableCharacterBody3DUtilsComponent` but is `%s`. " % str(cb_3d_utils_component) +
 			"Please check the debugger for more information."
 	);

@@ -1,7 +1,7 @@
 @tool
 
 # Also abbreviated to EntityCBUtilsComponent.
-class_name EntityCharacterBody3DUtilsComponent
+class_name PlayableCharacterBody3DUtilsComponent
 extends Node
 
 

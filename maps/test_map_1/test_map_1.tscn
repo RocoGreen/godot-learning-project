@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://cg7m86w1c5614"]
 
 [ext_resource type="PackedScene" uid="uid://qt11qx64as1o" path="res://entities/playables/test_character_1/test_character_1.tscn" id="1_87hen"]
-[ext_resource type="PackedScene" uid="uid://c473237cvi31t" path="res://entities/npcs/test_npc_1/test_npc_1_ally/test_npc_1_ally.tscn" id="2_5p6cq"]
-[ext_resource type="PackedScene" uid="uid://71et6jogo4aq" path="res://entities/npcs/test_npc_1/test_npc_1_enemy/test_npc_1_enemy.tscn" id="3_nyck6"]
+[ext_resource type="PackedScene" uid="uid://c473237cvi31t" path="res://entities/npcs/test_npc_1/ally/test_npc_1_ally.tscn" id="2_5p6cq"]
+[ext_resource type="PackedScene" uid="uid://71et6jogo4aq" path="res://entities/npcs/test_npc_1/enemy/test_npc_1_enemy.tscn" id="3_nyck6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_87hen"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)

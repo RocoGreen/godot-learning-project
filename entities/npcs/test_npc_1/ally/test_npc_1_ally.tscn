@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c473237cvi31t"]
 
 [ext_resource type="PackedScene" uid="uid://btrysidewnsmy" path="res://entities/npcs/test_npc_1/test_npc_1.tscn" id="1_etwyt"]
-[ext_resource type="Resource" uid="uid://c3pk1dstwptg3" path="res://entities/npcs/test_npc_1/test_npc_1_ally/test_npc_1_ally_identity.tres" id="2_etwyt"]
+[ext_resource type="Resource" uid="uid://c3pk1dstwptg3" path="res://entities/npcs/test_npc_1/ally/test_npc_1_ally_identity.tres" id="2_etwyt"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_etwyt"]
 albedo_color = Color(0.25178292, 0.7977873, 0.22007018, 1)

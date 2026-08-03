@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bs5dguomkd64k"]
 
-[ext_resource type="Script" uid="uid://cbm0mmefq0hy" path="res://entities/playables/_shared/components/abilities/luna_clap/playable_luna_snow_clap_ability_component.gd" id="1_x2nfb"]
+[ext_resource type="Script" uid="uid://cbm0mmefq0hy" path="res://entities/playables/_shared/components/abilities/luna_snow_clap/playable_luna_snow_clap_ability_component.gd" id="1_x2nfb"]
 [ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/helpers/identity/entity_identity.gd" id="2_r3qpi"]
 
 [sub_resource type="Resource" id="Resource_r3qpi"]

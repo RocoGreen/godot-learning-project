@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bmuqad506y2ec"]
 
 [ext_resource type="Script" uid="uid://cjmlc8a064ogt" path="res://entities/playables/_shared/components/weapons/test_arcing_projectile_weapon_1/playable_test_arcing_projectile_weapon_1_component.gd" id="1_fw7oh"]
+[ext_resource type="PackedScene" uid="uid://lskivaa3dmuk" path="res://entities/playables/_shared/components/weapons/test_arcing_projectile_weapon_1/bullet/playable_test_arcing_projectile_weapon_1_component_bullet.tscn" id="2_0eiw2"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_xsagh"]
 
@@ -10,6 +11,7 @@ outer_radius = 0.4
 
 [node name="PlayableTestArcingProjectileWeapon1Component" type="Node3D" unique_id=831655461]
 script = ExtResource("1_fw7oh")
+_bullet = ExtResource("2_0eiw2")
 
 [node name="MeshInstancePivot" type="Node3D" parent="." unique_id=1867229992]
 unique_name_in_owner = true

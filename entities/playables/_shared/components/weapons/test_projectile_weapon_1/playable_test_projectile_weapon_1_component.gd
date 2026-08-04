@@ -9,8 +9,6 @@ enum _Mode {
 	DAMAGE,
 };
 
-const _BULLET: PackedScene = preload("uid://cdsjsn66l8dfo");
-
 @export_group("Dependencies")
 @export var entity: PhysicsBody3D:
 	set(new_entity):
@@ -33,12 +31,16 @@ const _BULLET: PackedScene = preload("uid://cdsjsn66l8dfo");
 		if Engine.is_editor_hint():
 			update_configuration_warnings();
 
+@export_group("Dependencies From Component Scene")
+@export var _bullet: PackedScene;
+
 @export_group("Bullet Settings")
 @export var bullet_damage: float = 30.0;
 @export var bullet_healing: float = 30.0;
 @export var bullet_travel_speed: float = 50.0;
 
 var _mode: _Mode = _Mode.DAMAGE;
+
 var _frame_ray_point_from_camera_forward: Vector3 = Vector3.ZERO;
 
 @onready var _mesh_instance_pivot: Node3D = %MeshInstancePivot;
@@ -107,7 +109,7 @@ func _toggle_mode() -> void:
 
 
 func _fire_bullet() -> void:
-	var bullet: PlayableTestProjectileWeapon1ComponentBullet = _BULLET.instantiate();
+	var bullet: PlayableTestProjectileWeapon1ComponentBullet = _bullet.instantiate();
 	bullet.weapon = self;
 
 	add_child(bullet);

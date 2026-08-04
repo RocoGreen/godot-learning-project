@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b5l31p1wkwaue" path="res://entities/playables/_shared/components/weapons/test_projectile_weapon_1/playable_test_projectile_weapon_1_component.gd" id="1_b6vej"]
 [ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/helpers/identity/entity_identity.gd" id="2_grybm"]
+[ext_resource type="PackedScene" uid="uid://cdsjsn66l8dfo" path="res://entities/playables/_shared/components/weapons/test_projectile_weapon_1/bullet/playable_test_projectile_weapon_1_component_bullet.tscn" id="3_i7xbd"]
 
 [sub_resource type="Resource" id="Resource_agpej"]
 script = ExtResource("2_grybm")
@@ -34,6 +35,7 @@ material = SubResource("StandardMaterial3D_4l1uk")
 [node name="PlayableTestProjectileWeapon1" type="Node3D" unique_id=450953173]
 script = ExtResource("1_b6vej")
 entity_identity = SubResource("Resource_agpej")
+_bullet = ExtResource("3_i7xbd")
 
 [node name="MeshInstancePivot" type="Node3D" parent="." unique_id=264623288]
 unique_name_in_owner = true

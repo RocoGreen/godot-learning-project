@@ -113,7 +113,7 @@ func _start_ability() -> void:
 
 
 func _handle_ability() -> void:
-	target_detector_pivot.look_at(camera_component.get_camera_aim_point_by_ray_else_fallback());
+	target_detector_pivot.look_at(camera_component.get_camera_aim_point_by_ray_else_virtual());
 	target_detector.force_shapecast_update();
 	
 	for collision_index: int in range(target_detector.get_collision_count()):
@@ -136,7 +136,7 @@ func _handle_ability() -> void:
 
 
 func _is_target_detected_at_center(target: PhysicsBody3D) -> bool:
-	center_target_detector.look_at(camera_component.get_camera_aim_point_by_ray_else_fallback());
+	center_target_detector.look_at(camera_component.get_camera_aim_point_by_ray_else_virtual());
 	center_target_detector.force_raycast_update();
 	
 	var target_detected_at_center: bool = false;

@@ -67,7 +67,7 @@ func ray_from_camera_forward(
 	return ray_result;
 
 
-func get_camera_aim_point_by_ray_else_fallback(
+func get_camera_aim_point_by_ray_else_virtual(
 		ray_collision_mask: int = CollisionMaskLib.get_entities_and_obstacles(),
 		exclude_entity_from_ray: bool = true,
 		ray_exclusions: Array[RID] = [],
@@ -83,7 +83,7 @@ func get_camera_aim_point_by_ray_else_fallback(
 	if ray_from_camera_forward_result.has("position"):
 		camera_aim_point = ray_from_camera_forward_result.get("position");
 	else:
-		camera_aim_point = get_fallback_camera_aim_point();
+		camera_aim_point = get_virtual_camera_aim_point();
 
 	return camera_aim_point;
 
@@ -107,7 +107,7 @@ func get_camera_aim_point_by_ray(
 	return camera_aim_point;
 
 
-func get_fallback_camera_aim_point() -> Vector3:
+func get_virtual_camera_aim_point() -> Vector3:
 	var camera_forward_direction: Vector3 = -_camera.global_basis.z.normalized();
 
 	return _camera.global_position + (camera_forward_direction * 1000.0);

@@ -116,7 +116,7 @@ func _fire_bullet() -> void:
 
 
 func _update_mesh_instance_pivot() -> void:
-	_mesh_instance_pivot.look_at(camera_component.get_fallback_camera_aim_point());
+	_mesh_instance_pivot.look_at(camera_component.get_virtual_camera_aim_point());
 
 
 func _update_frame_ray_point_from_camera_forward() -> void:
@@ -129,7 +129,7 @@ func _update_frame_ray_point_from_camera_forward() -> void:
 
 
 func _update_bullet_start_transform_anchor() -> void:
-	var where_to_shoot: Vector3 = camera_component.get_fallback_camera_aim_point();
+	var where_to_shoot: Vector3 = camera_component.get_virtual_camera_aim_point();
 
 	if _frame_ray_point_from_camera_forward:
 		where_to_shoot = _frame_ray_point_from_camera_forward;

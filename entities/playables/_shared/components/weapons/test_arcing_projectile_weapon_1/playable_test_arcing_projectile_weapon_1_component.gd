@@ -14,7 +14,7 @@ extends Node3D
 
 
 func _physics_process(_delta: float) -> void:
-	_mesh_instance_pivot.look_at(camera_component.get_fallback_camera_aim_point());
+	_mesh_instance_pivot.look_at(camera_component.get_virtual_camera_aim_point());
 
 	if not Input.is_action_just_pressed(&"primary_fire"): return;
 
@@ -24,7 +24,7 @@ func _physics_process(_delta: float) -> void:
 
 	add_child(bullet);
 
-	var where_to_shoot_at: Vector3 = camera_component.get_camera_aim_point_by_ray_else_fallback(
+	var where_to_shoot_at: Vector3 = camera_component.get_camera_aim_point_by_ray_else_virtual(
 			bullet.collision_mask
 	);
 	bullet.launch(_bullet_start_position_anchor.global_position, where_to_shoot_at, 50.0, 2.0);

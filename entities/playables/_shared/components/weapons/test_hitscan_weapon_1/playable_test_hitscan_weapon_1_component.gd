@@ -24,7 +24,7 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	_mesh_instance_pivot.look_at(camera_component.get_fallback_camera_aim_point());
+	_mesh_instance_pivot.look_at(camera_component.get_virtual_camera_aim_point());
 	
 	if Input.is_action_just_pressed(&"toggle_weapon_mode"):
 		if _mode == _Mode.HEAL:

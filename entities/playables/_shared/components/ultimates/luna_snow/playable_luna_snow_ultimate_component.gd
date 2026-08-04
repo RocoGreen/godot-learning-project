@@ -22,10 +22,12 @@ enum _State {
 			if entity_identity:
 				entity_identity.changed.connect(_on_entity_identity_changed);
 
-@export var entity_mesh: MeshInstance3D:
-	set(new_entity_mesh):
-		entity_mesh = new_entity_mesh;
-		update_configuration_warnings();
+@export var dancefloor_position_anchor: Marker3D:
+	set(new_dancefloor_position_anchor):
+		dancefloor_position_anchor = new_dancefloor_position_anchor;
+		
+		if Engine.is_editor_hint():
+			update_configuration_warnings();
 
 @export_group("Settings")
 @export var cast_healing_amount: float = 200.0;
@@ -54,7 +56,6 @@ var _pressing_again_ultimate_input_action_required: bool = false;
 
 @onready var _dancefloor: MeshInstance3D = %Dancefloor;
 @onready var _dancefloor_mesh_material: StandardMaterial3D = _dancefloor.mesh.material;
-@onready var _dancefloor_pivot: Marker3D = %DancefloorPivot;
 
 @onready var _duration_timer: Timer = %DurationTimer;
 
@@ -66,22 +67,22 @@ func _init() -> void:
 
 func _ready() -> void:
 	if Engine.is_editor_hint(): return;
-	
+
 	AssertLib.assert_if_entity_identity_not_found(entity_identity);
-	
-	assert(
-			is_instance_of(entity_mesh, MeshInstance3D), 
-			
-			"`entity_mesh` variable is not a `MeshInstance3D`."
-	);
-	
+
 	_dancefloor.top_level = true;
 
 
 func _process(_delta: float) -> void:
-	if Engine.is_editor_hint(): return;
-	
-	if _is_active():
+	if Engine.is_editor_hint():
+		if dancefloor_position_anchor:
+			_update_dancefloor_position();
+			_dancefloor.show();
+
+		elif _dancefloor.visible:
+			_dancefloor.hide();
+
+	elif _is_active() and dancefloor_position_anchor:
 		_update_dancefloor_position();
 
 
@@ -109,17 +110,19 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 	warnings.append_array(ConfigurationWarningLib.get_for_entity_identity(entity_identity));
 	
-	if not entity_mesh:
-		warnings.append("`entity_mesh` exported variable is not set.");
+	if not dancefloor_position_anchor:
+		warnings.append(
+				"`dancefloor_position_anchor` is not set. Without it, the dancefloor " + 
+				"won't show in editor or if in game, when the ultimate is active."
+		);
 	
 	return warnings;
 
 
 func _start_ultimate(delta: float) -> void:
-	_update_dancefloor_position();
-	_dancefloor.show();
-	
-	_start_dance_loop();
+	if dancefloor_position_anchor:
+		_update_dancefloor_position();
+		_dancefloor.show();
 	
 	print(
 			"Luna Snow Ultimate Started ! " + 
@@ -154,35 +157,8 @@ func _end_ultimate() -> void:
 	print("Luna Snow Ultimate Ended !");
 
 
-func _start_dance_loop() -> void:
-	entity_mesh.rotate_z(deg_to_rad(50));
-	
-	await get_tree().create_timer(0.5).timeout;
-	
-	if not _is_active():
-		return;
-	
-	entity_mesh.set_basis(Basis());
-	
-	await get_tree().create_timer(0.5).timeout;
-	
-	if not _is_active():
-		return;
-	
-	entity_mesh.rotate_z(deg_to_rad(-50));
-	
-	await get_tree().create_timer(0.5).timeout;
-	
-	entity_mesh.set_basis(Basis());
-	
-	await get_tree().create_timer(0.5).timeout;
-	
-	if _is_active():
-		_start_dance_loop();
-
-
 func _update_dancefloor_position() -> void:
-	_dancefloor.set_global_position(_dancefloor_pivot.global_position);
+	_dancefloor.set_global_position(dancefloor_position_anchor.global_position);
 
 
 func _is_active() -> bool:

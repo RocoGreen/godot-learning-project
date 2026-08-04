@@ -25,12 +25,7 @@ entity_identity = SubResource("Resource_ns3p3")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1688937494]
 shape = SubResource("SphereShape3D_rln61")
 
-[node name="DancefloorPivot" type="Marker3D" parent="." unique_id=1328140372]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
-gizmo_extents = 0.5
-
-[node name="Dancefloor" type="MeshInstance3D" parent="DancefloorPivot" unique_id=1182220728]
+[node name="Dancefloor" type="MeshInstance3D" parent="." unique_id=1182220728]
 unique_name_in_owner = true
 visible = false
 mesh = SubResource("CylinderMesh_ns3p3")

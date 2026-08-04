@@ -76,10 +76,13 @@ entity_identity = ExtResource("2_3s4ss")
 cb_3d_utils_component = NodePath("../../PlayableCharacterBody3DUtilsComponent")
 camera_component = NodePath("../../PlayableCameraComponent")
 
-[node name="PlayableLunaSnowUltimateComponent" parent="Components/Capacities" unique_id=285167825 node_paths=PackedStringArray("entity_mesh") instance=ExtResource("10_ykcux")]
+[node name="PlayableLunaSnowUltimateComponent" parent="Components/Capacities" unique_id=285167825 node_paths=PackedStringArray("dancefloor_position_anchor") instance=ExtResource("10_ykcux")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 entity_identity = ExtResource("2_3s4ss")
-entity_mesh = NodePath("../../../MeshInstance3D")
+dancefloor_position_anchor = NodePath("DancefloorPositionAnchor")
 healing_amount = 20.0
+
+[node name="DancefloorPositionAnchor" type="Marker3D" parent="Components/Capacities/PlayableLunaSnowUltimateComponent" unique_id=2103003980]
 
 [node name="UI" type="Control" parent="." unique_id=1133008706]
 layout_mode = 3

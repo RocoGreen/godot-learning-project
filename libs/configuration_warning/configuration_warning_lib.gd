@@ -7,9 +7,20 @@ static func get_for_entity(entity: PhysicsBody3D) -> PackedStringArray:
 	var warnings: PackedStringArray = PackedStringArray();
 
 	if not is_instance_valid(entity):
-		warnings.append("An exported variable expecting an Entity is not set/valid.");
+		warnings.append("An exported variable expecting an `Entity` is not set/valid.");
 
 	return warnings;
+
+
+## Note: To call again when exported variable changes (by using a setter).
+static func get_for_playable(playable: CharacterBody3D) -> PackedStringArray:
+	var warnings: PackedStringArray = PackedStringArray();
+
+	if not is_instance_valid(playable):
+		warnings.append("An exported variable expecting a `Playable` is not set/valid.");
+
+	return warnings;
+
 
 
 ## Warning: An instance of the `EntityIdentity `resource can have it's properties 

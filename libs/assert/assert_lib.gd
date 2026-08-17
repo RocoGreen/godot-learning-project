@@ -6,8 +6,18 @@ static func assert_if_entity_not_found(entity: PhysicsBody3D) -> void:
 	assert(
 			is_instance_of(entity, PhysicsBody3D),
 			
-			"Expected `entity` variable to hold a `PhysicsBody3D` Entity " +
+			"Expected `entity` variable to hold an `Entity` (`PhysicsBody3D`) " +
 			"but is `%s`. " % str(entity) +
+			"Please check the debugger for more information."
+	);
+
+
+static func assert_if_playable_not_found(playable: CharacterBody3D) -> void:
+	assert(
+			is_instance_of(playable, CharacterBody3D),
+			
+			"Expected `playable` variable to hold a `Playable` (`CharacterBody3D`) " +
+			"but is `%s`. " % str(playable) +
 			"Please check the debugger for more information."
 	);
 
@@ -16,7 +26,7 @@ static func assert_if_cb_3d_entity_not_found(entity: CharacterBody3D) -> void:
 	assert(
 			is_instance_of(entity, CharacterBody3D),
 
-			"Expected `entity` variable to hold a `CharacterBody3D` Entity " +
+			"Expected `entity` variable to hold a `CharacterBody3D` `Entity` " +
 			"but is `%s`. " % str(entity) +
 			"Please check the debugger for more information."
 	);
@@ -26,7 +36,7 @@ static func assert_if_entity_identity_not_found(entity_identity: EntityIdentity)
 	assert(
 			is_instance_of(entity_identity, EntityIdentity),
 
-			"Expected `entity_identity` variable to hold a `EntityIdentity` " +
+			"Expected `entity_identity` variable to hold an `EntityIdentity` " +
 			"but is `%s`. " % str(entity_identity) +
 			"Please check the debugger for more information."
 	);

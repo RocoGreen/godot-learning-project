@@ -39,8 +39,8 @@ func _physics_process(delta: float) -> void:
 
 
 func _apply_damage_to_target(target: PhysicsBody3D) -> void:
-	var target_entity_component: EntityComponent = EntityComponent.from_entity_or_assert(target);
-	var target_health: EntityHealthComponent = target_entity_component.exp_health_component;
+	var target_entity_component: EntityComponent = EntityComponent.from_entity(target);
+	var target_health: EntityHealthComponent = target_entity_component.health_component;
 	
 	if not target_health: return;
 	
@@ -48,8 +48,8 @@ func _apply_damage_to_target(target: PhysicsBody3D) -> void:
 
 
 func _apply_healing_to_target(target: PhysicsBody3D) -> void:
-	var target_entity_component: EntityComponent = EntityComponent.from_entity_or_assert(target);
-	var target_health: EntityHealthComponent = target_entity_component.exp_health_component;
+	var target_entity_component: EntityComponent = EntityComponent.from_entity(target);
+	var target_health: EntityHealthComponent = target_entity_component.health_component;
 	
 	if not target_health: return;
 	

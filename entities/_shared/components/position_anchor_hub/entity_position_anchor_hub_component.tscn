@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://vfbdf5vqp3d"]
+
+[ext_resource type="Script" uid="uid://cx073ny1nh7sv" path="res://entities/_shared/components/position_anchor_hub/entity_position_anchor_hub_component.gd" id="1_e141l"]
+
+[node name="EntityPositionAnchorHubComponent" type="Node3D" unique_id=787595999]
+script = ExtResource("1_e141l")

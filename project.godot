@@ -22,8 +22,6 @@ gdscript/warnings/untyped_declaration=2
 [global_group]
 
 entities=""
-allies=""
-enemies=""
 
 [input]
 

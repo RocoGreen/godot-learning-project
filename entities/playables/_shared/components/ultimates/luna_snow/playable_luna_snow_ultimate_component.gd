@@ -3,9 +3,11 @@
 extends Area3D
 
 
+const DamageBoostRequest := EntityDamageBoostStatusReceiver.DamageBoostRequest;
+
 enum _State {
-	HEAL,
-	DAMAGE_BOOST,
+	HEALING,
+	DAMAGE_BOOSTING,
 };
 
 @export_group("Dependencies")
@@ -29,28 +31,31 @@ enum _State {
 		if Engine.is_editor_hint():
 			update_configuration_warnings();
 
-@export_group("Settings")
+@export_group("Healing & Damage Settings")
 @export var cast_healing_amount: float = 200.0;
 @export var healing_amount: float = 250.0;
 @export_range(0, 100) var damage_boost_amount: int = 40;
 
+@export_group("Input Actions Settings")
+@export_custom(PROPERTY_HINT_INPUT_NAME, "") var ultimate_input_action: StringName = &"ultimate";
+
 var _apply_cast_healing: bool = false;
 
-var _state: _State = _State.HEAL:
+var _state: _State = _State.HEALING:
 	set(new_state):
 		if _state == new_state:
 			return;
 		
-		if new_state == _State.HEAL:
+		if new_state == _State.HEALING:
 			_dancefloor_mesh_material.set_albedo(Color.PINK);
 		
-		elif new_state == _State.DAMAGE_BOOST:
+		elif new_state == _State.DAMAGE_BOOSTING:
 			_dancefloor_mesh_material.set_albedo(Color.SKY_BLUE);
 		
 		_state = new_state;
 
-var _targets_inside_ultimate: Dictionary[RID, PhysicsBody3D] = {};
-var _damage_boosted_targets: Dictionary[RID, DamageBoostedTarget] = {};
+var _targets_inside_ultimate: Array[PhysicsBody3D] = [];
+var _targets_damage_boosted_requests: Dictionary[PhysicsBody3D, DamageBoostRequest] = {};
 
 var _pressing_again_ultimate_input_action_required: bool = false;
 
@@ -67,8 +72,6 @@ func _init() -> void:
 
 func _ready() -> void:
 	if Engine.is_editor_hint(): return;
-
-	AssertLib.assert_if_entity_identity_not_found(entity_identity);
 
 	_dancefloor.top_level = true;
 
@@ -90,25 +93,25 @@ func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint(): return;
 	
 	if _pressing_again_ultimate_input_action_required:
-		if Input.is_action_pressed(&"ultimate"):
+		if Input.is_action_pressed(ultimate_input_action):
 			_pressing_again_ultimate_input_action_required = false;
 		else:
 			return;
 	
 	elif _is_active():
-		if Input.is_action_just_pressed(&"ultimate"):
+		if Input.is_action_just_pressed(ultimate_input_action):
 			_toggle_ability_state();
 		
 		_handle_ultimate(delta);
 	
-	elif Input.is_action_pressed(&"ultimate"):
+	elif Input.is_action_pressed(ultimate_input_action):
 		_start_ultimate(delta);
 
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = PackedStringArray();
 
-	warnings.append_array(ConfigurationWarningLib.get_for_entity_identity(entity_identity));
+	warnings.append_array(ConfigurationWarningLibrary.get_for_entity_identity(entity_identity));
 	
 	if not dancefloor_position_anchor:
 		warnings.append(
@@ -139,8 +142,8 @@ func _start_ultimate(delta: float) -> void:
 
 
 func _handle_ultimate(delta: float) -> void:
-	if _state == _State.HEAL:
-		for target: PhysicsBody3D in _targets_inside_ultimate.values():
+	if _is_active() and _state == _State.HEALING:
+		for target: PhysicsBody3D in _targets_inside_ultimate:
 			_apply_healing_to_target(target, delta);
 
 
@@ -149,9 +152,9 @@ func _end_ultimate() -> void:
 	
 	_dancefloor.hide();
 	
-	_state = _State.HEAL;
+	_state = _State.HEALING;
 	
-	if Input.is_action_pressed(&"ultimate"):
+	if Input.is_action_pressed(ultimate_input_action):
 		_pressing_again_ultimate_input_action_required = true;
 	
 	print("Luna Snow Ultimate Ended !");
@@ -169,86 +172,99 @@ func _is_active() -> bool:
 
 
 func _toggle_ability_state() -> void:
-	if _state == _State.HEAL:
+	if _state == _State.HEALING:
 		_apply_damage_boost_to_targets_inside_ultimate();
 		
-		_state = _State.DAMAGE_BOOST;
+		_state = _State.DAMAGE_BOOSTING;
 
-	elif _state == _State.DAMAGE_BOOST:
+	elif _state == _State.DAMAGE_BOOSTING:
 		_remove_all_damage_boosted_targets();
 		
-		_state = _State.HEAL;
+		_state = _State.HEALING;
 
 
 func _apply_healing_to_target(target: PhysicsBody3D, delta: float) -> void:
-	var target_entity_component: EntityComponent = EntityComponent.from_entity_or_assert(target);
-	var target_health_component: EntityHealthComponent = target_entity_component.exp_health_component;
+	var target_entity_component: EntityComponent = EntityComponent.from_entity(target);
+	var target_health: EntityHealthComponent = target_entity_component.health_component;
 	
-	if not target_health_component: return;
+	if not target_health: return;
 	
-	var healing_to_do: float = cast_healing_amount if _apply_cast_healing else healing_amount * delta;
-	target_health_component.heal(healing_to_do, entity_identity);
+	var healing_to_do: float = healing_amount * delta;
+
+	if _apply_cast_healing: 
+		healing_to_do = cast_healing_amount;
+	
+	target_health.heal(healing_to_do, entity_identity);
 
 
 func _apply_damage_boost_to_target(target: PhysicsBody3D) -> void:
-	if _damage_boosted_targets.has(target.get_rid()): return;
+	if _targets_damage_boosted_requests.has(target): return;
+
+	var target_entity_component: EntityComponent = EntityComponent.from_entity(target);
+	var target_status_receiver_hub := target_entity_component.status_receiver_hub_component;
 	
-	var target_entity_component: EntityComponent = EntityComponent.from_entity_or_assert(target);
-	var target_status_receiver_component := target_entity_component.exp_status_receiver_component;
-	
-	if not target_status_receiver_component: return;
-	
-	var dmg_boost_request := IntValueRequest.new(damage_boost_amount, entity_identity);
-	
-	target_status_receiver_component.damage_boost_requests.add(dmg_boost_request);
-	_damage_boosted_targets[target.get_rid()] = DamageBoostedTarget.new(dmg_boost_request, target);
+	if not target_status_receiver_hub: 
+		return;
+
+	var target_damage_boost_status_receiver := target_status_receiver_hub.damage_boost_receiver;
+
+	var damage_boost_request: DamageBoostRequest = DamageBoostRequest.new();
+
+	target_damage_boost_status_receiver.add_damage_boost_request(damage_boost_request);
+	_targets_damage_boosted_requests.set(target, damage_boost_request);
 
 
 func _apply_damage_boost_to_targets_inside_ultimate() -> void:
-	for target: PhysicsBody3D in _targets_inside_ultimate.values():
+	for target: PhysicsBody3D in _targets_inside_ultimate:
 		_apply_damage_boost_to_target(target);
 
 
 func _remove_damage_boost_to_target(target: PhysicsBody3D) -> void:
-	var dmg_boosted_target: DamageBoostedTarget = _damage_boosted_targets[target.get_rid()];
+	var damage_boost_request: DamageBoostRequest = _targets_damage_boosted_requests.get(target);
 
-	if not dmg_boosted_target: return;
+	if not damage_boost_request: return;
 
-	var target_entity_component := EntityComponent.from_entity_or_assert(dmg_boosted_target.entity);
-	var target_status_receiver_component := target_entity_component.exp_status_receiver_component;
+	_targets_damage_boosted_requests.erase(target);
 
-	if not target_status_receiver_component: return;
+	var target_entity_component: EntityComponent = EntityComponent.from_entity(target);
+	var target_status_receiver_hub := target_entity_component.status_receiver_hub_component;
+	
+	if not target_status_receiver_hub: return;
 
-	target_status_receiver_component.damage_boost_requests.remove(dmg_boosted_target.request);
-	_damage_boosted_targets.erase(target.get_rid());
+	var target_damage_boost_status_receiver := target_status_receiver_hub.damage_boost_receiver;
+	target_damage_boost_status_receiver.remove_damage_boost_request(damage_boost_request);
 
 
 func _remove_all_damage_boosted_targets() -> void:
-	for target: DamageBoostedTarget in _damage_boosted_targets.values():
-		_remove_damage_boost_to_target(target.entity);
+	for target: PhysicsBody3D in _targets_damage_boosted_requests.keys():
+		_remove_damage_boost_to_target(target);
 
 
 func _on_body_entered(body: Node3D) -> void:
-	var target := body as PhysicsBody3D;
+	var target: PhysicsBody3D = body as PhysicsBody3D;
 
-	if not target: return;
-	if not target.is_in_group(&"allies"): return;
+	var target_entity_component: EntityComponent = EntityComponent.from_entity(target);
+	var target_identity: EntityIdentity = target_entity_component.identity;
 
-	_targets_inside_ultimate.set(target.get_rid(), target);
+	if not target_identity.team == entity_identity.team: return;
 
-	if _is_active() and _state == _State.DAMAGE_BOOST:
+	_targets_inside_ultimate.append(target);
+
+	if _is_active() and _state == _State.DAMAGE_BOOSTING:
 		_apply_damage_boost_to_target(target);
 
 
 func _on_body_exited(body: Node3D) -> void:
-	var target := body as PhysicsBody3D;
+	var target: PhysicsBody3D = body as PhysicsBody3D;
 
-	if not target: return;
-	if not target.is_in_group(&"allies"): return;
+	var target_entity_component: EntityComponent = EntityComponent.from_entity(target);
+	var target_identity: EntityIdentity = target_entity_component.identity;
 
-	_targets_inside_ultimate.erase(target.get_rid());
+	if not target_identity.team == entity_identity.team: return;
 
-	if _is_active() and _state == _State.DAMAGE_BOOST:
+	_targets_inside_ultimate.erase(target);
+
+	if _is_active() and _state == _State.DAMAGE_BOOSTING:
 		_remove_damage_boost_to_target(target);
 
 
@@ -261,10 +277,10 @@ func _on_entity_identity_changed() -> void:
 
 
 class DamageBoostedTarget extends RefCounted:
-	var request: IntValueRequest;
+	var request: DamageBoostRequest;
 	var entity: PhysicsBody3D;
 
 	@warning_ignore("shadowed_variable")
-	func _init(request: IntValueRequest, entity: PhysicsBody3D) -> void:
+	func _init(request: DamageBoostRequest, entity: PhysicsBody3D) -> void:
 		self.request = request;
 		self.entity = entity;

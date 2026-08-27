@@ -34,14 +34,8 @@ func _init() -> void:
 		entity_identity.changed.connect(_on_entity_identity_changed);
 
 
-func _ready() -> void:
-	if Engine.is_editor_hint(): return;
-
-	AssertLib.assert_if_entity_identity_not_found(entity_identity);
-
-
 func _get_configuration_warnings() -> PackedStringArray:
-	return ConfigurationWarningLib.get_for_entity_identity(entity_identity);
+	return ConfigurationWarningLibrary.get_for_entity_identity(entity_identity);
 
 
 func heal(amount: float = 0.0, healer: EntityIdentity = EntityIdentity.new()) -> void:

@@ -8,6 +8,7 @@ script = ExtResource("1_mhf5v")
 
 [node name="CameraPivot" type="SpringArm3D" parent="." unique_id=484096846]
 unique_name_in_owner = true
+top_level = true
 collision_mask = 7
 spring_length = 3.0
 

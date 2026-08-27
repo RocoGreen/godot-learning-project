@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://dgqseji4pi27a"]
+
+[ext_resource type="Script" uid="uid://chxx6k8m7nq0v" path="res://entities/_shared/components/status_receiver_hub/entity_status_receiver_hub_component.gd" id="1_cgiwy"]
+[ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/helpers/identity/entity_identity.gd" id="2_58ijk"]
+[ext_resource type="Script" uid="uid://ct02qspvov01s" path="res://entities/_shared/components/status_receiver_hub/statuses/damage_boost/entity_damage_boost_status_receiver.gd" id="3_58ijk"]
+
+[sub_resource type="Resource" id="Resource_gjtgf"]
+script = ExtResource("2_58ijk")
+
+[node name="EntityStatusReceiverHubComponent" type="Node" unique_id=1530625951]
+script = ExtResource("1_cgiwy")
+entity_identity = SubResource("Resource_gjtgf")
+
+[node name="StatusReceivers" type="Node" parent="." unique_id=15476779]
+
+[node name="DamageBoost" type="Node" parent="StatusReceivers" unique_id=97005278]
+unique_name_in_owner = true
+script = ExtResource("3_58ijk")
+
+[connection signal="added_damage_boost_request" from="StatusReceivers/DamageBoost" to="StatusReceivers/DamageBoost" method="_on_added_damage_boost_request"]
+[connection signal="removed_damage_boost_request" from="StatusReceivers/DamageBoost" to="StatusReceivers/DamageBoost" method="_on_removed_damage_boost_request"]

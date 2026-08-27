@@ -57,10 +57,6 @@ var _frame_ray_point_from_camera_forward: Vector3 = Vector3.ZERO;
 func _ready() -> void:
 	if Engine.is_editor_hint(): return;
 
-	AssertLib.assert_if_entity_not_found(entity);
-	AssertLib.assert_if_entity_identity_not_found(entity_identity);
-	AssertLib.assert_if_camera_component_not_found(camera_component);
-
 	_bullet_start_transform_anchor.top_level = true;
 
 	_muzzle_forward_raycast.add_exception(entity);
@@ -89,11 +85,11 @@ func _physics_process(_delta: float) -> void:
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = PackedStringArray();
 
-	warnings.append_array(ConfigurationWarningLib.get_for_entity(entity));
+	warnings.append_array(ConfigurationWarningLibrary.get_for_entity(entity));
 
-	warnings.append_array(ConfigurationWarningLib.get_for_entity_identity(entity_identity));
+	warnings.append_array(ConfigurationWarningLibrary.get_for_entity_identity(entity_identity));
 
-	warnings.append_array(ConfigurationWarningLib.get_for_camera_component(camera_component));
+	warnings.append_array(ConfigurationWarningLibrary.get_for_camera_component(camera_component));
 
 	return warnings;
 
@@ -116,20 +112,21 @@ func _fire_bullet() -> void:
 
 
 func _update_mesh_instance_pivot() -> void:
-	_mesh_instance_pivot.look_at(camera_component.get_virtual_camera_aim_point());
+	_mesh_instance_pivot.look_at(camera_component.get_position_to_look_at_aim_direction());
 
 
 func _update_frame_ray_point_from_camera_forward() -> void:
-	var camera_aim_point: Vector3 = camera_component.get_camera_aim_point_by_ray();
+	var ray_to_get_what_player_aims_at_results: Dictionary = camera_component.ray_to_aim_direction();
 
-	if camera_aim_point:
-		_frame_ray_point_from_camera_forward = camera_aim_point;
-	else:
+	if ray_to_get_what_player_aims_at_results.is_empty():
 		_frame_ray_point_from_camera_forward = Vector3.ZERO;
+		return;
+
+	_frame_ray_point_from_camera_forward = ray_to_get_what_player_aims_at_results.get("position");
 
 
 func _update_bullet_start_transform_anchor() -> void:
-	var where_to_shoot: Vector3 = camera_component.get_virtual_camera_aim_point();
+	var where_to_shoot: Vector3 = camera_component.get_position_to_look_at_aim_direction();
 
 	if _frame_ray_point_from_camera_forward:
 		where_to_shoot = _frame_ray_point_from_camera_forward;

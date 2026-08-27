@@ -1,32 +1,33 @@
 [gd_scene format=3 uid="uid://lskivaa3dmuk"]
 
-[ext_resource type="PackedScene" uid="uid://tc022fnndjdg" path="res://entities/playables/_shared/bullets/arcing_projectile/playable_arcing_projectile_bullet.tscn" id="1_5i4vb"]
-[ext_resource type="Script" uid="uid://fq3ehralrmra" path="res://entities/playables/_shared/components/weapons/test_arcing_projectile_weapon_1/bullet/playable_test_arcing_projectile_weapon_1_component_bullet.gd" id="2_rcjau"]
+[ext_resource type="PackedScene" uid="uid://bk0l1pqky6xip" path="res://entities/playables/_shared/bullets/projectile/playable_projectile_bullet.tscn" id="1_n5d1h"]
+[ext_resource type="Script" uid="uid://b4oxislnhh14j" path="res://entities/playables/_shared/components/weapons/test_arcing_projectile_weapon_1/bullet/playable_test_arcing_projectile_weapon_1_component_bullet.gd" id="2_rcjau"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_nxycw"]
+[sub_resource type="SphereMesh" id="SphereMesh_n5d1h"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_w2ayk"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_5i4vb"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_n7yqc"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_rcjau"]
 radius = 5.0
 
-[node name="PlayableTestArcingProjectileWeapon1ComponentBullet" unique_id=1719682859 instance=ExtResource("1_5i4vb")]
+[node name="PlayableProjectileBullet" unique_id=1668462563 instance=ExtResource("1_n5d1h")]
 script = ExtResource("2_rcjau")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="0" unique_id=398908759]
-mesh = SubResource("SphereMesh_nxycw")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="0" unique_id=1706465619]
+mesh = SubResource("SphereMesh_n5d1h")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="1" unique_id=1627141959]
-shape = SubResource("SphereShape3D_w2ayk")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="1" unique_id=61542694]
+shape = SubResource("SphereShape3D_5i4vb")
 
-[node name="SplashTest" type="ShapeCast3D" parent="." index="2" unique_id=386607850]
+[node name="SplashTest" type="ShapeCast3D" parent="." index="2" unique_id=1751163770]
 unique_name_in_owner = true
-shape = SubResource("SphereShape3D_n7yqc")
+enabled = false
+shape = SubResource("SphereShape3D_rcjau")
 exclude_parent = false
 target_position = Vector3(0, 0, 0)
 collision_mask = 3
 
-[node name="LifeDurationTimer" type="Timer" parent="." index="3" unique_id=414955641]
+[node name="LifeDurationTimer" type="Timer" parent="." index="3" unique_id=1629144995]
 wait_time = 6.0
 one_shot = true
 autostart = true

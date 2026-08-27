@@ -24,7 +24,7 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	_mesh_instance_pivot.look_at(camera_component.get_virtual_camera_aim_point());
+	_mesh_instance_pivot.look_at(camera_component.get_position_to_look_at_aim_direction());
 	
 	if Input.is_action_just_pressed(&"toggle_weapon_mode"):
 		if _mode == _Mode.HEAL:
@@ -36,14 +36,13 @@ func _physics_process(_delta: float) -> void:
 	
 	if not Input.is_action_just_pressed(&"primary_fire"): return;
 	
-	var camera_aim_point: Vector3 = camera_component.get_camera_aim_point_by_ray(
-			_bullet.collision_mask,
-	);
+	var ray_to_get_what_player_aims_at_results: Dictionary = camera_component.ray_to_aim_direction();
 	
-	if not camera_aim_point: 
+	if ray_to_get_what_player_aims_at_results.is_empty(): 
 		return;
 	
-	_bullet.launch(_bullet_start_position_anchor.global_position, camera_aim_point);
+	var where_to_shoot_at: Vector3 = ray_to_get_what_player_aims_at_results.get("position");
+	_bullet.launch(_bullet_start_position_anchor.global_position, where_to_shoot_at);
 
 
 func _on_bullet_hit() -> void:
@@ -54,12 +53,12 @@ func _on_bullet_hit() -> void:
 	if not target: return;
 	if not target.is_in_group(&"entities"): return;
 	
-	var target_entity_component := EntityComponent.from_entity_or_assert(target);
-	var target_health_component := target_entity_component.exp_health_component;
+	var target_entity_component: EntityComponent = EntityComponent.from_entity(target);
+	var target_health: EntityHealthComponent = target_entity_component.health_component;
 	
-	if not target_health_component: return;
+	if not target_health: return;
 
 	if _mode == _Mode.HEAL:
-		target_health_component.heal(30.0, entity_identity);
+		target_health.heal(30.0, entity_identity);
 	elif _mode == _Mode.DAMAGE:
-		target_health_component.damage(30.0, entity_identity);
+		target_health.damage(30.0, entity_identity);

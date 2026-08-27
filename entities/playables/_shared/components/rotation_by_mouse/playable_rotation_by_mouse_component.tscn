@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://dgavxxiu7xo4s"]
-
-[ext_resource type="Script" uid="uid://dx3eccscv7dvj" path="res://entities/playables/_shared/components/rotation_by_mouse/playable_rotation_by_mouse_component.gd" id="1_key0j"]
-
-[node name="PlayableRotationByMouseComponent" type="Node" unique_id=1377482824]
-script = ExtResource("1_key0j")

@@ -9,17 +9,17 @@ albedo_color = Color(0.9999998, 0.037973236, 0.039998773, 1)
 [sub_resource type="SphereMesh" id="SphereMesh_jxecr"]
 material = SubResource("StandardMaterial3D_nri6p")
 
-[node name="TestNPC1Enemy" unique_id=1120564623 groups=["enemies"] instance=ExtResource("1_nri6p")]
+[node name="TestNPC1Enemy" unique_id=1120564623 instance=ExtResource("1_nri6p")]
 
 [node name="EntityComponent" parent="." index="0" unique_id=532691025]
 identity = ExtResource("2_nri6p")
 
-[node name="EntityHealthComponent" parent="Components" parent_id_path=PackedInt32Array(106603770) index="0" unique_id=930351444]
+[node name="EntityHealthComponent" parent="Components" parent_id_path=PackedInt32Array(1817788584) index="0" unique_id=930351444]
 entity_identity = ExtResource("2_nri6p")
 current_health = 500.0
 max_health = 500.0
 
-[node name="EntityStatusReceiverComponent" parent="Components" parent_id_path=PackedInt32Array(106603770) index="1" unique_id=1530625951]
+[node name="EntityStatusReceiverHubComponent" parent="Components" parent_id_path=PackedInt32Array(1817788584) index="1" unique_id=1530625951]
 entity_identity = ExtResource("2_nri6p")
 
 [node name="TeamIndicator" parent="TopIndicators" parent_id_path=PackedInt32Array(1769069705) index="1" unique_id=1564625014]

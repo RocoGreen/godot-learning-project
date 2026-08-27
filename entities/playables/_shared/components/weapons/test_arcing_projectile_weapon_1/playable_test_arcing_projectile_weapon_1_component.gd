@@ -14,9 +14,10 @@ extends Node3D
 
 
 func _physics_process(_delta: float) -> void:
-	_mesh_instance_pivot.look_at(camera_component.get_virtual_camera_aim_point());
+	_mesh_instance_pivot.look_at(camera_component.get_position_to_look_at_aim_direction());
 
-	if not Input.is_action_just_pressed(&"primary_fire"): return;
+	if not Input.is_action_just_pressed(&"primary_fire"): 
+		return;
 
 	var bullet: PlayableTestArcingProjectileWeapon1ComponentBullet = _bullet.instantiate();
 
@@ -24,7 +25,12 @@ func _physics_process(_delta: float) -> void:
 
 	add_child(bullet);
 
-	var where_to_shoot_at: Vector3 = camera_component.get_camera_aim_point_by_ray_else_virtual(
-			bullet.collision_mask
-	);
-	bullet.launch(_bullet_start_position_anchor.global_position, where_to_shoot_at, 50.0, 2.0);
+	var ray_to_get_what_player_aims_at_results: Dictionary = camera_component.ray_to_aim_direction();
+
+	var where_to_shoot_at: Vector3 = Vector3.ZERO;
+	if ray_to_get_what_player_aims_at_results.has("position"):
+		where_to_shoot_at = ray_to_get_what_player_aims_at_results.get("position");
+	else:
+		where_to_shoot_at = camera_component.get_position_to_look_at_aim_direction();
+
+	bullet.launch(_bullet_start_position_anchor.global_position, where_to_shoot_at, 50.0, true, 2.0);

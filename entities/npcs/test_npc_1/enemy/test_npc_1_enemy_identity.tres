@@ -5,4 +5,5 @@
 [resource]
 script = ExtResource("1_vbe64")
 name = &"Test NPC 1 Enemy"
+team = 1
 metadata/_custom_type_script = "uid://cur8p8fjl0qvd"

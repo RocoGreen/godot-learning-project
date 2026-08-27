@@ -9,17 +9,17 @@ albedo_color = Color(0.25178292, 0.7977873, 0.22007018, 1)
 [sub_resource type="SphereMesh" id="SphereMesh_r2h88"]
 material = SubResource("StandardMaterial3D_etwyt")
 
-[node name="TestNPC1Ally" unique_id=1120564623 groups=["allies"] instance=ExtResource("1_etwyt")]
+[node name="TestNPC1Ally" unique_id=1120564623 instance=ExtResource("1_etwyt")]
 
 [node name="EntityComponent" parent="." index="0" unique_id=532691025]
 identity = ExtResource("2_etwyt")
 
-[node name="EntityHealthComponent" parent="Components" parent_id_path=PackedInt32Array(106603770) index="0" unique_id=930351444]
+[node name="EntityHealthComponent" parent="Components" parent_id_path=PackedInt32Array(1817788584) index="0" unique_id=930351444]
 entity_identity = ExtResource("2_etwyt")
 current_health = 1.0
 max_health = 500.0
 
-[node name="EntityStatusReceiverComponent" parent="Components" parent_id_path=PackedInt32Array(106603770) index="1" unique_id=1530625951]
+[node name="EntityStatusReceiverHubComponent" parent="Components" parent_id_path=PackedInt32Array(1817788584) index="1" unique_id=1530625951]
 entity_identity = ExtResource("2_etwyt")
 
 [node name="TeamIndicator" parent="TopIndicators" parent_id_path=PackedInt32Array(1769069705) index="1" unique_id=1564625014]

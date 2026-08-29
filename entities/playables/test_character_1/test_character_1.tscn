@@ -74,10 +74,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 
 [node name="GameMechanicsSupport" type="Node3D" parent="Components" unique_id=1930426155]
 
-[node name="EntityPositionAnchorHubComponent" parent="Components/GameMechanicsSupport" unique_id=787595999 node_paths=PackedStringArray("center_of_mass_anchor") instance=ExtResource("13_3gihv")]
-center_of_mass_anchor = NodePath("CenterOfMassAnchor")
+[node name="EntityPositionAnchorHubComponent" parent="Components/GameMechanicsSupport" unique_id=787595999 node_paths=PackedStringArray("center_anchor") instance=ExtResource("13_3gihv")]
+center_anchor = NodePath("CenterAnchor")
 
-[node name="CenterOfMassAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/EntityPositionAnchorHubComponent" unique_id=1004767145]
+[node name="CenterAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/EntityPositionAnchorHubComponent" unique_id=1004767145]
 
 [node name="UI" type="Control" parent="." unique_id=1133008706]
 layout_mode = 3

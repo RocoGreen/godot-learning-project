@@ -10,16 +10,6 @@ var _damage_boost_requests: Array[DamageBoostRequest] = [];
 @onready var _status_receiver_hub_component: EntityStatusReceiverHubComponent = owner;
 
 
-func add_damage_boost_request(request: DamageBoostRequest) -> void:
-	_damage_boost_requests.append(request);
-	added_damage_boost_request.emit(request);
-
-
-func remove_damage_boost_request(request: DamageBoostRequest) -> void:
-	_damage_boost_requests.erase(request);
-	removed_damage_boost_request.emit(request);
-
-
 func get_damage_boost_final_percentage() -> int:
 	var final_percentage: int = 0;
 
@@ -29,6 +19,16 @@ func get_damage_boost_final_percentage() -> int:
 	final_percentage = clampi(final_percentage, 0, 100);
 
 	return final_percentage;
+
+
+func add_damage_boost_request(request: DamageBoostRequest) -> void:
+	_damage_boost_requests.append(request);
+	added_damage_boost_request.emit(request);
+
+
+func remove_damage_boost_request(request: DamageBoostRequest) -> void:
+	_damage_boost_requests.erase(request);
+	removed_damage_boost_request.emit(request);
 
 
 func _on_added_damage_boost_request(request: DamageBoostRequest) -> void:

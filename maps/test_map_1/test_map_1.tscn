@@ -1,8 +1,12 @@
 [gd_scene format=3 uid="uid://cg7m86w1c5614"]
 
-[ext_resource type="PackedScene" uid="uid://qt11qx64as1o" path="res://entities/playables/test_character_1/test_character_1.tscn" id="1_nyck6"]
+[ext_resource type="PackedScene" uid="uid://lvoh7ekjwk3i" path="res://entities/playables/luna_snow/playable_luna_snow.tscn" id="1_nyck6"]
+[ext_resource type="PackedScene" uid="uid://wf5i002qqddf" path="res://playable_played_switcher/playable_played_switcher.tscn" id="1_s6nek"]
 [ext_resource type="PackedScene" uid="uid://c473237cvi31t" path="res://entities/npcs/test_npc_1/ally/test_npc_1_ally.tscn" id="2_5p6cq"]
+[ext_resource type="PackedScene" uid="uid://qt11qx64as1o" path="res://entities/playables/test_character_1/test_character_1.tscn" id="2_v5clh"]
 [ext_resource type="PackedScene" uid="uid://71et6jogo4aq" path="res://entities/npcs/test_npc_1/enemy/test_npc_1_enemy.tscn" id="3_nyck6"]
+[ext_resource type="Resource" uid="uid://ch1uqhr4e8qym" path="res://entities/playables/test_character_1/test_character_1_identity.tres" id="5_3osf1"]
+[ext_resource type="Resource" uid="uid://chhw2k28x473" path="res://entities/playables/luna_snow/playable_luna_snow_identity.tres" id="7_6yu2b"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_87hen"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -62,11 +66,20 @@ shape = SubResource("BoxShape3D_nyck6")
 
 [node name="Entities" type="Node3D" parent="." unique_id=1004089302]
 
-[node name="TestCharacter1" parent="Entities" unique_id=855105009 instance=ExtResource("1_nyck6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 0)
+[node name="PlayablePlayedSpawn" type="Marker3D" parent="Entities" unique_id=767386965]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 3, 0)
 
 [node name="TestNPC1Ally" parent="Entities" unique_id=1120564623 instance=ExtResource("2_5p6cq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, 5)
 
 [node name="TestNPC1Enemy" parent="Entities" unique_id=1296699483 instance=ExtResource("3_nyck6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1, 5)
+
+[node name="PlayablePlayedSwitcher" parent="." unique_id=1264673539 node_paths=PackedStringArray("playable_spawn_marker_3d") instance=ExtResource("1_s6nek")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 2, 0)
+playable_test_character_1 = ExtResource("2_v5clh")
+playable_test_character_1_identity = ExtResource("5_3osf1")
+playable_luna_snow = ExtResource("1_nyck6")
+playable_luna_snow_identity = ExtResource("7_6yu2b")
+default_playable = ExtResource("1_nyck6")
+playable_spawn_marker_3d = NodePath("../Entities/PlayablePlayedSpawn")

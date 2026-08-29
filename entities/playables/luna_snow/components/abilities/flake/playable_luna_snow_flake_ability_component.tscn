@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bhenygohfavyh"]
+
+[ext_resource type="Script" uid="uid://byld26cv0pdtd" path="res://entities/playables/luna_snow/components/abilities/flake/playable_luna_snow_flake_ability_component.gd" id="1_u0f6b"]
+
+[node name="PlayableLunaSnowFlakeAbilityComponent" type="Node" unique_id=1288206255]
+script = ExtResource("1_u0f6b")

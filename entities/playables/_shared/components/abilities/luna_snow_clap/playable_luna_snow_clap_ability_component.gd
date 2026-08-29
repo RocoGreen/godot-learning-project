@@ -1,7 +1,10 @@
 @tool
 
+class_name PlayableLunaSnowClapAbilityComponent
 extends Node3D
 
+
+signal healed_someone(amount: float);
 
 @export_group("Dependencies")
 @export var entity: PhysicsBody3D:
@@ -31,6 +34,8 @@ extends Node3D
 		if Engine.is_editor_hint():
 			update_configuration_warnings();
 
+@export var weapon_component: PlayableLunaSnowWeaponComponent;
+
 @export_group("Settings")
 @export var healing_per_clap: float = 60.0;
 @export var damage_per_clap: float = 50.0;
@@ -43,10 +48,12 @@ var _pressing_ability_input_action_again_required: bool = false;
 @onready var target_detector_pivot_node_3d: Node3D = %TargetDetectorPivot;
 @onready var target_detector_shape_cast: ShapeCast3D = %TargetDetector;
 
-@onready var target_visible_on_center_checker_ray_cast: RayCast3D = %TargetVisibleOnCenterChecker;
-
 @onready var duration_timer: Timer = %DurationTimer;
 @onready var lag_between_shots_timer: Timer = %LagBetweenShotsTimer;
+
+@onready var debug_draw: DebugDraw3D = %DebugDraw3D;
+
+var _line_draw_end: Vector3 = Vector3.ZERO;
 
 
 func _init() -> void:
@@ -58,7 +65,20 @@ func _ready() -> void:
 	if Engine.is_editor_hint(): return;
 
 	target_detector_shape_cast.add_exception(entity);
-	target_visible_on_center_checker_ray_cast.add_exception(entity);
+
+
+func _process(_delta: float) -> void:
+	if _line_draw_end == Vector3.ZERO: return;
+	
+	var clap_start_position: Vector3 = \
+			weapon_component.bullet_start_transform_anchor_marker_3d.global_position;
+
+	debug_draw.draw_line(
+			debug_draw.to_local(clap_start_position),
+			debug_draw.to_local(_line_draw_end),
+			Color.CADET_BLUE,
+			10.0
+	);
 
 
 func _physics_process(_delta: float) -> void:
@@ -69,6 +89,9 @@ func _physics_process(_delta: float) -> void:
 			_pressing_ability_input_action_again_required = false;
 		else:
 			return;
+	
+	elif GameState.in_game_input_disabled:
+		return;
 
 	elif Input.is_action_pressed(ability_input_action):
 		if duration_timer.is_stopped():
@@ -98,33 +121,37 @@ func _start_ability() -> void:
 
 
 func _handle_ability() -> void:
+	var transform_to_start_clap: Transform3D = \
+			weapon_component.bullet_start_transform_anchor_marker_3d.global_transform;
+	var where_to_clap_at: Vector3 = Vector3.ZERO;
+	var clap_length: float = 40.0;
+	
 	var ray_to_get_what_player_aims_at_results: Dictionary = camera_component.ray_to_aim_direction();
 
-	var where_to_clap_at: Vector3 = Vector3.ZERO;
 	if ray_to_get_what_player_aims_at_results.has("position"):
 		where_to_clap_at = ray_to_get_what_player_aims_at_results.get("position");
 	else:
 		where_to_clap_at = camera_component.get_position_to_look_at_aim_direction();
 
+	center_obstacle_detector_ray_cast.global_transform = transform_to_start_clap;
 	center_obstacle_detector_ray_cast.look_at(where_to_clap_at);
 	center_obstacle_detector_ray_cast.force_raycast_update();
-
-	var clap_length: float = 40.0;
 
 	if center_obstacle_detector_ray_cast.is_colliding():
 		where_to_clap_at = center_obstacle_detector_ray_cast.get_collision_point();
 
-		clap_length = global_position.distance_to(
+		clap_length = transform_to_start_clap.origin.distance_to(
 				center_obstacle_detector_ray_cast.get_collision_point()
 		);
 
+	target_detector_pivot_node_3d.global_transform = transform_to_start_clap;
 	target_detector_pivot_node_3d.look_at(where_to_clap_at);
 	target_detector_shape_cast.force_shapecast_update();
 
 	for collider_index: int in range(target_detector_shape_cast.get_collision_count()):
 		var target: PhysicsBody3D = target_detector_shape_cast.get_collider(collider_index);
 
-		if global_position.distance_to(target.global_position) > clap_length:
+		if transform_to_start_clap.origin.distance_to(target.global_position) > clap_length:
 			continue;
 
 		var target_entity_component: EntityComponent = EntityComponent.from_entity(target);
@@ -137,48 +164,28 @@ func _handle_ability() -> void:
 
 	lag_between_shots_timer.start();
 
-
-#func _is_target_visible_on_center(target: PhysicsBody3D) -> bool:
-	#target_visible_on_center_checker_ray_cast.look_at(target.global_position);
-	#target_visible_on_center_checker_ray_cast.force_raycast_update();
-#
-	#var target_visible_on_center: bool = false;
-#
-	#while target_visible_on_center_checker_ray_cast.is_colliding():
-		#var collider: PhysicsBody3D = target_visible_on_center_checker_ray_cast.get_collider();
-#
-		#if collider == target:
-			#target_visible_on_center = true;
-			#break;
-#
-		#elif not collider.is_in_group(&"entities"):
-			#break;
-#
-		#target_visible_on_center_checker_ray_cast.add_exception(collider);
-		#target_visible_on_center_checker_ray_cast.force_raycast_update();
-#
-	#target_visible_on_center_checker_ray_cast.clear_exceptions();
-	#target_visible_on_center_checker_ray_cast.add_exception(entity);
-#
-	#return target_visible_on_center;
+	_line_draw_end = where_to_clap_at;
+	await get_tree().create_timer(0.1).timeout;
+	_line_draw_end = Vector3.ZERO;
 
 
 func _apply_healing_to_target(target: PhysicsBody3D) -> void:
 	var target_entity_component: EntityComponent = EntityComponent.from_entity(target);
 	var target_health: EntityHealthComponent = target_entity_component.health_component;
 
-	if not target_health: 
-		return;
+	if not target_health: return;
 
-	target_health.heal(healing_per_clap, entity_identity);
+	var final_healing_done: float = target_health.heal(healing_per_clap, entity_identity);
+
+	if final_healing_done > 0.0:
+		healed_someone.emit(final_healing_done);
 
 
 func _apply_damage_to_target(target: PhysicsBody3D) -> void:
 	var target_entity_component: EntityComponent = EntityComponent.from_entity(target);
 	var target_health: EntityHealthComponent = target_entity_component.health_component;
 
-	if not target_health: 
-		return;
+	if not target_health: return;
 
 	target_health.damage(damage_per_clap, entity_identity);
 

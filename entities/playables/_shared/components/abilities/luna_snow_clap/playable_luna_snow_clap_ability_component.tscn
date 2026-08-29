@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cbm0mmefq0hy" path="res://entities/playables/_shared/components/abilities/luna_snow_clap/playable_luna_snow_clap_ability_component.gd" id="1_x2nfb"]
 [ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/identity/entity_identity.gd" id="2_r3qpi"]
+[ext_resource type="PackedScene" path="res://addons/debug_draw/debug_draw_3d.tscn" id="3_nc6uy"]
 
 [sub_resource type="Resource" id="Resource_r3qpi"]
 script = ExtResource("2_r3qpi")
@@ -17,12 +18,14 @@ entity_identity = SubResource("Resource_r3qpi")
 
 [node name="CenterObstacleDetector" type="RayCast3D" parent="Detectors" unique_id=2041355603]
 unique_name_in_owner = true
+top_level = true
 enabled = false
 target_position = Vector3(0, 0, -40)
 collision_mask = 2
 
 [node name="TargetDetectorPivot" type="Node3D" parent="Detectors" unique_id=2009865102]
 unique_name_in_owner = true
+top_level = true
 
 [node name="TargetDetector" type="ShapeCast3D" parent="Detectors/TargetDetectorPivot" unique_id=180554147]
 unique_name_in_owner = true
@@ -30,12 +33,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20)
 enabled = false
 shape = SubResource("BoxShape3D_xxeob")
 target_position = Vector3(0, 0, 0)
-
-[node name="TargetVisibleOnCenterChecker" type="RayCast3D" parent="Detectors" unique_id=2016518537]
-unique_name_in_owner = true
-enabled = false
-target_position = Vector3(0, 0, -40)
-collision_mask = 3
 
 [node name="Timers" type="Node" parent="." unique_id=1071135806]
 
@@ -47,6 +44,9 @@ one_shot = true
 [node name="LagBetweenShotsTimer" type="Timer" parent="Timers" unique_id=1910409468]
 unique_name_in_owner = true
 one_shot = true
+
+[node name="DebugDraw3D" parent="." unique_id=605976080 instance=ExtResource("3_nc6uy")]
+unique_name_in_owner = true
 
 [connection signal="timeout" from="Timers/DurationTimer" to="." method="_on_duration_timer_timeout"]
 [connection signal="timeout" from="Timers/LagBetweenShotsTimer" to="." method="_on_lag_between_shots_timer_timeout"]

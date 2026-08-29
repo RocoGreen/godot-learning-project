@@ -86,15 +86,16 @@ func _physics_process(delta: float) -> void:
 		else:
 			_pressing_again_ability_input_action_required = false;
 
-	var ability_got_reset: bool = _handle_reset_conditions();
+	if not GameState.in_game_input_disabled:
+		var ability_got_reset: bool = _handle_reset_conditions();
 
-	if ability_got_reset: 
-		return;
+		if ability_got_reset: 
+			return;
 
-	var something_got_started: bool = _handle_starters();
+		var something_got_started: bool = _handle_starters();
 
-	if something_got_started: 
-		return;
+		if something_got_started: 
+			return;
 
 	_handle_handlers(delta);
 

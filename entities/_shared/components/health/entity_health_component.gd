@@ -38,16 +38,22 @@ func _get_configuration_warnings() -> PackedStringArray:
 	return ConfigurationWarningLibrary.get_for_entity_identity(entity_identity);
 
 
-func heal(amount: float = 0.0, healer: EntityIdentity = EntityIdentity.new()) -> void:
+func heal(amount: float = 0.0, healer: EntityIdentity = EntityIdentity.new()) -> float:
 	var old_health: float = current_health;
 	var new_health: float = clampf(old_health + amount, 0.0, max_health);
 
-	if old_health == new_health: return;
+	if old_health == new_health: 
+		return 0.0;
 
 	current_health = new_health;
 
 	health_changed.emit(old_health, new_health, healer);
 	healed.emit(amount, old_health, current_health, healer);
+	
+	if (max_health - (old_health + amount)) < 0.0:
+		return (old_health + amount) - max_health;
+	else:
+		return amount;
 
 
 func damage(amount: float = 0.0, attacker: EntityIdentity = EntityIdentity.new()) -> void:

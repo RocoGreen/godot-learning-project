@@ -26,6 +26,8 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	_mesh_instance_pivot.look_at(camera_component.get_position_to_look_at_aim_direction());
 	
+	if GameState.in_game_input_disabled: return;
+	
 	if Input.is_action_just_pressed(&"toggle_weapon_mode"):
 		if _mode == _Mode.HEAL:
 			_mode = _Mode.DAMAGE;

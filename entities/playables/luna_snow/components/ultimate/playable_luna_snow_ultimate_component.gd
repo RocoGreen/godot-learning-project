@@ -1,7 +1,10 @@
 @tool
 
+class_name PlayableLunaSnowUltimateComponent
 extends Area3D
 
+
+signal healed_someone(amount: float);
 
 const DamageBoostRequest := EntityDamageBoostStatusReceiver.DamageBoostRequest;
 
@@ -97,14 +100,14 @@ func _physics_process(delta: float) -> void:
 			_pressing_again_ultimate_input_action_required = false;
 		else:
 			return;
-	
+
 	elif _is_active():
-		if Input.is_action_just_pressed(ultimate_input_action):
+		if not GameState.in_game_input_disabled and Input.is_action_just_pressed(ultimate_input_action):
 			_toggle_ability_state();
 		
 		_handle_ultimate(delta);
-	
-	elif Input.is_action_pressed(ultimate_input_action):
+
+	elif not GameState.in_game_input_disabled and Input.is_action_pressed(ultimate_input_action):
 		_start_ultimate(delta);
 
 
@@ -115,8 +118,13 @@ func _get_configuration_warnings() -> PackedStringArray:
 	
 	if not dancefloor_position_anchor:
 		warnings.append(
-				"`dancefloor_position_anchor` is not set. Without it, the dancefloor " + 
-				"won't show in editor or if in game, when the ultimate is active."
+				"`dancefloor_position_anchor` is not set.\n" +
+				"Without it, the dancefloor won't show in editor or if in " + 
+				"game, when the ultimate is active.\n" +
+				"If not desired, please add a `Marker3D` as child of this " +
+				"component and position it where you want the dance floor " +
+				"to appear.\n" +
+				"Then, assign it to the exported variable."
 		);
 	
 	return warnings;
@@ -194,7 +202,10 @@ func _apply_healing_to_target(target: PhysicsBody3D, delta: float) -> void:
 	if _apply_cast_healing: 
 		healing_to_do = cast_healing_amount;
 	
-	target_health.heal(healing_to_do, entity_identity);
+	var final_healing_done: float = target_health.heal(healing_to_do, entity_identity);
+
+	if final_healing_done > 0.0:
+		healed_someone.emit(final_healing_done);
 
 
 func _apply_damage_boost_to_target(target: PhysicsBody3D) -> void:
@@ -203,12 +214,10 @@ func _apply_damage_boost_to_target(target: PhysicsBody3D) -> void:
 	var target_entity_component: EntityComponent = EntityComponent.from_entity(target);
 	var target_status_receiver_hub := target_entity_component.status_receiver_hub_component;
 	
-	if not target_status_receiver_hub: 
-		return;
+	if not target_status_receiver_hub: return;
 
 	var target_damage_boost_status_receiver := target_status_receiver_hub.damage_boost_receiver;
-
-	var damage_boost_request: DamageBoostRequest = DamageBoostRequest.new();
+	var damage_boost_request := DamageBoostRequest.new(damage_boost_amount, entity_identity);
 
 	target_damage_boost_status_receiver.add_damage_boost_request(damage_boost_request);
 	_targets_damage_boosted_requests.set(target, damage_boost_request);

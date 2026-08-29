@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://cvs062n5dwljf"]
+
+[ext_resource type="Script" uid="uid://dpdjm548e0e4p" path="res://entities/playables/luna_snow/components/weapon/playable_luna_snow_weapon_component.gd" id="1_f6bhw"]
+[ext_resource type="PackedScene" uid="uid://b7g7bcq6b8n2c" path="res://entities/playables/_shared/bullets/hitscan/playable_hitscan_bullet.tscn" id="2_keo64"]
+[ext_resource type="PackedScene" path="res://addons/debug_draw/debug_draw_3d.tscn" id="3_by7fm"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hls3h"]
+albedo_color = Color(0.73044056, 0.3739395, 0.57263666, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_f6bhw"]
+material = SubResource("StandardMaterial3D_hls3h")
+top_radius = 0.1
+bottom_radius = 0.1
+height = 0.5
+
+[node name="PlayableLunaSnowWeaponComponent" type="Node3D" unique_id=2139518994]
+script = ExtResource("1_f6bhw")
+
+[node name="MeshInstance" type="MeshInstance3D" parent="." unique_id=1152549486]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+mesh = SubResource("CylinderMesh_f6bhw")
+
+[node name="BulletStartTransformAnchor" type="Marker3D" parent="." unique_id=614873336]
+unique_name_in_owner = true
+
+[node name="Bullet" parent="." unique_id=192270950 instance=ExtResource("2_keo64")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
+
+[node name="DebugDraw3D" parent="." unique_id=576075008 instance=ExtResource("3_by7fm")]
+unique_name_in_owner = true

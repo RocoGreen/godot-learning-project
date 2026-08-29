@@ -16,6 +16,7 @@ extends Node3D
 func _physics_process(_delta: float) -> void:
 	_mesh_instance_pivot.look_at(camera_component.get_position_to_look_at_aim_direction());
 
+	if GameState.in_game_input_disabled: return;
 	if not Input.is_action_just_pressed(&"primary_fire"): return;
 
 	var bullet: PlayableTestArcingProjectileWeapon1ComponentBullet = _bullet.instantiate();

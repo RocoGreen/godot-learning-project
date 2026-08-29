@@ -65,6 +65,7 @@ func _handle_gravity(delta: float) -> void:
 
 
 func _handle_jumping() -> void:
+	if GameState.in_game_input_disabled: return;
 	if not Input.is_action_just_pressed(&"jump"): return;
 	if not playable.is_on_floor(): return;
 
@@ -101,22 +102,26 @@ func _handle_diagonal_and_flying_movement(delta: float) -> void:
 			final_velocity += lerp(Vector3.ZERO, backward_direction_in_world, action_strength);
 
 	final_velocity *= _get_final_diagonal_and_flying_movement_speed();
-
-	if final_velocity != Vector3.ZERO:
+	
+	if not GameState.in_game_input_disabled and final_velocity != Vector3.ZERO:
 		playable.velocity.x = final_velocity.x;
 		playable.velocity.z = final_velocity.z;
 	else:
 		_handle_diagonal_movement_deceleration(delta);
 
 	if _flying:
-		if Input.is_action_pressed(&"ascend"):
-			playable.velocity.y = _get_final_diagonal_and_flying_movement_speed();
+		if not GameState.in_game_input_disabled:
+			if Input.is_action_pressed(&"ascend"):
+				playable.velocity.y = _get_final_diagonal_and_flying_movement_speed();
 
-		elif Input.is_action_pressed(&"descend"):
-			playable.velocity.y = -_get_final_diagonal_and_flying_movement_speed();
+			elif Input.is_action_pressed(&"descend"):
+				playable.velocity.y = -_get_final_diagonal_and_flying_movement_speed();
 
-		elif final_velocity.z != 0.0:
-			playable.velocity.y = final_velocity.y;
+			elif final_velocity.z != 0.0:
+				playable.velocity.y = final_velocity.y;
+
+			else:
+				_handle_flying_movement_deceleration(delta);
 
 		else:
 			_handle_flying_movement_deceleration(delta);
@@ -136,6 +141,7 @@ func _handle_flying_movement_deceleration(delta: float) -> void:
 
 
 func _handle_flying_toggle() -> void:
+	if GameState.in_game_input_disabled: return;
 	if not Input.is_action_just_pressed(&"toggle_flying_mode"): return;
 
 	if _flying:
@@ -145,6 +151,8 @@ func _handle_flying_toggle() -> void:
 
 
 func _handle_running_toggle() -> void:
+	if GameState.in_game_input_disabled: return;
+
 	if Input.is_action_pressed(&"run"):
 		_running = true;
 	else:

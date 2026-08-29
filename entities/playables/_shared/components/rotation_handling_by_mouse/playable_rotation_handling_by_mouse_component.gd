@@ -27,6 +27,9 @@ func _ready() -> void:
 
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED;
 
+	GameState.in_game_input_got_disabled.connect(_on_game_state_in_game_input_disabled);
+	GameState.in_game_input_got_enabled_back.connect(_on_game_state_in_game_input_enabled_back);
+
 
 func _physics_process(_delta: float) -> void:
 	if Engine.is_editor_hint(): return;
@@ -41,10 +44,18 @@ func _physics_process(_delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if Engine.is_editor_hint(): return;
 
-	if event is InputEventMouseMotion:
+	if not GameState.in_game_input_disabled and event is InputEventMouseMotion:
 		_playable_rotation_x += -event.screen_relative.y * mouse_sensitivity;
 		_playable_rotation_y += -event.screen_relative.x * mouse_sensitivity;
 
 
 func _get_configuration_warnings() -> PackedStringArray:
 	return ConfigurationWarningLibrary.get_for_playable(playable);
+
+
+func _on_game_state_in_game_input_disabled() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE;
+
+
+func _on_game_state_in_game_input_enabled_back() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED;

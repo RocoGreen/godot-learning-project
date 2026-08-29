@@ -1,0 +1,122 @@
+[gd_scene format=3 uid="uid://lvoh7ekjwk3i"]
+
+[ext_resource type="PackedScene" uid="uid://coqcni43ymjxa" path="res://entities/_shared/components/entity/entity_component.tscn" id="1_a6ekt"]
+[ext_resource type="Resource" uid="uid://chhw2k28x473" path="res://entities/playables/luna_snow/playable_luna_snow_identity.tres" id="2_6hi6u"]
+[ext_resource type="PackedScene" uid="uid://dpm4llvw6alin" path="res://entities/playables/_shared/components/character_body_3d_utils/playable_character_body_3d_utils_component.tscn" id="3_gfjr5"]
+[ext_resource type="PackedScene" uid="uid://cbeqj73rklldr" path="res://entities/playables/_shared/components/camera/playable_camera_component.tscn" id="4_hvm6w"]
+[ext_resource type="PackedScene" uid="uid://dgavxxiu7xo4s" path="res://entities/playables/_shared/components/rotation_handling_by_mouse/playable_rotation_handling_by_mouse_component.tscn" id="5_ak8u0"]
+[ext_resource type="PackedScene" uid="uid://d01sromo7yggt" path="res://entities/_shared/components/health/entity_health_component.tscn" id="6_k1qqk"]
+[ext_resource type="PackedScene" uid="uid://dgqseji4pi27a" path="res://entities/_shared/components/status_receiver_hub/entity_status_receiver_hub_component.tscn" id="7_mtvdv"]
+[ext_resource type="PackedScene" uid="uid://vfbdf5vqp3d" path="res://entities/_shared/components/position_anchor_hub/entity_position_anchor_hub_component.tscn" id="8_v5ob0"]
+[ext_resource type="PackedScene" uid="uid://cvs062n5dwljf" path="res://entities/playables/luna_snow/components/weapon/playable_luna_snow_weapon_component.tscn" id="9_6hi6u"]
+[ext_resource type="PackedScene" uid="uid://bs5dguomkd64k" path="res://entities/playables/_shared/components/abilities/luna_snow_clap/playable_luna_snow_clap_ability_component.tscn" id="9_ou7k7"]
+[ext_resource type="PackedScene" uid="uid://gikkd26lo3hc" path="res://entities/playables/luna_snow/components/ultimate/playable_luna_snow_ultimate_component.tscn" id="10_2bkg8"]
+[ext_resource type="PackedScene" uid="uid://bhenygohfavyh" path="res://entities/playables/luna_snow/components/abilities/flake/playable_luna_snow_flake_ability_component.tscn" id="10_gfjr5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a6ekt"]
+albedo_color = Color(0.34918204, 0.69407076, 0.9880906, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_lf7ib"]
+material = SubResource("StandardMaterial3D_a6ekt")
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yb2d5"]
+
+[node name="PlayableLunaSnow" type="CharacterBody3D" unique_id=1809442355 groups=["entities"]]
+collision_mask = 3
+
+[node name="EntityComponent" parent="." unique_id=532691025 node_paths=PackedStringArray("entity", "health_component", "status_receiver_hub_component", "position_anchor_hub_component") instance=ExtResource("1_a6ekt")]
+entity = NodePath("..")
+identity = ExtResource("2_6hi6u")
+health_component = NodePath("../Components/InteractionWithGame/HealthComponent")
+status_receiver_hub_component = NodePath("../Components/InteractionWithGame/StatusReceiverHubComponent")
+position_anchor_hub_component = NodePath("../Components/GameMechanicsSupport/EntityPositionAnchorHubComponent")
+
+[node name="Components" type="Node3D" parent="." unique_id=645852326]
+
+[node name="CharacterBody3DUtilsComponent" parent="Components" unique_id=40130539 node_paths=PackedStringArray("playable") instance=ExtResource("3_gfjr5")]
+playable = NodePath("../..")
+
+[node name="ForPlayerControls" type="Node3D" parent="Components" unique_id=1273793414]
+
+[node name="CameraComponent" parent="Components/ForPlayerControls" unique_id=825915530 node_paths=PackedStringArray("playable") instance=ExtResource("4_hvm6w")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8974626, 0.61176896, 0)
+playable = NodePath("../../..")
+following_smoothness = 0.9
+
+[node name="RotationHandlingByMouseComponent" parent="Components/ForPlayerControls" unique_id=1377482824 node_paths=PackedStringArray("playable") instance=ExtResource("5_ak8u0")]
+playable = NodePath("../../..")
+
+[node name="InteractionWithGame" type="Node3D" parent="Components" unique_id=2001931699]
+
+[node name="HealthComponent" parent="Components/InteractionWithGame" unique_id=930351444 instance=ExtResource("6_k1qqk")]
+entity_identity = ExtResource("2_6hi6u")
+
+[node name="StatusReceiverHubComponent" parent="Components/InteractionWithGame" unique_id=1530625951 instance=ExtResource("7_mtvdv")]
+entity_identity = ExtResource("2_6hi6u")
+
+[node name="GameMechanicsSupport" type="Node3D" parent="Components" unique_id=1778871523]
+
+[node name="EntityPositionAnchorHubComponent" parent="Components/GameMechanicsSupport" unique_id=787595999 node_paths=PackedStringArray("center_anchor") instance=ExtResource("8_v5ob0")]
+center_anchor = NodePath("CenterAnchor")
+
+[node name="CenterAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/EntityPositionAnchorHubComponent" unique_id=1505685125]
+
+[node name="Capabilities" type="Node3D" parent="Components" unique_id=994099245]
+
+[node name="WeaponComponent" parent="Components/Capabilities" unique_id=2139518994 node_paths=PackedStringArray("camera_component") instance=ExtResource("9_6hi6u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.76152384, 0, 0)
+luna_snow_identity = ExtResource("2_6hi6u")
+camera_component = NodePath("../../ForPlayerControls/CameraComponent")
+recovery_delay_after_valley = 0.2
+healing_or_damage_manual_mode = true
+
+[node name="FlakeAbilityComponent" parent="Components/Capabilities" unique_id=1180374649 node_paths=PackedStringArray("camera_component", "weapon_component", "clap_ability_component", "ultimate_component") instance=ExtResource("10_gfjr5")]
+luna_snow_identity = ExtResource("2_6hi6u")
+camera_component = NodePath("../../ForPlayerControls/CameraComponent")
+weapon_component = NodePath("../WeaponComponent")
+clap_ability_component = NodePath("../ClapAbilityComponent")
+ultimate_component = NodePath("../UltimateComponent")
+allow_flake_for_any_entity = true
+
+[node name="ClapAbilityComponent" parent="Components/Capabilities" unique_id=1450733872 node_paths=PackedStringArray("entity", "camera_component", "weapon_component") instance=ExtResource("9_ou7k7")]
+entity = NodePath("../../..")
+entity_identity = ExtResource("2_6hi6u")
+camera_component = NodePath("../../ForPlayerControls/CameraComponent")
+weapon_component = NodePath("../WeaponComponent")
+
+[node name="UltimateComponent" parent="Components/Capabilities" unique_id=794912583 node_paths=PackedStringArray("dancefloor_position_anchor") instance=ExtResource("10_2bkg8")]
+entity_identity = ExtResource("2_6hi6u")
+dancefloor_position_anchor = NodePath("DancefloorPositionAnchor")
+
+[node name="DancefloorPositionAnchor" type="Marker3D" parent="Components/Capabilities/UltimateComponent" unique_id=1450508015]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+
+[node name="UI" type="Control" parent="." unique_id=29901001]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Crosshair" type="ColorRect" parent="UI" unique_id=1507356431]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1884383243]
+mesh = SubResource("CapsuleMesh_lf7ib")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=363728672]
+shape = SubResource("CapsuleShape3D_yb2d5")

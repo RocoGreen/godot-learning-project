@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://gikkd26lo3hc"]
 
-[ext_resource type="Script" uid="uid://duqa1k651ak55" path="res://entities/playables/_shared/components/ultimates/luna_snow/playable_luna_snow_ultimate_component.gd" id="1_u3u0j"]
+[ext_resource type="Script" uid="uid://duqa1k651ak55" path="res://entities/playables/luna_snow/components/ultimate/playable_luna_snow_ultimate_component.gd" id="1_u3u0j"]
 [ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/identity/entity_identity.gd" id="2_ns3p3"]
 
 [sub_resource type="Resource" id="Resource_ns3p3"]

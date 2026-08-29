@@ -9,8 +9,6 @@
 [ext_resource type="PackedScene" uid="uid://dgqseji4pi27a" path="res://entities/_shared/components/status_receiver_hub/entity_status_receiver_hub_component.tscn" id="6_wkwh7"]
 [ext_resource type="PackedScene" uid="uid://60seaq170jqq" path="res://entities/playables/_shared/components/abilities/mercy_guardian_angel/playable_mercy_guardian_angel_ability_component.tscn" id="8_64usw"]
 [ext_resource type="PackedScene" uid="uid://bmuqad506y2ec" path="res://entities/playables/_shared/components/weapons/test_arcing_projectile_weapon_1/playable_test_arcing_projectile_weapon_1_component.tscn" id="8_wkwh7"]
-[ext_resource type="PackedScene" uid="uid://gikkd26lo3hc" path="res://entities/playables/_shared/components/ultimates/luna_snow/playable_luna_snow_ultimate_component.tscn" id="10_7it47"]
-[ext_resource type="PackedScene" uid="uid://bs5dguomkd64k" path="res://entities/playables/_shared/components/abilities/luna_snow_clap/playable_luna_snow_clap_ability_component.tscn" id="10_wkwh7"]
 [ext_resource type="PackedScene" uid="uid://vfbdf5vqp3d" path="res://entities/_shared/components/position_anchor_hub/entity_position_anchor_hub_component.tscn" id="13_3gihv"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_w7sju"]
@@ -60,18 +58,6 @@ entity_identity = ExtResource("2_3s4ss")
 camera_component = NodePath("../../PlayableCameraComponent")
 character_body_3d_utils_component = NodePath("../../PlayableCharacterBody3DUtilsComponent")
 
-[node name="PlayableLunaSnowClapAbilityComponent" parent="Components/Capacities" unique_id=1450733872 node_paths=PackedStringArray("entity", "camera_component") instance=ExtResource("10_wkwh7")]
-entity = NodePath("../../..")
-entity_identity = ExtResource("2_3s4ss")
-camera_component = NodePath("../../PlayableCameraComponent")
-
-[node name="PlayableLunaSnowUltimateComponent" parent="Components/Capacities" unique_id=794912583 node_paths=PackedStringArray("dancefloor_position_anchor") instance=ExtResource("10_7it47")]
-entity_identity = ExtResource("2_3s4ss")
-dancefloor_position_anchor = NodePath("DanceFloorPositionAnchor")
-
-[node name="DanceFloorPositionAnchor" type="Marker3D" parent="Components/Capacities/PlayableLunaSnowUltimateComponent" unique_id=1619737366]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
-
 [node name="GameMechanicsSupport" type="Node3D" parent="Components" unique_id=1930426155]
 
 [node name="EntityPositionAnchorHubComponent" parent="Components/GameMechanicsSupport" unique_id=787595999 node_paths=PackedStringArray("center_anchor") instance=ExtResource("13_3gihv")]
@@ -79,15 +65,16 @@ center_anchor = NodePath("CenterAnchor")
 
 [node name="CenterAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/EntityPositionAnchorHubComponent" unique_id=1004767145]
 
-[node name="UI" type="Control" parent="." unique_id=1133008706]
+[node name="UI" type="Control" parent="." unique_id=665990115]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
-[node name="Crosshair" type="ColorRect" parent="UI" unique_id=1657220023]
+[node name="Crosshair" type="ColorRect" parent="UI" unique_id=801330913]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -100,6 +87,7 @@ offset_right = 5.0
 offset_bottom = 5.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=909298792]
 mesh = SubResource("CapsuleMesh_w7sju")

@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://wf5i002qqddf"]
+
+[ext_resource type="Script" uid="uid://cco0asls47cmg" path="res://playable_played_switcher/playable_played_switcher.gd" id="1_exfwa"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s6rb8"]
+bg_color = Color(0.7552245, 0.50295997, 0.5596939, 1)
+
+[node name="PlayablePlayedSwitcher" type="Node3D" unique_id=1153680649]
+script = ExtResource("1_exfwa")
+
+[node name="UI" type="PanelContainer" parent="." unique_id=1875578076]
+unique_name_in_owner = true
+z_index = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_s6rb8")
+
+[node name="SwitchPromptScreen" type="Control" parent="UI" unique_id=117509670]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/SwitchPromptScreen" unique_id=1342537972]
+layout_mode = 0
+offset_left = 460.0
+offset_top = 272.0
+offset_right = 692.0
+offset_bottom = 376.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 50
+
+[node name="Label" type="Label" parent="UI/SwitchPromptScreen/VBoxContainer" unique_id=1034616776]
+layout_mode = 2
+text = "Switch to :"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/SwitchPromptScreen/VBoxContainer" unique_id=753152293]
+layout_mode = 2
+
+[node name="SwitchToTestCharacter1" type="Button" parent="UI/SwitchPromptScreen/VBoxContainer/HBoxContainer" unique_id=1899877405]
+layout_mode = 2
+text = "Test Character 1"
+
+[node name="SwitchToLunaSnow" type="Button" parent="UI/SwitchPromptScreen/VBoxContainer/HBoxContainer" unique_id=2054788288]
+layout_mode = 2
+text = "Luna Snow"
+
+[node name="SwitchingToPlayableScreen" type="Control" parent="UI" unique_id=1687779781]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="SwitchingToPlayableLabel" type="Label" parent="UI/SwitchingToPlayableScreen" unique_id=154584505]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "If you can see this, it means the switcher didn't change this text to \"Switching to *insert playable name*\"."
+
+[connection signal="pressed" from="UI/SwitchPromptScreen/VBoxContainer/HBoxContainer/SwitchToTestCharacter1" to="." method="_on_switch_to_test_character_1_button_pressed"]
+[connection signal="pressed" from="UI/SwitchPromptScreen/VBoxContainer/HBoxContainer/SwitchToLunaSnow" to="." method="_on_switch_to_luna_snow_button_pressed"]

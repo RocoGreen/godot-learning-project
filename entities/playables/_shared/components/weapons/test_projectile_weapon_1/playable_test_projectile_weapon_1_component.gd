@@ -65,7 +65,7 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	if Engine.is_editor_hint(): return;
 
-	if Input.is_action_just_pressed(&"toggle_weapon_mode"): 
+	if not GameState.in_game_input_disabled and Input.is_action_just_pressed(&"toggle_weapon_mode"): 
 		_toggle_mode();
 
 	_update_mesh_instance_pivot();
@@ -78,7 +78,7 @@ func _physics_process(_delta: float) -> void:
 
 	_update_ray_point_from_muzzle_forward_indicator();
 
-	if Input.is_action_just_pressed(&"primary_fire"): 
+	if not GameState.in_game_input_disabled and Input.is_action_just_pressed(&"primary_fire"): 
 		_fire_bullet();
 
 

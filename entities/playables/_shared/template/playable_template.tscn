@@ -1,0 +1,88 @@
+[gd_scene format=3 uid="uid://b7qmjmx6w7ksb"]
+
+[ext_resource type="PackedScene" uid="uid://coqcni43ymjxa" path="res://entities/_shared/components/entity/entity_component.tscn" id="1_2rvmf"]
+[ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/identity/entity_identity.gd" id="2_kcohp"]
+[ext_resource type="PackedScene" uid="uid://dpm4llvw6alin" path="res://entities/playables/_shared/components/character_body_3d_utils/playable_character_body_3d_utils_component.tscn" id="3_x02h5"]
+[ext_resource type="PackedScene" uid="uid://cbeqj73rklldr" path="res://entities/playables/_shared/components/camera/playable_camera_component.tscn" id="4_phef7"]
+[ext_resource type="PackedScene" uid="uid://dgavxxiu7xo4s" path="res://entities/playables/_shared/components/rotation_handling_by_mouse/playable_rotation_handling_by_mouse_component.tscn" id="5_p3646"]
+[ext_resource type="PackedScene" uid="uid://d01sromo7yggt" path="res://entities/_shared/components/health/entity_health_component.tscn" id="6_cbr8b"]
+[ext_resource type="PackedScene" uid="uid://dgqseji4pi27a" path="res://entities/_shared/components/status_receiver_hub/entity_status_receiver_hub_component.tscn" id="7_ge154"]
+[ext_resource type="PackedScene" uid="uid://vfbdf5vqp3d" path="res://entities/_shared/components/position_anchor_hub/entity_position_anchor_hub_component.tscn" id="8_sa73s"]
+
+[sub_resource type="Resource" id="Resource_i4sil"]
+script = ExtResource("2_kcohp")
+metadata/_custom_type_script = "uid://cur8p8fjl0qvd"
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_2rvmf"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kcohp"]
+
+[node name="PlayableTemplate" type="CharacterBody3D" unique_id=1809442355 groups=["entities"]]
+collision_mask = 3
+
+[node name="EntityComponent" parent="." unique_id=532691025 node_paths=PackedStringArray("entity", "health_component", "status_receiver_hub_component", "position_anchor_hub_component") instance=ExtResource("1_2rvmf")]
+entity = NodePath("..")
+identity = SubResource("Resource_i4sil")
+health_component = NodePath("../Components/InteractionWithGame/HealthComponent")
+status_receiver_hub_component = NodePath("../Components/InteractionWithGame/StatusReceiverHubComponent")
+position_anchor_hub_component = NodePath("../Components/GameMechanicsSupport/PositionAnchorHubComponent")
+
+[node name="Components" type="Node3D" parent="." unique_id=645852326]
+
+[node name="CharacterBody3DUtilsComponent" parent="Components" unique_id=40130539 node_paths=PackedStringArray("playable") instance=ExtResource("3_x02h5")]
+playable = NodePath("../..")
+
+[node name="ForPlayerControls" type="Node3D" parent="Components" unique_id=1273793414]
+
+[node name="CameraComponent" parent="Components/ForPlayerControls" unique_id=825915530 node_paths=PackedStringArray("playable") instance=ExtResource("4_phef7")]
+playable = NodePath("../../..")
+
+[node name="RotationHandlingByMouseComponent" parent="Components/ForPlayerControls" unique_id=1377482824 node_paths=PackedStringArray("playable") instance=ExtResource("5_p3646")]
+playable = NodePath("../../..")
+
+[node name="InteractionWithGame" type="Node3D" parent="Components" unique_id=2001931699]
+
+[node name="HealthComponent" parent="Components/InteractionWithGame" unique_id=930351444 instance=ExtResource("6_cbr8b")]
+entity_identity = SubResource("Resource_i4sil")
+
+[node name="StatusReceiverHubComponent" parent="Components/InteractionWithGame" unique_id=1530625951 instance=ExtResource("7_ge154")]
+entity_identity = SubResource("Resource_i4sil")
+
+[node name="GameMechanicsSupport" type="Node3D" parent="Components" unique_id=1778871523]
+
+[node name="PositionAnchorHubComponent" parent="Components/GameMechanicsSupport" unique_id=787595999 node_paths=PackedStringArray("center_anchor") instance=ExtResource("8_sa73s")]
+center_anchor = NodePath("CenterAnchor")
+
+[node name="CenterAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/PositionAnchorHubComponent" unique_id=1852577601]
+
+[node name="Capabilities" type="Node3D" parent="Components" unique_id=994099245]
+
+[node name="UI" type="Control" parent="." unique_id=2011482635]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Crosshair" type="ColorRect" parent="UI" unique_id=1252450375]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=708333714]
+mesh = SubResource("CapsuleMesh_2rvmf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=246121006]
+shape = SubResource("CapsuleShape3D_kcohp")

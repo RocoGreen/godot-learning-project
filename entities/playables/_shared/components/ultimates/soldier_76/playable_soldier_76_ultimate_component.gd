@@ -40,15 +40,14 @@ func _physics_process(_delta: float) -> void:
 
 		if not target_position_anchor_hub_component: continue;
 
-		var target_center_of_mass_global_position: Vector3 = \
-				target_position_anchor_hub_component.center_of_mass_anchor.global_position;
+		var target_center_global_position: Vector3 = target_position_anchor_hub_component.center_anchor.global_position;
 		var playable_camera: Camera3D = camera_component._camera;
 
-		if not playable_camera.is_position_in_frustum(target_center_of_mass_global_position):
+		if not playable_camera.is_position_in_frustum(target_center_global_position):
 			print("Failed by not in camera's frustum");
 			continue;
 
-		if playable_camera.global_position.direction_to(target_center_of_mass_global_position).dot(
+		if playable_camera.global_position.direction_to(target_center_global_position).dot(
 				-playable_camera.global_basis.z.normalized()
 		) < deg_to_rad(45):
 			print("Failed due to center of mass being more than 45 degrees far");
@@ -56,12 +55,12 @@ func _physics_process(_delta: float) -> void:
 
 		ray_cast_to_check_line_of_sight.look_at_from_position(
 				camera_component._camera.global_position,
-				target_center_of_mass_global_position,
+				target_center_global_position,
 		);
 
 		ray_cast_to_check_line_of_sight.target_position.z = \
 				-ray_cast_to_check_line_of_sight.global_position.distance_to(
-							target_center_of_mass_global_position,
+							target_center_global_position,
 					);
 		ray_cast_to_check_line_of_sight.target_position.z += -1.0;
 
@@ -70,7 +69,7 @@ func _physics_process(_delta: float) -> void:
 		if not ray_cast_to_check_line_of_sight.is_colliding(): continue;
 		if not ray_cast_to_check_line_of_sight.get_collider() == target: continue;
 
-		targets_to_shoot_at.append(TargetToShootAt.new(target, playable_camera.global_position.direction_to(target_center_of_mass_global_position).dot(
+		targets_to_shoot_at.append(TargetToShootAt.new(target, playable_camera.global_position.direction_to(target_center_global_position).dot(
 				-playable_camera.global_basis.z.normalized()
 		)));
 

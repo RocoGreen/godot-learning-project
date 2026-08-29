@@ -7,10 +7,9 @@ extends Resource
 enum Team {
 	TEAM_1,
 	TEAM_2,
-}
+};
 
 const DEFAULT_NAME: StringName = &"EMPTY";
-const DEFAULT_TEAM: Team = Team.TEAM_1;
 
 @export var name: StringName = DEFAULT_NAME:
 	set(new_name):
@@ -18,11 +17,15 @@ const DEFAULT_TEAM: Team = Team.TEAM_1;
 
 		changed.emit();
 
-@export var team: Team = DEFAULT_TEAM;
+@export var team: Team = Team.TEAM_1:
+	set(new_team):
+		team = new_team;
+
+		changed.emit();
 
 
-static func is_default(identity: EntityIdentity) -> bool:
-	if identity.name == DEFAULT_NAME and identity.team == DEFAULT_TEAM:
+func is_name_default_name() -> bool:
+	if name == DEFAULT_NAME:
 		return true;
 	else:
 		return false;

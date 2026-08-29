@@ -43,10 +43,10 @@ entity_identity = ExtResource("3_7fnp4")
 
 [node name="GameMechanicsSupport" type="Node3D" parent="Components" unique_id=1564628981]
 
-[node name="EntityPositionAnchorHubComponent" parent="Components/GameMechanicsSupport" unique_id=787595999 node_paths=PackedStringArray("center_of_mass_anchor") instance=ExtResource("7_nqphd")]
-center_of_mass_anchor = NodePath("CenterOfMass")
+[node name="EntityPositionAnchorHubComponent" parent="Components/GameMechanicsSupport" unique_id=787595999 node_paths=PackedStringArray("center_anchor") instance=ExtResource("7_nqphd")]
+center_anchor = NodePath("CenterAnchor")
 
-[node name="CenterOfMass" type="Marker3D" parent="Components/GameMechanicsSupport/EntityPositionAnchorHubComponent" unique_id=1984417057]
+[node name="CenterAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/EntityPositionAnchorHubComponent" unique_id=1984417057]
 
 [node name="TopIndicators" type="Node3D" parent="." unique_id=1769069705]
 

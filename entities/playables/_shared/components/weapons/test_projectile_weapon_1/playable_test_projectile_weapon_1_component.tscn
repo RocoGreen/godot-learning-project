@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b8re4b4rl6xul"]
 
 [ext_resource type="Script" uid="uid://b5l31p1wkwaue" path="res://entities/playables/_shared/components/weapons/test_projectile_weapon_1/playable_test_projectile_weapon_1_component.gd" id="1_b6vej"]
-[ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/helpers/identity/entity_identity.gd" id="2_grybm"]
+[ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/identity/entity_identity.gd" id="2_grybm"]
 [ext_resource type="PackedScene" uid="uid://cdsjsn66l8dfo" path="res://entities/playables/_shared/components/weapons/test_projectile_weapon_1/bullet/playable_test_projectile_weapon_1_component_bullet.tscn" id="3_i7xbd"]
 
 [sub_resource type="Resource" id="Resource_agpej"]

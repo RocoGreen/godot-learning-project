@@ -5,10 +5,10 @@ extends RayCast3D
 signal hit;
 
 
-func launch(from_global_position: Vector3, towards: Vector3) -> void:
-	look_at_from_position(from_global_position, towards);
+func launch(from_global_position: Vector3, to_global_position: Vector3) -> void:
+	look_at_from_position(from_global_position, to_global_position);
 
-	target_position.z = -global_position.distance_to(towards) + -1.0;
+	target_position.z = -global_position.distance_to(to_global_position) + -1.0;
 
 	force_raycast_update();
 

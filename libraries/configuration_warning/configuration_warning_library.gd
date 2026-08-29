@@ -12,10 +12,23 @@ static func get_for_entity(entity: PhysicsBody3D) -> PackedStringArray:
 				"`Entity` is not set/valid."
 		);
 
-	elif not entity.is_in_group(&"entities"):
-		warnings.append(
+	else:
+		if not entity.is_in_group(&"entities"):
+			warnings.append(
 					"An `Entity` assigned to an exported variable is invalid :\n" +
 					"- Not in `entities` group."
+			);
+
+		if not entity.get_collision_mask_value(CollisionMaskLibrary.get_entities()):
+			warnings.append(
+					"An `Entity` assigned to an exported variable is invalid :\n" +
+					"- Collision mask does not include `entities` layer."
+			);
+
+		if not entity.get_collision_mask_value(CollisionMaskLibrary.get_obstacles()):
+			warnings.append(
+					"An `Entity` assigned to an exported variable is invalid :\n" +
+					"- Collision mask does not include `obstacles` layer."
 			);
 
 	return warnings;
@@ -44,9 +57,9 @@ static func get_for_entity_identity(identity: EntityIdentity) -> PackedStringArr
 	if not identity:
 		warnings.append("An `EntityIdentity` exported variable is not set/valid.");
 
-	elif EntityIdentity.is_default(identity):
+	elif identity.is_name_default_name():
 		warnings.append(
-				"An `EntityIdentity` exported variable holds a default identity. " +
+				"An `EntityIdentity` assigned to an exported variable holds the default name. " +
 				"You can ignore this warning if this is desired."
 		);
 

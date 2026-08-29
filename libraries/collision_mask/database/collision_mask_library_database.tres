@@ -1,8 +1,10 @@
-[gd_resource type="Resource" script_class="CollisionMaskLibDb" format=3 uid="uid://bhnmxd368ynsh"]
+[gd_resource type="Resource" script_class="CollisionMaskLibraryDatabase" format=3 uid="uid://bhnmxd368ynsh"]
 
 [ext_resource type="Script" uid="uid://dna1b0vgrlni7" path="res://libraries/collision_mask/database/collision_mask_library_database.gd" id="1_lgxc2"]
 
 [resource]
 script = ExtResource("1_lgxc2")
 entities_and_obstacles = 3
+entities = 1
+obstacles = 2
 metadata/_custom_type_script = "uid://dna1b0vgrlni7"

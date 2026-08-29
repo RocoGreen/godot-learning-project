@@ -4,7 +4,7 @@ extends Node3D
 enum _Mode {
 	HEAL,
 	DAMAGE
-}
+};
 
 @export_group("Dependencies")
 @export var entity: PhysicsBody3D;
@@ -30,6 +30,7 @@ func _physics_process(_delta: float) -> void:
 		if _mode == _Mode.HEAL:
 			_mode = _Mode.DAMAGE;
 			print("Hitscan weapon is now in damage mode !");
+
 		elif _mode == _Mode.DAMAGE:
 			_mode = _Mode.HEAL;
 			print("Hitscan weapon is now in heal mode !");
@@ -38,8 +39,7 @@ func _physics_process(_delta: float) -> void:
 	
 	var ray_to_get_what_player_aims_at_results: Dictionary = camera_component.ray_to_aim_direction();
 	
-	if ray_to_get_what_player_aims_at_results.is_empty(): 
-		return;
+	if ray_to_get_what_player_aims_at_results.is_empty(): return;
 	
 	var where_to_shoot_at: Vector3 = ray_to_get_what_player_aims_at_results.get("position");
 	_bullet.launch(_bullet_start_position_anchor.global_position, where_to_shoot_at);

@@ -8,9 +8,9 @@
 [ext_resource type="PackedScene" uid="uid://d01sromo7yggt" path="res://entities/_shared/components/health/entity_health_component.tscn" id="5_7it47"]
 [ext_resource type="PackedScene" uid="uid://dgqseji4pi27a" path="res://entities/_shared/components/status_receiver_hub/entity_status_receiver_hub_component.tscn" id="6_wkwh7"]
 [ext_resource type="PackedScene" uid="uid://60seaq170jqq" path="res://entities/playables/_shared/components/abilities/mercy_guardian_angel/playable_mercy_guardian_angel_ability_component.tscn" id="8_64usw"]
-[ext_resource type="PackedScene" uid="uid://bmuqad506y2ec" path="res://entities/playables/_shared/components/weapons/test_arcing_projectile_weapon_1/playable_test_arcing_projectile_weapon_1_component.tscn" id="8_wkwh7"]
-[ext_resource type="PackedScene" uid="uid://gikkd26lo3hc" path="res://entities/playables/_shared/components/ultimates/luna_snow/playable_luna_snow_ultimate_component.tscn" id="10_7it47"]
+[ext_resource type="PackedScene" uid="uid://dm86sm6wuxc52" path="res://entities/playables/_shared/components/weapons/soldier_76/playable_soldier_76_weapon_component.tscn" id="8_wkwh7"]
 [ext_resource type="PackedScene" uid="uid://bs5dguomkd64k" path="res://entities/playables/_shared/components/abilities/luna_snow_clap/playable_luna_snow_clap_ability_component.tscn" id="10_wkwh7"]
+[ext_resource type="PackedScene" uid="uid://c4t24nhuy6emg" path="res://entities/playables/_shared/components/ultimates/soldier_76/playable_soldier_76_ultimate_component.tscn" id="11_3gihv"]
 [ext_resource type="PackedScene" uid="uid://vfbdf5vqp3d" path="res://entities/_shared/components/position_anchor_hub/entity_position_anchor_hub_component.tscn" id="13_3gihv"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_w7sju"]
@@ -49,9 +49,8 @@ entity_identity = ExtResource("2_3s4ss")
 
 [node name="Capacities" type="Node3D" parent="Components" unique_id=747146008]
 
-[node name="PlayableTestArcingProjectileWeapon1Component" parent="Components/Capacities" unique_id=831655461 node_paths=PackedStringArray("entity", "camera_component") instance=ExtResource("8_wkwh7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6986413, 0, 0)
-entity = NodePath("../../..")
+[node name="PlayableSoldier76WeaponComponent" parent="Components/Capacities" unique_id=1701676529 node_paths=PackedStringArray("camera_component") instance=ExtResource("8_wkwh7")]
+playable_identity = ExtResource("2_3s4ss")
 camera_component = NodePath("../../PlayableCameraComponent")
 
 [node name="PlayableMercyGuardianAngelAbilityComponent" parent="Components/Capacities" unique_id=496493999 node_paths=PackedStringArray("entity", "camera_component", "character_body_3d_utils_component") instance=ExtResource("8_64usw")]
@@ -65,12 +64,10 @@ entity = NodePath("../../..")
 entity_identity = ExtResource("2_3s4ss")
 camera_component = NodePath("../../PlayableCameraComponent")
 
-[node name="PlayableLunaSnowUltimateComponent" parent="Components/Capacities" unique_id=794912583 node_paths=PackedStringArray("dancefloor_position_anchor") instance=ExtResource("10_7it47")]
-entity_identity = ExtResource("2_3s4ss")
-dancefloor_position_anchor = NodePath("DanceFloorPositionAnchor")
-
-[node name="DanceFloorPositionAnchor" type="Marker3D" parent="Components/Capacities/PlayableLunaSnowUltimateComponent" unique_id=1619737366]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+[node name="PlayableSoldier76UltimateComponent" parent="Components/Capacities" unique_id=677259059 node_paths=PackedStringArray("playable", "camera_component") instance=ExtResource("11_3gihv")]
+playable = NodePath("../../..")
+playable_identity = ExtResource("2_3s4ss")
+camera_component = NodePath("../../PlayableCameraComponent")
 
 [node name="GameMechanicsSupport" type="Node3D" parent="Components" unique_id=1930426155]
 

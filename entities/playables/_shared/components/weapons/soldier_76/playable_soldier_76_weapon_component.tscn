@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://dm86sm6wuxc52"]
+
+[ext_resource type="Script" uid="uid://dt7mp36yxrjne" path="res://entities/playables/_shared/components/weapons/soldier_76/playable_soldier_76_weapon_component.gd" id="1_1trde"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_avuhp"]
+albedo_color = Color(0.041734345, 0.6512501, 0.6079875, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_1trde"]
+material = SubResource("StandardMaterial3D_avuhp")
+top_radius = 0.2
+bottom_radius = 0.2
+
+[sub_resource type="TorusMesh" id="TorusMesh_6bv13"]
+material = SubResource("StandardMaterial3D_avuhp")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kjea4"]
+albedo_color = Color(0.041734345, 0.6512501, 0.6079875, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_muel5"]
+material = SubResource("StandardMaterial3D_kjea4")
+top_radius = 0.2
+bottom_radius = 0.2
+height = 1.0
+
+[node name="PlayableSoldier76WeaponComponent" type="Node3D" unique_id=1701676529]
+script = ExtResource("1_1trde")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1732336022]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+visible = false
+mesh = SubResource("CylinderMesh_1trde")
+
+[node name="MuzzleMeshInstance" type="MeshInstance3D" parent="MeshInstance3D" unique_id=2101935424]
+transform = Transform3D(0.15, 0, 0, 0, 0.15, 0, 0, 0, 0.15, 0, 1, 4.371139e-08)
+mesh = SubResource("TorusMesh_6bv13")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=1475118582]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, -0.412, -0.5)
+visible = false
+mesh = SubResource("CylinderMesh_muel5")
+
+[node name="MuzzleMeshInstance" type="MeshInstance3D" parent="MeshInstance3D2" unique_id=726108988]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0.5, 0)
+mesh = SubResource("TorusMesh_6bv13")
+
+[node name="RayCastBullet" type="RayCast3D" parent="." unique_id=192270950]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+visible = false
+enabled = false
+exclude_parent = false
+target_position = Vector3(0, 0, 0)
+collision_mask = 3
+
+[node name="LagBetweenShotsTimer" type="Timer" parent="." unique_id=1537019424]
+unique_name_in_owner = true
+wait_time = 0.096
+one_shot = true

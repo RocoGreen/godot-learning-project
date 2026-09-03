@@ -17,7 +17,7 @@ identity = ExtResource("2_etwyt")
 [node name="EntityHealthComponent" parent="Components" parent_id_path=PackedInt32Array(1817788584) index="0" unique_id=930351444]
 entity_identity = ExtResource("2_etwyt")
 current_health = 1.0
-max_health = 500.0
+max_health = 99999.0
 
 [node name="EntityStatusReceiverHubComponent" parent="Components" parent_id_path=PackedInt32Array(1817788584) index="1" unique_id=1530625951]
 entity_identity = ExtResource("2_etwyt")

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cg7m86w1c5614"]
 
-[ext_resource type="PackedScene" uid="uid://qt11qx64as1o" path="res://entities/playables/test_character_1/test_character_1.tscn" id="1_nyck6"]
+[ext_resource type="PackedScene" uid="uid://bgg3hrd44y8ee" path="res://entities/playables/mercy/playable_mercy.tscn" id="1_nyck6"]
 [ext_resource type="PackedScene" uid="uid://c473237cvi31t" path="res://entities/npcs/test_npc_1/ally/test_npc_1_ally.tscn" id="2_5p6cq"]
 [ext_resource type="PackedScene" uid="uid://71et6jogo4aq" path="res://entities/npcs/test_npc_1/enemy/test_npc_1_enemy.tscn" id="3_nyck6"]
 
@@ -62,8 +62,8 @@ shape = SubResource("BoxShape3D_nyck6")
 
 [node name="Entities" type="Node3D" parent="." unique_id=1004089302]
 
-[node name="TestCharacter1" parent="Entities" unique_id=855105009 instance=ExtResource("1_nyck6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 0)
+[node name="PlayableMercy" parent="Entities" unique_id=517836893 instance=ExtResource("1_nyck6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 1, 0)
 
 [node name="TestNPC1Ally" parent="Entities" unique_id=1120564623 instance=ExtResource("2_5p6cq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, 5)

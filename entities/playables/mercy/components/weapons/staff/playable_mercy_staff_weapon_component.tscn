@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://cmpy3e5np6x1d"]
+
+[ext_resource type="Script" uid="uid://dyox3xsresdsr" path="res://entities/playables/mercy/components/weapons/staff/playable_mercy_staff_weapon_component.gd" id="1_tbust"]
+[ext_resource type="PackedScene" path="res://addons/debug_draw/debug_draw_3d.tscn" id="2_pfo5q"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_jbag1"]
+top_radius = 0.1
+bottom_radius = 0.1
+height = 1.0
+
+[node name="PlayableMercyStaffWeaponComponent" type="Node3D" unique_id=1776139651]
+script = ExtResource("1_tbust")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1336479738]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+mesh = SubResource("CylinderMesh_jbag1")
+
+[node name="TargetEntityFinder" type="RayCast3D" parent="." unique_id=1262701515]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+enabled = false
+target_position = Vector3(0, 0, 0)
+collision_mask = 3
+
+[node name="DebugDraw3D" parent="." unique_id=1467918534 instance=ExtResource("2_pfo5q")]
+unique_name_in_owner = true
+
+[node name="LingerEffectTimer" type="Timer" parent="." unique_id=1690543464]

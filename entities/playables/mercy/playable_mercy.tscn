@@ -1,0 +1,76 @@
+[gd_scene format=3 uid="uid://bgg3hrd44y8ee"]
+
+[ext_resource type="PackedScene" uid="uid://coqcni43ymjxa" path="res://entities/_shared/components/entity/entity_component.tscn" id="1_1nsre"]
+[ext_resource type="Resource" uid="uid://b6hbgxmbl1he5" path="res://entities/playables/mercy/identity/playable_mercy_identity.tres" id="2_pfypr"]
+[ext_resource type="PackedScene" uid="uid://cbeqj73rklldr" path="res://entities/playables/_shared/components/camera/playable_camera_component.tscn" id="3_eaq5y"]
+[ext_resource type="PackedScene" uid="uid://dgavxxiu7xo4s" path="res://entities/playables/_shared/components/rotation_handling_by_mouse/playable_rotation_handling_by_mouse_component.tscn" id="4_63xlc"]
+[ext_resource type="PackedScene" uid="uid://dpm4llvw6alin" path="res://entities/playables/_shared/components/character_body_3d_utils/playable_character_body_3d_utils_component.tscn" id="5_ca3k8"]
+[ext_resource type="PackedScene" uid="uid://cmpy3e5np6x1d" path="res://entities/playables/mercy/components/weapons/staff/playable_mercy_staff_weapon_component.tscn" id="6_17od4"]
+[ext_resource type="PackedScene" uid="uid://60seaq170jqq" path="res://entities/playables/_shared/components/abilities/mercy_guardian_angel/playable_mercy_guardian_angel_ability_component.tscn" id="7_63xlc"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gn2kn"]
+albedo_color = Color(0.74103546, 0.4595009, 0.10998956, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_qn7gm"]
+material = SubResource("StandardMaterial3D_gn2kn")
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xoinf"]
+
+[node name="PlayableMercy" type="CharacterBody3D" unique_id=517836893 groups=["entities"]]
+collision_mask = 3
+
+[node name="EntityComponent" parent="." unique_id=532691025 node_paths=PackedStringArray("entity") instance=ExtResource("1_1nsre")]
+entity = NodePath("..")
+identity = ExtResource("2_pfypr")
+
+[node name="Components" type="Node3D" parent="." unique_id=1840746360]
+
+[node name="PlayableCameraComponent" parent="Components" unique_id=825915530 node_paths=PackedStringArray("playable") instance=ExtResource("3_eaq5y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7062482, 0.5728847, 0)
+playable = NodePath("../..")
+
+[node name="PlayableRotationHandlingByMouseComponent" parent="Components" unique_id=1377482824 node_paths=PackedStringArray("playable") instance=ExtResource("4_63xlc")]
+playable = NodePath("../..")
+
+[node name="PlayableCharacterBody3DUtilsComponent" parent="Components" unique_id=40130539 node_paths=PackedStringArray("playable") instance=ExtResource("5_ca3k8")]
+playable = NodePath("../..")
+
+[node name="PlayableMercyStaffWeaponComponent" parent="Components" unique_id=1776139651 node_paths=PackedStringArray("playable_mercy", "camera_component") instance=ExtResource("6_17od4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+playable_mercy = NodePath("../..")
+playable_mercy_identity = ExtResource("2_pfypr")
+camera_component = NodePath("../PlayableCameraComponent")
+
+[node name="PlayableMercyGuardianAngelAbilityComponent" parent="Components" unique_id=892267797 node_paths=PackedStringArray("entity", "camera_component", "character_body_3d_utils_component") instance=ExtResource("7_63xlc")]
+entity = NodePath("../..")
+entity_identity = ExtResource("2_pfypr")
+camera_component = NodePath("../PlayableCameraComponent")
+character_body_3d_utils_component = NodePath("../PlayableCharacterBody3DUtilsComponent")
+
+[node name="UI" type="Control" parent="." unique_id=1859871527]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Crosshair" type="ColorRect" parent="UI" unique_id=15845396]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2097587948]
+mesh = SubResource("CapsuleMesh_qn7gm")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=854306670]
+shape = SubResource("CapsuleShape3D_xoinf")

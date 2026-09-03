@@ -46,18 +46,26 @@ func _process(_delta: float) -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if GameState.in_game_input_disabled: return;
+	if GameState.in_game_input_disabled: 
+		return;
 
 	if Input.is_action_just_pressed(&"toggle_weapon_mode"):
 		_toggle_manual_mode();
 
-	if not Input.is_action_pressed(weapon_input_action): return;
-	if _shooting_valley or _in_recovery: return;
+	if not Input.is_action_pressed(weapon_input_action): 
+		return;
 
+	if _shooting_valley or _in_recovery: 
+		return;
+
+	_shoot_valley();
+
+
+func _shoot_valley() -> void:
 	_shooting_valley = true;
 
 	for loop_index: int in range(3):
-		_shoot();
+		_shoot_bullet();
 
 		await get_tree().create_timer(delay_between_shots).timeout;
 
@@ -69,18 +77,18 @@ func _physics_process(_delta: float) -> void:
 	_in_recovery = false;
 
 
-func _shoot() -> void:
+func _shoot_bullet() -> void:
 	var ray_to_get_what_player_aims_at_results: Dictionary = camera_component.ray_to_aim_direction();
 
-	if ray_to_get_what_player_aims_at_results.is_empty(): return;
+	if ray_to_get_what_player_aims_at_results.is_empty(): 
+		return;
 
-	var where_to_shoot_at: Vector3 = ray_to_get_what_player_aims_at_results.get("position");
-	var hit_something: bool = bullet_ray_cast.launch(
-			bullet_start_transform_anchor_marker_3d.global_position, 
-			where_to_shoot_at
-	);
+	var where_bullet_starts: Vector3 = bullet_start_transform_anchor_marker_3d.global_position;
+	var where_bullet_ends: Vector3 = ray_to_get_what_player_aims_at_results.get("position");
+	var hit_something: bool = bullet_ray_cast.launch(where_bullet_starts, where_bullet_ends);
 
-	if not hit_something: return;
+	if not hit_something: 
+		return;
 
 	var target: PhysicsBody3D = bullet_ray_cast.get_collider() as PhysicsBody3D;
 	var target_aimed_at_aim_point: Vector3 = bullet_ray_cast.get_collision_point();
@@ -94,6 +102,7 @@ func _shoot() -> void:
 				_apply_healing_to_target(target);
 			elif _manual_mode == _ManualMode.DAMAGE:
 				_apply_damage_to_target(target);
+
 		else:
 			if target_identity.team == luna_snow_identity.team:
 				_apply_healing_to_target(target);

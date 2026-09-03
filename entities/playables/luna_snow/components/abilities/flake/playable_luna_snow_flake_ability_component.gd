@@ -12,7 +12,7 @@ extends Node
 @export_group("Settings")
 @export_range(0, 100) var percentage_from_healing: int = 30;
 @export var allow_flake_for_any_entity: bool = false;
-@export_custom(PROPERTY_HINT_INPUT_NAME, "") var ability_input_action: StringName = &"ability_1";
+@export_custom(PROPERTY_HINT_INPUT_NAME, "") var input_action_to_use: StringName = &"ability_1";
 
 var _flaked_entity_health_component: EntityHealthComponent;
 
@@ -25,13 +25,15 @@ func _ready() -> void:
 
 func _physics_process(_delta: float) -> void:
 	if GameState.in_game_input_disabled: return;
-	if not Input.is_action_just_pressed(ability_input_action): return;
+	if not Input.is_action_just_pressed(input_action_to_use): return;
 
 	if _flaked_entity_health_component:
-		_flaked_entity_health_component = null;
-		print("Removed flake !");
-		return;
+		_revoke_flake();
 
+	_flake_entity_player_aims_at();
+
+
+func _flake_entity_player_aims_at() -> void:
 	var ray_to_get_what_player_aims_at_results: Dictionary = camera_component.ray_to_aim_direction();
 
 	if ray_to_get_what_player_aims_at_results.is_empty(): return;
@@ -51,11 +53,21 @@ func _physics_process(_delta: float) -> void:
 	print("%s has been flaked !" % target_entity_component.identity.name);
 
 
+func _revoke_flake() -> void:
+	_flaked_entity_health_component = null;
+	print("Revoked flake !");
+	return;
+
+
 func _heal_flaked_entity(real_amount_healed: float) -> void:
 	if not _flaked_entity_health_component: return;
 
 	var healing_to_do: float = _what_is_percentage_of(percentage_from_healing, real_amount_healed);
 	_flaked_entity_health_component.heal(healing_to_do, luna_snow_identity);
+
+
+func _what_is_percentage_of(percentage: int, of: float) -> float:
+	return (percentage * of) / 100;
 
 
 func _on_weapon_healed_someone(amount: float) -> void:
@@ -68,7 +80,3 @@ func _on_clap_ability_healed_someone(amount: float) -> void:
 
 func _on_ultimate_healed_someone(amount: float) -> void:
 	_heal_flaked_entity(amount);
-
-
-func _what_is_percentage_of(percentage: int, of: float) -> float:
-	return (percentage * of) / 100;

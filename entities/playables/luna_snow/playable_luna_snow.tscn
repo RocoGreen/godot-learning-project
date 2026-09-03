@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://dgqseji4pi27a" path="res://entities/_shared/components/status_receiver_hub/entity_status_receiver_hub_component.tscn" id="7_mtvdv"]
 [ext_resource type="PackedScene" uid="uid://vfbdf5vqp3d" path="res://entities/_shared/components/position_anchor_hub/entity_position_anchor_hub_component.tscn" id="8_v5ob0"]
 [ext_resource type="PackedScene" uid="uid://cvs062n5dwljf" path="res://entities/playables/luna_snow/components/weapon/playable_luna_snow_weapon_component.tscn" id="9_6hi6u"]
-[ext_resource type="PackedScene" uid="uid://bs5dguomkd64k" path="res://entities/playables/_shared/components/abilities/luna_snow_clap/playable_luna_snow_clap_ability_component.tscn" id="9_ou7k7"]
+[ext_resource type="PackedScene" uid="uid://bs5dguomkd64k" path="res://entities/playables/luna_snow/components/abilities/clap/playable_luna_snow_clap_ability_component.tscn" id="9_ou7k7"]
 [ext_resource type="PackedScene" uid="uid://gikkd26lo3hc" path="res://entities/playables/luna_snow/components/ultimate/playable_luna_snow_ultimate_component.tscn" id="10_2bkg8"]
 [ext_resource type="PackedScene" uid="uid://bhenygohfavyh" path="res://entities/playables/luna_snow/components/abilities/flake/playable_luna_snow_flake_ability_component.tscn" id="10_gfjr5"]
 
@@ -78,15 +78,16 @@ clap_ability_component = NodePath("../ClapAbilityComponent")
 ultimate_component = NodePath("../UltimateComponent")
 allow_flake_for_any_entity = true
 
-[node name="ClapAbilityComponent" parent="Components/Capabilities" unique_id=1450733872 node_paths=PackedStringArray("entity", "camera_component", "weapon_component") instance=ExtResource("9_ou7k7")]
-entity = NodePath("../../..")
-entity_identity = ExtResource("2_6hi6u")
+[node name="ClapAbilityComponent" parent="Components/Capabilities" unique_id=1450733872 node_paths=PackedStringArray("playable", "camera_component", "weapon_component") instance=ExtResource("9_ou7k7")]
+playable = NodePath("../../..")
+luna_snow_identity = ExtResource("2_6hi6u")
 camera_component = NodePath("../../ForPlayerControls/CameraComponent")
 weapon_component = NodePath("../WeaponComponent")
 
 [node name="UltimateComponent" parent="Components/Capabilities" unique_id=794912583 node_paths=PackedStringArray("dancefloor_position_anchor") instance=ExtResource("10_2bkg8")]
-entity_identity = ExtResource("2_6hi6u")
+luna_snow_identity = ExtResource("2_6hi6u")
 dancefloor_position_anchor = NodePath("DancefloorPositionAnchor")
+healing_amount_per_second = 20.0
 
 [node name="DancefloorPositionAnchor" type="Marker3D" parent="Components/Capabilities/UltimateComponent" unique_id=1450508015]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)

@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://s7uybs151onq"]
+
+[ext_resource type="Script" uid="uid://dgm2cqv4itvae" path="res://entities/playables/_shared/components/player_ui/playable_player_ui_component.gd" id="1_bxmb4"]
+
+[node name="PlayablePlayerUIComponent" type="MarginContainer" unique_id=843756222]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource("1_bxmb4")
+
+[node name="PlayableHealthIndicator" type="VBoxContainer" parent="." unique_id=941527608]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+
+[node name="HealthLabel" type="Label" parent="PlayableHealthIndicator" unique_id=760907316]
+unique_name_in_owner = true
+layout_mode = 2
+text = "000/000"
+horizontal_alignment = 1
+
+[node name="HealthProgressBar" type="ProgressBar" parent="PlayableHealthIndicator" unique_id=642272414]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 20)
+layout_mode = 2
+step = 1.0
+show_percentage = false
+
+[node name="Crosshair" type="ColorRect" parent="." unique_id=1841372608]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4

@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://qt11qx64as1o" path="res://entities/playables/test_character_1/test_character_1.tscn" id="1_nyck6"]
 [ext_resource type="PackedScene" uid="uid://c473237cvi31t" path="res://entities/npcs/test_npc_1/ally/test_npc_1_ally.tscn" id="2_5p6cq"]
 [ext_resource type="PackedScene" uid="uid://71et6jogo4aq" path="res://entities/npcs/test_npc_1/enemy/test_npc_1_enemy.tscn" id="3_nyck6"]
+[ext_resource type="PackedScene" uid="uid://rg57k2ltcg8e" path="res://entities/npcs/test_npc_2/test_npc_2.tscn" id="4_hjvll"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_87hen"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -70,3 +71,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, 5)
 
 [node name="TestNPC1Enemy" parent="Entities" unique_id=1296699483 instance=ExtResource("3_nyck6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1, 5)
+
+[node name="TestNPC2" parent="Entities" unique_id=43246460 instance=ExtResource("4_hjvll")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, 5)

@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://dhmyjew8tp584"]
+
+[ext_resource type="Script" uid="uid://cp138l7udxlo" path="res://entities/npcs/test_npc_2/weapon/bullet/test_npc_2_weapon_bullet.gd" id="1_m301b"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7ftta"]
+albedo_color = Color(0.9585393, 0.45680666, 0.2868227, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_wo8wl"]
+material = SubResource("StandardMaterial3D_7ftta")
+radius = 0.2
+height = 0.4
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_m301b"]
+radius = 0.2
+
+[node name="TestNPC2WeaponBullet" type="CharacterBody3D" unique_id=95783991]
+top_level = true
+collision_layer = 0
+collision_mask = 3
+script = ExtResource("1_m301b")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=595579599]
+mesh = SubResource("SphereMesh_wo8wl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=794782485]
+shape = SubResource("SphereShape3D_m301b")

@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://qt11qx64as1o"]
 
+[ext_resource type="Script" uid="uid://c5t57u0fdcwf4" path="res://entities/playables/test_character_1/test_character_1.gd" id="1_64usw"]
 [ext_resource type="PackedScene" uid="uid://coqcni43ymjxa" path="res://entities/_shared/components/entity/entity_component.tscn" id="1_ybfop"]
 [ext_resource type="Resource" uid="uid://ch1uqhr4e8qym" path="res://entities/playables/test_character_1/test_character_1_identity.tres" id="2_3s4ss"]
 [ext_resource type="PackedScene" uid="uid://cbeqj73rklldr" path="res://entities/playables/_shared/components/camera/playable_camera_component.tscn" id="3_qc732"]
@@ -12,13 +13,17 @@
 [ext_resource type="PackedScene" uid="uid://gikkd26lo3hc" path="res://entities/playables/_shared/components/ultimates/luna_snow/playable_luna_snow_ultimate_component.tscn" id="10_7it47"]
 [ext_resource type="PackedScene" uid="uid://bs5dguomkd64k" path="res://entities/playables/_shared/components/abilities/luna_snow_clap/playable_luna_snow_clap_ability_component.tscn" id="10_wkwh7"]
 [ext_resource type="PackedScene" uid="uid://vfbdf5vqp3d" path="res://entities/_shared/components/position_anchor_hub/entity_position_anchor_hub_component.tscn" id="13_3gihv"]
+[ext_resource type="PackedScene" uid="uid://s7uybs151onq" path="res://entities/playables/_shared/components/player_ui/playable_player_ui_component.tscn" id="13_64usw"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_w7sju"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jd5x5"]
 
-[node name="TestCharacter1" type="CharacterBody3D" unique_id=855105009 groups=["entities"]]
+[node name="TestCharacter1" type="CharacterBody3D" unique_id=855105009 node_paths=PackedStringArray("health_component") groups=["entities"]]
 collision_mask = 3
+script = ExtResource("1_64usw")
+test_character_1_identity = ExtResource("2_3s4ss")
+health_component = NodePath("Components/InteractionWithGame/EntityHealthComponent")
 
 [node name="EntityComponent" parent="." unique_id=532691025 node_paths=PackedStringArray("entity", "health_component", "status_receiver_hub_component", "position_anchor_hub_component") instance=ExtResource("1_ybfop")]
 entity = NodePath("..")
@@ -79,7 +84,7 @@ center_anchor = NodePath("CenterAnchor")
 
 [node name="CenterAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/EntityPositionAnchorHubComponent" unique_id=1004767145]
 
-[node name="UI" type="Control" parent="." unique_id=1133008706]
+[node name="UI" type="Control" parent="Components" unique_id=340507901]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -87,19 +92,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Crosshair" type="ColorRect" parent="UI" unique_id=1657220023]
+[node name="PlayablePlayerUIComponent" parent="Components/UI" unique_id=843756222 node_paths=PackedStringArray("health_component") instance=ExtResource("13_64usw")]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -5.0
-offset_top = -5.0
-offset_right = 5.0
-offset_bottom = 5.0
-grow_horizontal = 2
-grow_vertical = 2
+health_component = NodePath("../../InteractionWithGame/EntityHealthComponent")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=909298792]
 mesh = SubResource("CapsuleMesh_w7sju")

@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://rg57k2ltcg8e"]
+
+[ext_resource type="PackedScene" uid="uid://coqcni43ymjxa" path="res://entities/_shared/components/entity/entity_component.tscn" id="1_3j6eg"]
+[ext_resource type="Resource" uid="uid://dnavcvybiugh8" path="res://entities/npcs/test_npc_2/identity/test_npc_2_identity.tres" id="2_08kpk"]
+[ext_resource type="PackedScene" uid="uid://bigplrrqyhf1s" path="res://entities/npcs/test_npc_2/weapon/test_npc_2_weapon.tscn" id="3_3j6eg"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_7u2du"]
+size = Vector3(1, 2, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_oxydy"]
+size = Vector3(1, 2, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3j6eg"]
+albedo_color = Color(1, 0.039215688, 0.039215688, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_08kpk"]
+material = SubResource("StandardMaterial3D_3j6eg")
+
+[node name="TestNPC2" type="StaticBody3D" unique_id=43246460 groups=["entities"]]
+collision_mask = 3
+
+[node name="EntityComponent" parent="." unique_id=532691025 node_paths=PackedStringArray("entity") instance=ExtResource("1_3j6eg")]
+entity = NodePath("..")
+identity = ExtResource("2_08kpk")
+
+[node name="Components" type="Node3D" parent="." unique_id=944580917]
+
+[node name="Weapon" parent="." unique_id=1252039541 instance=ExtResource("3_3j6eg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1554785206]
+mesh = SubResource("BoxMesh_7u2du")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1552385769]
+shape = SubResource("BoxShape3D_oxydy")
+
+[node name="OnEnemyTeamIndicator" type="MeshInstance3D" parent="." unique_id=340308183]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+mesh = SubResource("SphereMesh_08kpk")

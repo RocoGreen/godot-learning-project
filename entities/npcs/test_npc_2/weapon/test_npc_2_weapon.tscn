@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bigplrrqyhf1s"]
+
+[ext_resource type="Script" uid="uid://72qdyumj3qmt" path="res://entities/npcs/test_npc_2/weapon/test_npc_2_weapon.gd" id="1_r0cq4"]
+[ext_resource type="Resource" uid="uid://dnavcvybiugh8" path="res://entities/npcs/test_npc_2/identity/test_npc_2_identity.tres" id="2_y0xsu"]
+[ext_resource type="PackedScene" uid="uid://dhmyjew8tp584" path="res://entities/npcs/test_npc_2/weapon/bullet/test_npc_2_weapon_bullet.tscn" id="3_eb3ft"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_otgpu"]
+
+[node name="TestNPC2Weapon" type="Node3D" unique_id=1252039541]
+script = ExtResource("1_r0cq4")
+test_npc_2_identity = ExtResource("2_y0xsu")
+bullet = ExtResource("3_eb3ft")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1194897553]
+transform = Transform3D(0.2, 0, 0, 0, -8.742278e-09, -0.2, 0, 0.2, -8.742278e-09, 0, 0, 0)
+mesh = SubResource("CylinderMesh_otgpu")
+
+[node name="BulletStartTransformAnchor" type="Marker3D" parent="." unique_id=1028179772]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)

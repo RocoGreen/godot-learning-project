@@ -34,6 +34,21 @@ static func is_entity(node: Node) -> bool:
 	return true;
 
 
+static func is_object_an_entity(object: Object) -> bool:
+	if not object:
+		return false;
+
+	if object is not Node:
+		return false;
+
+	var object_is_an_entity: bool = is_entity(object);
+
+	if not object_is_an_entity:
+		return false;
+
+	return true;
+
+
 static func cast_object_to_entity(object: Object) -> Node:
 	if not object:
 		return null;

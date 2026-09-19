@@ -1,0 +1,2 @@
+class_name PlayableLunaSnow
+extends CharacterBody3D

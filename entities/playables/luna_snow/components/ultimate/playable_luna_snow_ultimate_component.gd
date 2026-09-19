@@ -57,8 +57,8 @@ var _state: _State = _State.HEALING:
 		
 		_state = new_state;
 
-var _entities_inside_ultimate: Array[PhysicsBody3D] = [];
-var _damage_boosted_entities_requests: Dictionary[PhysicsBody3D, EntityDamageBoostRequest] = {};
+var _entities_inside_ultimate: Array[Node] = [];
+var _damage_boosted_entities_requests: Dictionary[Node, EntityDamageBoostRequest] = {};
 
 var _input_action_to_start_pressed_at_last_usage_ending: bool = false;
 
@@ -189,57 +189,55 @@ func _toggle_state() -> void:
 
 
 func _heal_entities_inside_ultimate(delta: float) -> void:
-	for target: PhysicsBody3D in _entities_inside_ultimate:
-		_apply_healing_to_entity(target, delta);
+	for entity: Node in _entities_inside_ultimate:
+		_apply_healing_to_entity(entity, delta);
 
 
-func _apply_healing_to_entity(entity: PhysicsBody3D, delta: float) -> void:
-	var entity_entity_component: EntityComponent = EntityComponent.from_entity(entity);
-	var target_health: EntityHealthComponent = entity_entity_component.health_component;
+func _apply_healing_to_entity(entity: Node, delta: float) -> void:
+	var entity_health_component: EntityHealthComponent = EntityHealthComponent.from_entity(entity);
 
-	if not target_health: return;
+	if not entity_health_component: return;
 
 	var healing_to_do: float = healing_amount_per_second * delta;
 
 	if _just_started: 
 		healing_to_do = burst_healing_amount_when_just_started;
 
-	var final_healing_done: float = target_health.heal(healing_to_do, luna_snow_identity);
+	var final_healing_done: float = entity_health_component.heal(healing_to_do, luna_snow_identity);
 
 	if final_healing_done > 0.0:
 		healed_someone.emit(final_healing_done);
 
 
-func _apply_damage_boost_to_entity(entity: PhysicsBody3D) -> void:
+func _apply_damage_boost_to_entity(entity: Node) -> void:
 	if _damage_boosted_entities_requests.has(entity): return;
 
-	var entity_entity_component: EntityComponent = EntityComponent.from_entity(entity);
-	var target_status_receiver_hub := entity_entity_component.status_receiver_hub_component;
+	var entity_damage_boost_status_receiver := EntityDamageBoostStatusReceiver.from_entity(entity);
 
-	if not target_status_receiver_hub: return;
+	if not entity_damage_boost_status_receiver: return;
 
 	var damage_boost_request: EntityDamageBoostRequest = EntityDamageBoostRequest.new(
 			damage_boost_amount_percentage, 
 			luna_snow_identity
 	);
-	target_status_receiver_hub.damage_boost_receiver.add_damage_boost_request(damage_boost_request);
+
+	entity_damage_boost_status_receiver.add_damage_boost_request(damage_boost_request);
 	_damage_boosted_entities_requests.set(entity, damage_boost_request);
 
 
 func _apply_damage_boost_to_entities_inside_ultimate() -> void:
-	for entity_inside_ultimate: PhysicsBody3D in _entities_inside_ultimate:
+	for entity_inside_ultimate: Node in _entities_inside_ultimate:
 		_apply_damage_boost_to_entity(entity_inside_ultimate);
 
 
-func _remove_damage_boost_to_entity(entity: PhysicsBody3D) -> void:
+func _remove_damage_boost_to_entity(entity: Node) -> void:
 	if not _damage_boosted_entities_requests.has(entity): return;
 
-	var entity_entity_component: EntityComponent = EntityComponent.from_entity(entity);
-	var target_status_receiver_hub := entity_entity_component.status_receiver_hub_component;
+	var entity_damage_boost_status_receiver := EntityDamageBoostStatusReceiver.from_entity(entity);
 
-	if not target_status_receiver_hub: return;
+	if not entity_damage_boost_status_receiver: return;
 
-	target_status_receiver_hub.damage_boost_receiver.remove_damage_boost_request(
+	entity_damage_boost_status_receiver.remove_damage_boost_request(
 			_damage_boosted_entities_requests.get(entity)
 	);
 
@@ -247,17 +245,18 @@ func _remove_damage_boost_to_entity(entity: PhysicsBody3D) -> void:
 
 
 func _remove_all_damage_boosted_entities() -> void:
-	for damage_boosted_entity: PhysicsBody3D in _damage_boosted_entities_requests.keys():
+	for damage_boosted_entity: Node in _damage_boosted_entities_requests.keys():
 		_remove_damage_boost_to_entity(damage_boosted_entity);
 
 
 func _on_body_entered(body: Node3D) -> void:
-	var entity: PhysicsBody3D = body as PhysicsBody3D;
+	if not EntityComponent.is_entity(body): return;
+	
+	var entity: Node = EntityComponent.cast_object_to_entity(body);
+	var entity_identity: EntityIdentity = EntityIdentity.from_entity(entity);
 
-	var entity_entity_component: EntityComponent = EntityComponent.from_entity(entity);
-	var target_identity: EntityIdentity = entity_entity_component.identity;
-
-	if not target_identity.team == luna_snow_identity.team: return;
+	if not entity_identity: return;
+	if not entity_identity.team == luna_snow_identity.team: return;
 
 	_entities_inside_ultimate.append(entity);
 
@@ -268,11 +267,12 @@ func _on_body_entered(body: Node3D) -> void:
 
 
 func _on_body_exited(body: Node3D) -> void:
-	var entity: PhysicsBody3D = body as PhysicsBody3D;
+	if not EntityComponent.is_entity(body): return;
+	
+	var entity: Node = EntityComponent.cast_object_to_entity(body);
+	var entity_identity: EntityIdentity = EntityIdentity.from_entity(entity);
 
-	var entity_entity_component: EntityComponent = EntityComponent.from_entity(entity);
-	var entity_identity: EntityIdentity = entity_entity_component.identity;
-
+	if not entity_identity: return;
 	if not entity_identity.team == luna_snow_identity.team: return;
 
 	_entities_inside_ultimate.erase(entity);

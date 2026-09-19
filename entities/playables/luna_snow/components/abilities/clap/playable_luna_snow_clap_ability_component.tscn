@@ -1,8 +1,12 @@
 [gd_scene format=3 uid="uid://bs5dguomkd64k"]
 
 [ext_resource type="Script" uid="uid://cbm0mmefq0hy" path="res://entities/playables/luna_snow/components/abilities/clap/playable_luna_snow_clap_ability_component.gd" id="1_x2nfb"]
+[ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/identity/entity_identity.gd" id="2_otg8i"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ebswh"]
+
+[sub_resource type="Resource" id="Resource_ebswh"]
+script = ExtResource("2_otg8i")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_otg8i"]
 albedo_color = Color(0.42882344, 0.54820573, 0.99335474, 1)
@@ -18,6 +22,7 @@ shape = SubResource("BoxShape3D_ebswh")
 exclude_parent = false
 target_position = Vector3(0, 0, 0)
 script = ExtResource("1_x2nfb")
+luna_snow_identity = SubResource("Resource_ebswh")
 
 [node name="ObstacleAtCenterDetector" type="RayCast3D" parent="." unique_id=2041355603]
 unique_name_in_owner = true

@@ -7,9 +7,9 @@ extends ShapeCast3D
 signal healed_someone(amount: float);
 
 @export_group("Dependencies")
-@export var playable: PhysicsBody3D:
-	set(new_playable):
-		playable = new_playable;
+@export var playable_luna_snow: PlayableLunaSnow:
+	set(new_playable_luna_snow):
+		playable_luna_snow = new_playable_luna_snow;
 
 		if Engine.is_editor_hint():
 			update_configuration_warnings();
@@ -67,7 +67,7 @@ func _init() -> void:
 func _ready() -> void:
 	if Engine.is_editor_hint(): return;
 
-	add_exception(playable);
+	add_exception(playable_luna_snow);
 
 
 func _physics_process(_delta: float) -> void:
@@ -93,7 +93,7 @@ func _physics_process(_delta: float) -> void:
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = PackedStringArray();
 
-	warnings.append_array(ConfigurationWarningLibrary.get_for_playable(playable));
+	warnings.append_array(ConfigurationWarningLibrary.get_for_playable(playable_luna_snow));
 
 	warnings.append_array(ConfigurationWarningLibrary.get_for_camera_component(camera_component));
 
@@ -134,15 +134,16 @@ func _clap() -> void:
 	_display_clap_vfx(where_clap_starts, where_clap_ends);
 
 	for collider_index: int in range(get_collision_count()):
-		var target: PhysicsBody3D = get_collider(collider_index) as PhysicsBody3D;
+		var collider: Object = get_collider(collider_index);
 
-		var target_entity_component: EntityComponent = EntityComponent.from_entity(target);
-		var target_identity: EntityIdentity = target_entity_component.identity;
+		var target_identity: EntityIdentity = EntityIdentity.from_entity(collider);
+
+		if not target_identity: return;
 
 		if target_identity.team == luna_snow_identity.team:
-			_apply_healing_to_target_entity(target);
+			_apply_healing_to_entity(collider);
 		else:
-			_apply_damage_to_target_entity(target);
+			_apply_damage_to_entity(collider);
 
 	_waiting_before_next_clap = true;
 	print("You just clapped ! In recovery for next shot...");
@@ -195,25 +196,23 @@ func _get_where_clap_ends() -> Vector3:
 	return where_clap_ends;
 
 
-func _apply_healing_to_target_entity(target: PhysicsBody3D) -> void:
-	var target_entity_component: EntityComponent = EntityComponent.from_entity(target);
-	var target_health: EntityHealthComponent = target_entity_component.health_component;
+func _apply_healing_to_entity(entity: Node) -> void:
+	var target_health_component := EntityHealthComponent.from_entity(entity);
 
-	if not target_health: return;
+	if not target_health_component: return;
 
-	var final_healing_done: float = target_health.heal(healing_per_clap, luna_snow_identity);
+	var final_healing_done: float = target_health_component.heal(healing_per_clap, luna_snow_identity);
 
 	if final_healing_done > 0.0:
 		healed_someone.emit(final_healing_done);
 
 
-func _apply_damage_to_target_entity(target: PhysicsBody3D) -> void:
-	var target_entity_component: EntityComponent = EntityComponent.from_entity(target);
-	var target_health: EntityHealthComponent = target_entity_component.health_component;
+func _apply_damage_to_entity(entity: Node) -> void:
+	var target_health_component := EntityHealthComponent.from_entity(entity);
 
-	if not target_health: return;
+	if not target_health_component: return;
 
-	target_health.damage(damage_per_clap, luna_snow_identity);
+	target_health_component.damage(damage_per_clap, luna_snow_identity);
 
 
 func _display_clap_vfx(start_position: Vector3, end_position: Vector3) -> void:

@@ -29,6 +29,7 @@ func _physics_process(_delta: float) -> void:
 
 	if _flaked_entity_health_component:
 		_revoke_flake();
+		return;
 
 	_flake_entity_player_aims_at();
 
@@ -38,19 +39,17 @@ func _flake_entity_player_aims_at() -> void:
 
 	if ray_to_get_what_player_aims_at_results.is_empty(): return;
 
-	var target: PhysicsBody3D = ray_to_get_what_player_aims_at_results.collider as PhysicsBody3D;
+	# Using `Object` type because a ray's collider will always be an `Object`.
+	var what_player_aims_at: Object = ray_to_get_what_player_aims_at_results.get("collider");
 
-	if not target.is_in_group(&"entities"): return;
+	var target_identity: EntityIdentity = EntityIdentity.from_entity(what_player_aims_at);
+	var target_health_component := EntityHealthComponent.from_entity(what_player_aims_at);
 
-	var target_entity_component: EntityComponent = EntityComponent.from_entity(target);
-	var target_identity: EntityIdentity = target_entity_component.identity;
-	var target_health: EntityHealthComponent = target_entity_component.health_component;
-
-	if not target_health: return;
+	if not target_identity or not target_health_component: return;
 	if not allow_flake_for_any_entity and target_identity.team != luna_snow_identity.team: return;
 
-	_flaked_entity_health_component = target_health;
-	print("%s has been flaked !" % target_entity_component.identity.name);
+	_flaked_entity_health_component = target_health_component;
+	print("%s has been flaked !" % target_identity.name);
 
 
 func _revoke_flake() -> void:

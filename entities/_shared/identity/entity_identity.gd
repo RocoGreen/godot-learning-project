@@ -24,6 +24,26 @@ const DEFAULT_NAME: StringName = &"EMPTY";
 		changed.emit();
 
 
+static func from_entity(entity: Node) -> EntityIdentity:
+	if not entity:
+		return null;
+
+	if not EntityComponent.is_entity(entity):
+		return null;
+
+	var entity_entity_component: EntityComponent = EntityComponent.get_from(entity);
+
+	if not entity_entity_component:
+		return null;
+
+	var entity_identity: EntityIdentity = entity_entity_component.identity;
+
+	if not entity_identity:
+		return null;
+
+	return entity_identity;
+
+
 func is_name_default_name() -> bool:
 	if name == DEFAULT_NAME:
 		return true;

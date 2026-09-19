@@ -10,6 +10,29 @@ var _damage_boost_requests: Array[DamageBoostRequest] = [];
 @onready var _status_receiver_hub_component: EntityStatusReceiverHubComponent = owner;
 
 
+static func from_entity(entity: Node) -> EntityDamageBoostStatusReceiver:
+	if not entity:
+		return null;
+
+	if not EntityComponent.is_entity(entity):
+		return null;
+
+	var entity_entity_component: EntityComponent = EntityComponent.get_from(entity);
+
+	if not entity_entity_component:
+		return null;
+	
+	var entity_status_receiver_hub_component := EntityStatusReceiverHubComponent.from_entity(entity);
+
+	if not entity_status_receiver_hub_component:
+		return null;
+
+	if not entity_status_receiver_hub_component.damage_boost_receiver:
+		return null;
+
+	return entity_status_receiver_hub_component.damage_boost_receiver;
+
+
 func get_damage_boost_final_percentage() -> int:
 	var final_percentage: int = 0;
 

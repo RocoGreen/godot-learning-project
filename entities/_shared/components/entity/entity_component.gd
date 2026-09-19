@@ -5,22 +5,59 @@ extends Node
 
 
 @export_group("Dependencies")
-# Holding the Entity (that is supposed to be a `PhysicsBody3D`) so it can be accessed outside 
-# of it's scene.
-@export var entity: PhysicsBody3D;
-
-# Warning: Not checked if it's at default values when component is _ready();
+@export var entity: Node;
+## [b]Warning[/b]: Do NOT retrieve the identity here.
+## Use the method [method EntityIdentity.from_entity] instead.
 @export var identity: EntityIdentity = EntityIdentity.new();
 
 @export_group("Optional Dependencies")
+## [b]Warning[/b]: Do NOT retrieve the component here.
+## Use the method [method EntityHealthComponent.from_entity] instead.
 @export var health_component: EntityHealthComponent;
+## [b]Warning[/b]: Do NOT retrieve the component here.
+## Use the method [method EntityStatusReceiverHubComponent.from_entity] instead.
 @export var status_receiver_hub_component: EntityStatusReceiverHubComponent;
+## [b]Warning[/b]: Do NOT retrieve the component here.
+## Use the method [method EntityPositionAnchorHubComponent.from_entity] instead.
 @export var position_anchor_hub_component: EntityPositionAnchorHubComponent;
 
 
-@warning_ignore("shadowed_variable")
-static func from_entity(entity: PhysicsBody3D) -> EntityComponent:
-	var entity_component: EntityComponent = entity.get_child(0) as EntityComponent;
+static func is_entity(node: Node) -> bool:
+	if not node:
+		return false;
+
+	var entity_component: EntityComponent = EntityComponent.get_from(node);
+
+	if not entity_component:
+		return false;
+
+	return true;
+
+
+static func cast_object_to_entity(object: Object) -> Node:
+	if not object:
+		return null;
+
+	if object is not Node:
+		return null;
+
+	if not is_entity(object):
+		return null;
+
+	return object;
+
+
+static func get_from(node: Node) -> EntityComponent:
+	if not node:
+		return;
+
+	if node.get_child_count() <= 0:
+		return null;
+
+	var entity_component: EntityComponent = node.get_child(0) as EntityComponent;
+
+	if not entity_component:
+		return null;
 
 	return entity_component;
 

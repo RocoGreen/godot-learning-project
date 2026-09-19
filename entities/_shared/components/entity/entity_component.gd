@@ -5,7 +5,7 @@ extends Node
 
 
 @export_group("Dependencies")
-@export var entity: Node;
+@export var entity: PhysicsBody3D;
 ## [b]Warning[/b]: Do NOT retrieve the identity here.
 ## Use the method [method EntityIdentity.from_entity] instead.
 @export var identity: EntityIdentity = EntityIdentity.new();
@@ -26,6 +26,9 @@ static func is_entity(node: Node) -> bool:
 	if not node:
 		return false;
 
+	if node is not PhysicsBody3D:
+		return false;
+
 	var entity_component: EntityComponent = EntityComponent.get_from(node);
 
 	if not entity_component:
@@ -38,7 +41,7 @@ static func is_object_an_entity(object: Object) -> bool:
 	if not object:
 		return false;
 
-	if object is not Node:
+	if object is not PhysicsBody3D:
 		return false;
 
 	var object_is_an_entity: bool = is_entity(object);
@@ -49,11 +52,11 @@ static func is_object_an_entity(object: Object) -> bool:
 	return true;
 
 
-static func cast_object_to_entity(object: Object) -> Node:
+static func cast_object_to_entity(object: Object) -> PhysicsBody3D:
 	if not object:
 		return null;
 
-	if object is not Node:
+	if object is not PhysicsBody3D:
 		return null;
 
 	if not is_entity(object):

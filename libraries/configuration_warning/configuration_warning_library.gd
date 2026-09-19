@@ -3,13 +3,14 @@ extends RefCounted
 
 
 ## Note: To call again when exported variable changes (by using a setter).
-static func get_for_entity(entity: Node) -> PackedStringArray:
+static func get_for_entity(entity: PhysicsBody3D) -> PackedStringArray:
 	var warnings: PackedStringArray = PackedStringArray();
 
 	if not is_instance_valid(entity):
 		warnings.append(
-				"An exported variable expecting a `Node` that could possibly be an entity is " +
-				"not set/valid."
+				"An exported variable expecting a `PhysicsBody3D` that could possibly be an " +
+				"entity (since they don't have a type on their own, they have their own way to " +
+				"be one) is not set/valid."
 		);
 
 	else:
@@ -17,8 +18,8 @@ static func get_for_entity(entity: Node) -> PackedStringArray:
 			warnings.append(
 					"An exported variable expecting an entity does not hold one because " +
 					"the `EntityComponent` could not be found (the `Node`) as first child of " + 
-					"the `Node` provided. An entity is considered one if it have the component " +
-					"as first child."
+					"the `PhysicsBody3D` provided. An entity is considered one if it have the " +
+					"component as first child (and is a `PhysicsBody3D`)."
 			);
 		
 		if not entity.get_collision_mask_value(CollisionMaskLibrary.get_entities()):

@@ -12,10 +12,9 @@ func _on_collided(collision: KinematicCollision3D) -> void:
 	_splash_test.force_shapecast_update();
 
 	for collision_index: int in range(_splash_test.get_collision_count()):
-		var collider: PhysicsBody3D = _splash_test.get_collider(collision_index) as PhysicsBody3D;
+		var splash_collider: Object = _splash_test.get_collider(collision_index);
 
-		if collider:
-			print("Splash Detected: ", collider);
+		print("Splash Detected: ", splash_collider);
 
 
 func _on_life_duration_timer_timeout() -> void:

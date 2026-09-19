@@ -46,9 +46,6 @@ func _process(_delta: float) -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if GameState.in_game_input_disabled: 
-		return;
-
 	if Input.is_action_just_pressed(&"toggle_weapon_mode"):
 		_toggle_manual_mode();
 

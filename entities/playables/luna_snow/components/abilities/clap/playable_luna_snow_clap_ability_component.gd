@@ -79,9 +79,6 @@ func _physics_process(_delta: float) -> void:
 		else:
 			return;
 
-	elif GameState.in_game_input_disabled:
-		return;
-
 	elif Input.is_action_pressed(input_action_to_start):
 		if not _active:
 			_start();
@@ -168,7 +165,7 @@ func _end_and_reset() -> void:
 
 
 func _get_where_clap_starts() -> Vector3:
-	return weapon_component.bullet_start_transform_anchor_marker_3d.global_position;
+	return weapon_component.bullet_start_position_anchor_marker_3d.global_position;
 
 
 func _get_where_clap_ends() -> Vector3:

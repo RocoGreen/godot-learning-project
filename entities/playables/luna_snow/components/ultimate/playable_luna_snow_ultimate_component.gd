@@ -106,14 +106,13 @@ func _physics_process(delta: float) -> void:
 		if _just_started:
 			_just_started = false;
 		
-		if not GameState.in_game_input_disabled:
-			if Input.is_action_just_pressed(input_action_to_use):
-				_toggle_state();
+		if Input.is_action_just_pressed(input_action_to_use):
+			_toggle_state();
 		
 		if _state == _State.HEALING:
 			_heal_entities_inside_ultimate(delta);
 
-	elif not GameState.in_game_input_disabled and Input.is_action_pressed(input_action_to_use):
+	elif Input.is_action_pressed(input_action_to_use):
 		_start(delta);
 
 

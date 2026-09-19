@@ -24,7 +24,6 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if GameState.in_game_input_disabled: return;
 	if not Input.is_action_just_pressed(input_action_to_use): return;
 
 	if _flaked_entity_health_component:

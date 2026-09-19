@@ -15,10 +15,6 @@ run/main_scene="uid://cg7m86w1c5614"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
-[autoload]
-
-GameState="*uid://bgddjlxnqtpwi"
-
 [debug]
 
 gdscript/warnings/untyped_declaration=2

@@ -22,7 +22,7 @@ material = SubResource("StandardMaterial3D_a6ekt")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yb2d5"]
 
-[node name="PlayableLunaSnow" type="CharacterBody3D" unique_id=1809442355 groups=["entities"]]
+[node name="PlayableLunaSnow" type="CharacterBody3D" unique_id=1809442355]
 collision_mask = 3
 script = ExtResource("1_hvm6w")
 
@@ -90,8 +90,8 @@ weapon_component = NodePath("../../Weapon")
 
 [node name="Ultimate" parent="Components/Capabilities" unique_id=794912583 node_paths=PackedStringArray("dancefloor_position_anchor") instance=ExtResource("10_2bkg8")]
 luna_snow_identity = ExtResource("2_6hi6u")
-healing_amount_per_second = 20.0
 dancefloor_position_anchor = NodePath("DancefloorPositionAnchor")
+healing_amount_per_second = 20.0
 
 [node name="DancefloorPositionAnchor" type="Marker3D" parent="Components/Capabilities/Ultimate" unique_id=1450508015]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)

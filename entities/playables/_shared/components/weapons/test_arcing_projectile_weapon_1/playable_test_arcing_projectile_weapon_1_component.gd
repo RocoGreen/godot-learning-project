@@ -2,7 +2,7 @@ extends Node3D
 
 
 @export_group("Dependencies")
-@export var entity: PhysicsBody3D;
+@export var playable: CharacterBody3D;
 @export var camera_component: PlayableCameraComponent;
 
 @export_group("Dependencies From Component Scene")
@@ -20,7 +20,7 @@ func _physics_process(_delta: float) -> void:
 
 	var bullet: PlayableTestArcingProjectileWeapon1ComponentBullet = _bullet.instantiate();
 
-	bullet.add_collision_exception_with(entity);
+	bullet.add_collision_exception_with(playable);
 
 	add_child(bullet);
 

@@ -29,7 +29,7 @@ signal damaged(amount: float, old_health: float, new_health: float, attacker: En
 @export var max_health: float = 100.0;
 
 
-static func from_entity(entity: Node) -> EntityHealthComponent:
+static func from_entity(entity: PhysicsBody3D) -> EntityHealthComponent:
 	if not entity:
 		return null;
 
@@ -42,6 +42,23 @@ static func from_entity(entity: Node) -> EntityHealthComponent:
 		return null;
 
 	var entity_health_component: EntityHealthComponent = entity_entity_component.health_component;
+
+	if not entity_health_component:
+		return null;
+
+	return entity_health_component;
+
+
+func from_entity_as_object(object: Object) -> EntityHealthComponent:
+	if not object:
+		return null;
+
+	var entity: PhysicsBody3D = EntityComponent.cast_object_to_entity(object);
+
+	if not entity:
+		return null;
+
+	var entity_health_component: EntityHealthComponent = from_entity(entity);
 
 	if not entity_health_component:
 		return null;

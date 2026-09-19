@@ -29,6 +29,26 @@ signal damaged(amount: float, old_health: float, new_health: float, attacker: En
 @export var max_health: float = 100.0;
 
 
+static func from_entity(entity: Node) -> EntityHealthComponent:
+	if not entity:
+		return null;
+
+	if not EntityComponent.is_entity(entity):
+		return null;
+
+	var entity_entity_component: EntityComponent = EntityComponent.get_from(entity);
+
+	if not entity_entity_component:
+		return null;
+
+	var entity_health_component: EntityHealthComponent = entity_entity_component.health_component;
+
+	if not entity_health_component:
+		return null;
+
+	return entity_health_component;
+
+
 func _init() -> void:
 	if Engine.is_editor_hint() and entity_identity:
 		entity_identity.changed.connect(_on_entity_identity_changed);

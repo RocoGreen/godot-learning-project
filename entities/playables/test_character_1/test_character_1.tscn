@@ -17,7 +17,7 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jd5x5"]
 
-[node name="TestCharacter1" type="CharacterBody3D" unique_id=855105009 groups=["entities"]]
+[node name="TestCharacter1" type="CharacterBody3D" unique_id=855105009]
 collision_mask = 3
 
 [node name="EntityComponent" parent="." unique_id=532691025 node_paths=PackedStringArray("entity", "health_component", "status_receiver_hub_component", "position_anchor_hub_component") instance=ExtResource("1_ybfop")]
@@ -61,8 +61,8 @@ camera_component = NodePath("../../PlayableCameraComponent")
 character_body_3d_utils_component = NodePath("../../PlayableCharacterBody3DUtilsComponent")
 
 [node name="PlayableLunaSnowClapAbilityComponent" parent="Components/Capacities" unique_id=1450733872 node_paths=PackedStringArray("entity", "camera_component") instance=ExtResource("10_wkwh7")]
-entity = NodePath("../../..")
 entity_identity = ExtResource("2_3s4ss")
+entity = NodePath("../../..")
 camera_component = NodePath("../../PlayableCameraComponent")
 
 [node name="PlayableLunaSnowUltimateComponent" parent="Components/Capacities" unique_id=794912583 node_paths=PackedStringArray("dancefloor_position_anchor") instance=ExtResource("10_7it47")]

@@ -15,7 +15,7 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jd5x5"]
 
-[node name="TestCharacter1" type="CharacterBody3D" unique_id=855105009 groups=["entities"]]
+[node name="TestCharacter1" type="CharacterBody3D" unique_id=855105009]
 collision_mask = 3
 
 [node name="EntityComponent" parent="." unique_id=532691025 node_paths=PackedStringArray("entity", "health_component", "status_receiver_hub_component", "position_anchor_hub_component") instance=ExtResource("1_ybfop")]

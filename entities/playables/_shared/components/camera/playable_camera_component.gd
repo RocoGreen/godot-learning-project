@@ -2,9 +2,10 @@
 
 class_name PlayableCameraComponent
 extends Marker3D
+## [b]TODO[/b]: May have to check if the script is easy enough to be understood by others.
 
 
-const _MAX_AIM_DISTANCE: float = 1000.0;
+const _MAXIMUM_AIM_DISTANCE_TO_COVER_ANY_MAP: float = 1000.0;
 
 @export_group("Dependencies")
 @export var playable: CharacterBody3D:
@@ -53,23 +54,52 @@ func ray_to_aim_direction(
 	var space_state: PhysicsDirectSpaceState3D = get_world_3d().get_direct_space_state();
 
 	var ray_start: Vector3 = _camera.get_global_position();
-	var camera_forward_direction_in_world: Vector3 = -_camera.global_basis.z.normalized();
-	var ray_end: Vector3 = ray_start + (camera_forward_direction_in_world * _MAX_AIM_DISTANCE);
-
-	var ray_query := PhysicsRayQueryParameters3D.create(ray_start, ray_end);
+	var camera_forward_vector: Vector3 = -_camera.global_basis.z.normalized();
+	var ray_length: float = _MAXIMUM_AIM_DISTANCE_TO_COVER_ANY_MAP;
+	var ray_end: Vector3 = ray_start + (camera_forward_vector * ray_length);
 
 	if exclude_entity_from_ray:
 		ray_exclusions.append(playable.get_rid());
 
-	ray_query.set_exclude(ray_exclusions);
-	ray_query.set_collision_mask(ray_collision_mask);
+	var ray_query: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(
+			ray_start, 
+			ray_end,
+			ray_collision_mask,
+			ray_exclusions,
+	);
 
-	var ray_result: Dictionary = space_state.intersect_ray(ray_query);
+	var ray_results: Dictionary = space_state.intersect_ray(ray_query);
 
-	return ray_result;
+	return ray_results;
 
 
-func get_position_to_look_at_aim_direction() -> Vector3:
-	var camera_forward_direction_in_world: Vector3 = -_camera.global_basis.z.normalized();
-	
-	return _camera.global_position + (camera_forward_direction_in_world * _MAX_AIM_DISTANCE);
+## Returns a position to look at where the player is aiming at. The position returned is in global
+## space. See below to understand how to use it.
+## [br][br]
+## To get that position, this method will cast a ray that'll start from camera's 
+## global position and travel towards the camera's forward direction with a max length enough to
+## cover any map of the game (1000.0 meters). That same ray will by default mask (collision mask)
+## anything the player can physically aim at in the game which is perfect because it's collision
+## point (if it hits anything) can then be used to reliably look at the direction the player aims at.
+## [br][br]
+## Though, if the ray doesn't hit anything, a fallback position is used that is heuristic enough
+## in long range. And well since the ray's max length is supposed to cover the whole map to begin
+## with, this make the whole method reliable to be used to look at where the player aims at.
+## Perfect for knowing where the bullet should travel at for example.
+## [br][br]
+## [b]TODO[/b]: I decided to not finish the explanation of the method. Please rework the
+## documentation for it.
+func get_position_to_look_at_aim_direction(fallback_only: bool = false) -> Vector3:
+	var camera_forward_vector: Vector3 = -_camera.global_basis.z.normalized();
+	var maximum_aim_distance: float = _MAXIMUM_AIM_DISTANCE_TO_COVER_ANY_MAP;
+
+	var position_to_look_at_aim_direction: Vector3 = \
+		_camera.global_position + (camera_forward_vector * maximum_aim_distance);
+
+	if not fallback_only:
+		var ray_to_get_what_player_aims_at: Dictionary = ray_to_aim_direction();
+
+		if ray_to_get_what_player_aims_at.has("position"):
+			position_to_look_at_aim_direction = ray_to_get_what_player_aims_at.get("position");
+
+	return position_to_look_at_aim_direction;

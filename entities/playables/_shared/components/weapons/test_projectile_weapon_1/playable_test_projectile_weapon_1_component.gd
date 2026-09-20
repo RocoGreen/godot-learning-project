@@ -112,7 +112,7 @@ func _fire_bullet() -> void:
 
 
 func _update_mesh_instance_pivot() -> void:
-	_mesh_instance_pivot.look_at(camera_component.get_position_to_look_at_aim_direction());
+	_mesh_instance_pivot.look_at(camera_component.get_position_to_look_at_aim_direction(true));
 
 
 func _update_frame_ray_point_from_camera_forward() -> void:

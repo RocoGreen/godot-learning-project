@@ -89,7 +89,12 @@ func ray_to_aim_direction(
 ## [br][br]
 ## [b]TODO[/b]: I decided to not finish the explanation of the method. Please rework the
 ## documentation for it.
-func get_position_to_look_at_aim_direction(fallback_only: bool = false) -> Vector3:
+func get_position_to_look_at_aim_direction(
+		fallback_only: bool = false,
+		ray_collision_mask: int = CollisionMaskLibrary.get_entities_and_obstacles(),
+		exclude_entity_from_ray: bool = true,
+		ray_exclusions: Array[RID] = [],
+) -> Vector3:
 	var camera_forward_vector: Vector3 = -_camera.global_basis.z.normalized();
 	var maximum_aim_distance: float = _MAXIMUM_AIM_DISTANCE_TO_COVER_ANY_MAP;
 
@@ -97,9 +102,13 @@ func get_position_to_look_at_aim_direction(fallback_only: bool = false) -> Vecto
 		_camera.global_position + (camera_forward_vector * maximum_aim_distance);
 
 	if not fallback_only:
-		var ray_to_get_what_player_aims_at: Dictionary = ray_to_aim_direction();
+		var ray_to_get_what_player_aims_at_results: Dictionary = ray_to_aim_direction(
+				ray_collision_mask,
+				exclude_entity_from_ray,
+				ray_exclusions,
+		);
 
-		if ray_to_get_what_player_aims_at.has("position"):
-			position_to_look_at_aim_direction = ray_to_get_what_player_aims_at.get("position");
+		if ray_to_get_what_player_aims_at_results.has("position"):
+			position_to_look_at_aim_direction = ray_to_get_what_player_aims_at_results.position;
 
 	return position_to_look_at_aim_direction;

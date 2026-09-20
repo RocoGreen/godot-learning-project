@@ -12,18 +12,18 @@ enum _State {
 };
 
 @export_group("Dependencies")
-@export var luna_snow_identity: EntityIdentity = EntityIdentity.new():
-	set(new_luna_snow_identity):
-		if luna_snow_identity and Engine.is_editor_hint():
-			luna_snow_identity.changed.disconnect(_on_luna_snow_identity_changed);
+@export var playable_luna_snow_identity: EntityIdentity = EntityIdentity.new():
+	set(new_playable_luna_snow_identity):
+		if playable_luna_snow_identity and Engine.is_editor_hint():
+			playable_luna_snow_identity.changed.disconnect(_on_playable_luna_snow_identity_changed);
 
-		luna_snow_identity = new_luna_snow_identity;
+		playable_luna_snow_identity = new_playable_luna_snow_identity;
 
 		if Engine.is_editor_hint():
 			update_configuration_warnings();
 
-			if luna_snow_identity:
-				luna_snow_identity.changed.connect(_on_luna_snow_identity_changed);
+			if playable_luna_snow_identity:
+				playable_luna_snow_identity.changed.connect(_on_playable_luna_snow_identity_changed);
 
 @export var dancefloor_position_anchor: Marker3D:
 	set(new_dancefloor_position_anchor):
@@ -57,8 +57,8 @@ var _state: _State = _State.HEALING:
 		
 		_state = new_state;
 
-var _entities_inside_ultimate: Array[Node] = [];
-var _damage_boosted_entities_requests: Dictionary[Node, EntityDamageBoostRequest] = {};
+var _entities_inside_ultimate: Array[PhysicsBody3D] = [];
+var _damage_boosted_entities_requests: Dictionary[PhysicsBody3D, EntityDamageBoostRequest] = {};
 
 var _input_action_to_start_pressed_at_last_usage_ending: bool = false;
 
@@ -67,8 +67,8 @@ var _input_action_to_start_pressed_at_last_usage_ending: bool = false;
 
 
 func _init() -> void:
-	if Engine.is_editor_hint() and luna_snow_identity:
-		luna_snow_identity.changed.connect(_on_luna_snow_identity_changed);
+	if Engine.is_editor_hint() and playable_luna_snow_identity:
+		playable_luna_snow_identity.changed.connect(_on_playable_luna_snow_identity_changed);
 
 
 func _ready() -> void:
@@ -119,7 +119,9 @@ func _physics_process(delta: float) -> void:
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = PackedStringArray();
 
-	warnings.append_array(ConfigurationWarningLibrary.get_for_entity_identity(luna_snow_identity));
+	warnings.append_array(
+			ConfigurationWarningLibrary.get_for_entity_identity(playable_luna_snow_identity)
+	);
 	
 	if not dancefloor_position_anchor:
 		warnings.append(
@@ -188,11 +190,11 @@ func _toggle_state() -> void:
 
 
 func _heal_entities_inside_ultimate(delta: float) -> void:
-	for entity: Node in _entities_inside_ultimate:
+	for entity: PhysicsBody3D in _entities_inside_ultimate:
 		_apply_healing_to_entity(entity, delta);
 
 
-func _apply_healing_to_entity(entity: Node, delta: float) -> void:
+func _apply_healing_to_entity(entity: PhysicsBody3D, delta: float) -> void:
 	var entity_health_component: EntityHealthComponent = EntityHealthComponent.from_entity(entity);
 
 	if not entity_health_component: return;
@@ -202,13 +204,16 @@ func _apply_healing_to_entity(entity: Node, delta: float) -> void:
 	if _just_started: 
 		healing_to_do = burst_healing_amount_when_just_started;
 
-	var final_healing_done: float = entity_health_component.heal(healing_to_do, luna_snow_identity);
+	var final_healing_done: float = entity_health_component.heal(
+			healing_to_do, 
+			playable_luna_snow_identity,
+	);
 
 	if final_healing_done > 0.0:
 		healed_someone.emit(final_healing_done);
 
 
-func _apply_damage_boost_to_entity(entity: Node) -> void:
+func _apply_damage_boost_to_entity(entity: PhysicsBody3D) -> void:
 	if _damage_boosted_entities_requests.has(entity): return;
 
 	var entity_damage_boost_status_receiver := EntityDamageBoostStatusReceiver.from_entity(entity);
@@ -217,7 +222,7 @@ func _apply_damage_boost_to_entity(entity: Node) -> void:
 
 	var damage_boost_request: EntityDamageBoostRequest = EntityDamageBoostRequest.new(
 			damage_boost_amount_percentage, 
-			luna_snow_identity
+			playable_luna_snow_identity
 	);
 
 	entity_damage_boost_status_receiver.add_damage_boost_request(damage_boost_request);
@@ -225,11 +230,11 @@ func _apply_damage_boost_to_entity(entity: Node) -> void:
 
 
 func _apply_damage_boost_to_entities_inside_ultimate() -> void:
-	for entity_inside_ultimate: Node in _entities_inside_ultimate:
+	for entity_inside_ultimate: PhysicsBody3D in _entities_inside_ultimate:
 		_apply_damage_boost_to_entity(entity_inside_ultimate);
 
 
-func _remove_damage_boost_to_entity(entity: Node) -> void:
+func _remove_damage_boost_to_entity(entity: PhysicsBody3D) -> void:
 	if not _damage_boosted_entities_requests.has(entity): return;
 
 	var entity_damage_boost_status_receiver := EntityDamageBoostStatusReceiver.from_entity(entity);
@@ -244,43 +249,43 @@ func _remove_damage_boost_to_entity(entity: Node) -> void:
 
 
 func _remove_all_damage_boosted_entities() -> void:
-	for damage_boosted_entity: Node in _damage_boosted_entities_requests.keys():
+	for damage_boosted_entity: PhysicsBody3D in _damage_boosted_entities_requests.keys():
 		_remove_damage_boost_to_entity(damage_boosted_entity);
 
 
 func _on_body_entered(body: Node3D) -> void:
-	if not EntityComponent.is_entity(body): return;
-	
-	var entity: Node = EntityComponent.cast_object_to_entity(body);
-	var entity_identity: EntityIdentity = EntityIdentity.from_entity(entity);
+	if not EntityComponent.is_object_an_entity(body): return;
 
-	if not entity_identity: return;
-	if not entity_identity.team == luna_snow_identity.team: return;
+	var entity_who_entered: PhysicsBody3D = EntityComponent.cast_object_to_entity(body);
+	var entity_who_entered_identity := EntityIdentity.from_entity(entity_who_entered);
 
-	_entities_inside_ultimate.append(entity);
+	if not entity_who_entered_identity: return;
+	if not entity_who_entered_identity.team == playable_luna_snow_identity.team: return;
+
+	_entities_inside_ultimate.append(entity_who_entered);
 
 	if not _active: return; 
 	if _state != _State.DAMAGE_BOOSTING: return;
 
-	_apply_damage_boost_to_entity(entity);
+	_apply_damage_boost_to_entity(entity_who_entered);
 
 
 func _on_body_exited(body: Node3D) -> void:
-	if not EntityComponent.is_entity(body): return;
-	
-	var entity: Node = EntityComponent.cast_object_to_entity(body);
-	var entity_identity: EntityIdentity = EntityIdentity.from_entity(entity);
+	if not EntityComponent.is_object_an_entity(body): return;
 
-	if not entity_identity: return;
-	if not entity_identity.team == luna_snow_identity.team: return;
+	var entity_who_exited: PhysicsBody3D = EntityComponent.cast_object_to_entity(body);
+	var entity_who_exited_identity := EntityIdentity.from_entity(entity_who_exited);
 
-	_entities_inside_ultimate.erase(entity);
+	if not entity_who_exited_identity: return;
+	if not entity_who_exited_identity.team == playable_luna_snow_identity.team: return;
+
+	_entities_inside_ultimate.erase(entity_who_exited);
 
 	if not _active: return; 
 	if _state != _State.DAMAGE_BOOSTING: return;
 
-	_remove_damage_boost_to_entity(entity);
+	_remove_damage_boost_to_entity(entity_who_exited);
 
 
-func _on_luna_snow_identity_changed() -> void:
+func _on_playable_luna_snow_identity_changed() -> void:
 	update_configuration_warnings();

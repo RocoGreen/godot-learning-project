@@ -1,7 +1,7 @@
 @tool
 
 class_name PlayableLunaSnowClapAbilityComponent
-extends ShapeCast3D
+extends Node3D
 
 
 signal healed_someone(amount: float);
@@ -14,18 +14,18 @@ signal healed_someone(amount: float);
 		if Engine.is_editor_hint():
 			update_configuration_warnings();
 
-@export var luna_snow_identity: EntityIdentity = EntityIdentity.new():
-	set(new_luna_snow_identity):
-		if luna_snow_identity and Engine.is_editor_hint():
-			luna_snow_identity.changed.disconnect(_on_luna_snow_identity_changed);
+@export var playable_luna_snow_identity: EntityIdentity = EntityIdentity.new():
+	set(new_playable_luna_snow_identity):
+		if playable_luna_snow_identity and Engine.is_editor_hint():
+			playable_luna_snow_identity.changed.disconnect(_on_playable_luna_snow_identity_changed);
 
-		luna_snow_identity = new_luna_snow_identity;
+		playable_luna_snow_identity = new_playable_luna_snow_identity;
 
 		if Engine.is_editor_hint():
 			update_configuration_warnings();
 
-			if luna_snow_identity:
-				luna_snow_identity.changed.connect(_on_luna_snow_identity_changed);
+			if playable_luna_snow_identity:
+				playable_luna_snow_identity.changed.connect(_on_playable_luna_snow_identity_changed);
 
 @export var camera_component: PlayableCameraComponent:
 	set(new_camera_component):
@@ -39,35 +39,50 @@ signal healed_someone(amount: float);
 @export_group("Settings")
 @export var time_seconds_to_start: float = 2.0;
 @export var duration_time_seconds: float = 8.0;
-@export var time_seconds_to_wait_before_next_clap: float = 1.0;
+@export var recovery_time_seconds_for_next_clap: float = 1.0;
 @export_custom(PROPERTY_HINT_INPUT_NAME, "") var input_action_to_start: StringName = &"ability_2";
 
 @export_group("Settings Specific to Clap")
 @export var healing_per_clap: float = 60.0;
 @export var damage_per_clap: float = 50.0;
-@export var clap_max_length_meters: float = 40.0;
+@export var clap_radius_meters: float = 0.5;
+@export var clap_maximum_length_meters: float = 40.0;
 @export var clap_vfx_display_duration_seconds: float = 0.1;
 
 var _starting: bool = false;
 var _active: bool = false;
-var _waiting_before_next_clap: bool = false;
+var _in_recovery_for_next_clap: bool = false;
 
 var _input_action_to_start_pressed_at_last_usage_ending: bool = false;
 
+@onready var entities_detector_pivot_node_3d: Node3D = %EntitiesDetectorPivot;
+@onready var entities_detector_shape_cast: ShapeCast3D = %EntitiesDetector;
+
 @onready var obstacle_at_center_detector_ray_cast: RayCast3D = %ObstacleAtCenterDetector;
 
+@onready var start_time_timer: Timer = %StartTime;
+@onready var duration_time_timer: Timer = %DurationTime;
+@onready var recovery_time_for_next_clap_timer: Timer = %RecoveryTimeForNextClap;
+@onready var clap_vfx_visibility_time_timer: Timer = %ClapVFXVisibilityTime;
+
+@onready var clap_vfx_pivot_node_3d: Node3D = %ClapVFXPivot;
 @onready var clap_vfx_mesh_instance: MeshInstance3D = %ClapVFX;
 
 
 func _init() -> void:
-	if Engine.is_editor_hint() and luna_snow_identity:
-		luna_snow_identity.changed.connect(_on_luna_snow_identity_changed);
+	if Engine.is_editor_hint() and playable_luna_snow_identity:
+		playable_luna_snow_identity.changed.connect(_on_playable_luna_snow_identity_changed);
 
 
 func _ready() -> void:
 	if Engine.is_editor_hint(): return;
 
-	add_exception(playable_luna_snow);
+	entities_detector_shape_cast.add_exception(playable_luna_snow);
+
+	start_time_timer.timeout.connect(_on_start_time_timer_timeout);
+	duration_time_timer.timeout.connect(_on_duration_time_timer_timeout);
+	recovery_time_for_next_clap_timer.timeout.connect(_on_recovery_time_for_next_clap_timer_timeout);
+	clap_vfx_visibility_time_timer.timeout.connect(_on_clap_vfx_visibility_time_timer_timeout);
 
 
 func _physics_process(_delta: float) -> void:
@@ -83,7 +98,7 @@ func _physics_process(_delta: float) -> void:
 		if not _active:
 			_start();
 
-		elif not _starting and not _waiting_before_next_clap:
+		elif not _starting and not _in_recovery_for_next_clap:
 			_clap();
 
 
@@ -94,7 +109,9 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 	warnings.append_array(ConfigurationWarningLibrary.get_for_camera_component(camera_component));
 
-	warnings.append_array(ConfigurationWarningLibrary.get_for_entity_identity(luna_snow_identity));
+	warnings.append_array(
+			ConfigurationWarningLibrary.get_for_entity_identity(playable_luna_snow_identity),
+	);
 
 	return warnings;
 
@@ -103,65 +120,50 @@ func _start() -> void:
 	_active = true;
 
 	_starting = true;
+	start_time_timer.start(time_seconds_to_start);
+
 	print("Luna Clap Ability Starting...");
-
-	await get_tree().create_timer(time_seconds_to_start).timeout;
-
-	_starting = false;
-	print("Luna Clap Ability Started ! Press the input action to clap if you're not already.");
-
-	await get_tree().create_timer(duration_time_seconds).timeout;
-
-	_end_and_reset();
 
 
 func _clap() -> void:
 	var where_clap_starts: Vector3 = _get_where_clap_starts();
 	var where_clap_ends: Vector3 = _get_where_clap_ends();
-	var clap_length: float = where_clap_starts.distance_to(where_clap_ends);
+	var clap_length_meters: float = where_clap_starts.distance_to(where_clap_ends);
 
-	look_at_from_position(where_clap_starts, where_clap_ends);
+	_setup_entities_detector_shape_cast_and_pivot_node_3d(
+			where_clap_starts, 
+			where_clap_ends,
+			clap_length_meters,
+	);
 
-	shape = shape as BoxShape3D;
-	shape.size.z = clap_length;
+	entities_detector_shape_cast.force_shapecast_update();
+	_display_clap_vfx(where_clap_starts, where_clap_ends, clap_length_meters);
 
-	target_position.z = -(clap_length / 2.0);
+	if entities_detector_shape_cast.get_collision_count() > 0:
+		_heal_or_damage_entities_hit_by_clap();
 
-	force_shapecast_update();
-	_display_clap_vfx(where_clap_starts, where_clap_ends);
+	_in_recovery_for_next_clap = true;
+	recovery_time_for_next_clap_timer.start(recovery_time_seconds_for_next_clap);
 
-	for collider_index: int in range(get_collision_count()):
-		var collider: Object = get_collider(collider_index);
-
-		var target_identity: EntityIdentity = EntityIdentity.from_entity(collider);
-
-		if not target_identity: return;
-
-		if target_identity.team == luna_snow_identity.team:
-			_apply_healing_to_entity(collider);
-		else:
-			_apply_damage_to_entity(collider);
-
-	_waiting_before_next_clap = true;
 	print("You just clapped ! In recovery for next shot...");
 
-	await get_tree().create_timer(time_seconds_to_wait_before_next_clap).timeout;
 
-	if _active:
-		_waiting_before_next_clap = false;
-		print("Recovery over ! Press the input action if you're not already to clap once more !");
+func _setup_entities_detector_shape_cast_and_pivot_node_3d(
+		where_clap_starts_this_frame: Vector3,
+		where_clap_ends_this_frame: Vector3,
+		clap_length_meters_of_this_frame: float,
+) -> void:
+	var detector_shape_cast: ShapeCast3D = entities_detector_shape_cast;
+	var detector_shape_cast_shape: CylinderShape3D = detector_shape_cast.shape as CylinderShape3D;
+	var pivot_node_3d: Node3D = entities_detector_pivot_node_3d;
 
+	detector_shape_cast_shape.height = clap_length_meters_of_this_frame;
+	detector_shape_cast_shape.radius = clap_radius_meters;
 
-func _end_and_reset() -> void:
-	_active = false;
-	_starting = false;
-	_waiting_before_next_clap = false;
-	clap_vfx_mesh_instance.hide();
+	pivot_node_3d.look_at_from_position(where_clap_starts_this_frame, where_clap_ends_this_frame);
 
-	if Input.is_action_pressed(input_action_to_start):
-		_input_action_to_start_pressed_at_last_usage_ending = true;
-
-	print("Luna Clap Ability Ended !");
+	var pivot_forward_vector: Vector3 = -pivot_node_3d.global_basis.z.normalized();
+	pivot_node_3d.global_position += pivot_forward_vector * (clap_length_meters_of_this_frame / 2.0);
 
 
 func _get_where_clap_starts() -> Vector3:
@@ -169,67 +171,154 @@ func _get_where_clap_starts() -> Vector3:
 
 
 func _get_where_clap_ends() -> Vector3:
-	var ray_to_get_what_player_aims_at_results: Dictionary = camera_component.ray_to_aim_direction();
+	var ray_to_get_obstacle_player_aims_at_info: Dictionary = camera_component.ray_to_aim_direction(
+			CollisionMaskLibrary.get_obstacles()
+	);
 
 	var where_to_clap_at: Vector3;
-	if ray_to_get_what_player_aims_at_results.has("position"):
-		where_to_clap_at = ray_to_get_what_player_aims_at_results.get("position");
+
+	if ray_to_get_obstacle_player_aims_at_info.has("position"):
+		where_to_clap_at = ray_to_get_obstacle_player_aims_at_info.get("position");
 	else:
 		where_to_clap_at = camera_component.get_position_to_look_at_aim_direction();
 
 	var where_clap_starts: Vector3 = _get_where_clap_starts();
+
 	obstacle_at_center_detector_ray_cast.look_at_from_position(where_clap_starts, where_to_clap_at);
-	obstacle_at_center_detector_ray_cast.target_position.z = -clap_max_length_meters;
+	obstacle_at_center_detector_ray_cast.target_position.z = -clap_maximum_length_meters;
 
 	obstacle_at_center_detector_ray_cast.force_raycast_update();
 
 	var where_clap_ends: Vector3;
+
 	if obstacle_at_center_detector_ray_cast.is_colliding():
 		where_clap_ends = obstacle_at_center_detector_ray_cast.get_collision_point();
 	else:
 		var clap_direction: Vector3 = where_clap_starts.direction_to(where_to_clap_at);
-		where_clap_ends = where_clap_starts + (clap_direction * clap_max_length_meters);
+		where_clap_ends = where_clap_starts + (clap_direction * clap_maximum_length_meters);
 
 	return where_clap_ends;
 
 
-func _apply_healing_to_entity(entity: Node) -> void:
-	var target_health_component := EntityHealthComponent.from_entity(entity);
+func _heal_or_damage_entities_hit_by_clap() -> void:
+	for collider_index: int in range(entities_detector_shape_cast.get_collision_count()):
+		var collider: Object = entities_detector_shape_cast.get_collider(collider_index);
 
-	if not target_health_component: return;
+		if not EntityComponent.is_object_an_entity(collider): return;
 
-	var final_healing_done: float = target_health_component.heal(healing_per_clap, luna_snow_identity);
+		var collider_entity: PhysicsBody3D = EntityComponent.cast_object_to_entity(collider);
+		var collider_entity_identity: EntityIdentity = EntityIdentity.from_entity(collider_entity);
+
+		if not collider_entity_identity: return;
+
+		if collider_entity_identity.team == playable_luna_snow_identity.team:
+			_apply_healing_to_entity(collider_entity);
+		else:
+			_apply_damage_to_entity(collider_entity);
+
+
+func _apply_healing_to_entity(entity: PhysicsBody3D) -> void:
+	var entity_health_component: EntityHealthComponent = EntityHealthComponent.from_entity(entity);
+
+	if not entity_health_component: return;
+
+	var final_healing_done: float = entity_health_component.heal(
+			healing_per_clap,
+			playable_luna_snow_identity,
+	);
 
 	if final_healing_done > 0.0:
 		healed_someone.emit(final_healing_done);
 
 
-func _apply_damage_to_entity(entity: Node) -> void:
-	var target_health_component := EntityHealthComponent.from_entity(entity);
+func _apply_damage_to_entity(entity: PhysicsBody3D) -> void:
+	var entity_health_component: EntityHealthComponent = EntityHealthComponent.from_entity(entity);
 
-	if not target_health_component: return;
+	if not entity_health_component: return;
 
-	target_health_component.damage(damage_per_clap, luna_snow_identity);
+	entity_health_component.damage(damage_per_clap, playable_luna_snow_identity);
 
 
-func _display_clap_vfx(start_position: Vector3, end_position: Vector3) -> void:
-	var clap_length: float = start_position.distance_to(end_position);
-
-	clap_vfx_mesh_instance.mesh = clap_vfx_mesh_instance.mesh as BoxMesh;
-	clap_vfx_mesh_instance.mesh.size.z = clap_length;
-
-	clap_vfx_mesh_instance.look_at_from_position(start_position, end_position);
-	# Of clap_vfx_mesh_instance.
-	var forward_vector: Vector3 = -clap_vfx_mesh_instance.global_basis.z.normalized();
-	clap_vfx_mesh_instance.global_position += forward_vector * (clap_length / 2.0);
+func _display_clap_vfx(
+		where_clap_starts_this_frame: Vector3, 
+		where_clap_ends_this_frame: Vector3,
+		clap_length_meters_of_this_frame: float,
+) -> void:
+	_setup_clap_vfx_mesh_instance_and_pivot_node_3d(
+			where_clap_starts_this_frame,
+			where_clap_ends_this_frame,
+			clap_length_meters_of_this_frame,
+	);
 
 	clap_vfx_mesh_instance.show();
 
-	await get_tree().create_timer(clap_vfx_display_duration_seconds).timeout;
+	clap_vfx_visibility_time_timer.start(clap_vfx_display_duration_seconds);
 
-	if _active:
+
+func _setup_clap_vfx_mesh_instance_and_pivot_node_3d(
+		where_clap_starts_this_frame: Vector3, 
+		where_clap_ends_this_frame: Vector3,
+		clap_length_meters_of_this_frame: float,
+) -> void:
+	var mesh_instance: MeshInstance3D = clap_vfx_mesh_instance;
+	var mesh_instance_mesh: CylinderMesh = mesh_instance.mesh as CylinderMesh;
+	var pivot_node_3d: Node3D = clap_vfx_pivot_node_3d;
+
+	mesh_instance_mesh.height = clap_length_meters_of_this_frame;
+	mesh_instance_mesh.top_radius = clap_radius_meters;
+	mesh_instance_mesh.bottom_radius = clap_radius_meters;
+
+	pivot_node_3d.look_at_from_position(where_clap_starts_this_frame, where_clap_ends_this_frame);
+
+	var pivot_forward_vector: Vector3 = -pivot_node_3d.global_basis.z.normalized();
+	pivot_node_3d.global_position += pivot_forward_vector * (clap_length_meters_of_this_frame / 2.0);
+
+
+func _end_and_reset() -> void:
+	_active = false;
+	_starting = false;
+	_in_recovery_for_next_clap = false;
+
+	if not start_time_timer.is_stopped():
+		start_time_timer.stop();
+
+	if not recovery_time_for_next_clap_timer.is_stopped():
+		recovery_time_for_next_clap_timer.stop();
+
+	if not duration_time_timer.is_stopped():
+		duration_time_timer.stop();
+
+	if not clap_vfx_visibility_time_timer.is_stopped():
+		clap_vfx_visibility_time_timer.stop();
+
+	if clap_vfx_mesh_instance.is_visible():
 		clap_vfx_mesh_instance.hide();
 
+	if Input.is_action_pressed(input_action_to_start):
+		_input_action_to_start_pressed_at_last_usage_ending = true;
 
-func _on_luna_snow_identity_changed() -> void:
+	print("Luna Clap Ability Ended and Resetted !");
+
+
+func _on_start_time_timer_timeout() -> void:
+	_starting = false;
+	print("Luna Clap Ability Started ! Press the input action to clap if you're not already.");
+
+	duration_time_timer.start(duration_time_seconds);
+
+
+func _on_duration_time_timer_timeout() -> void:
+	_end_and_reset();
+
+
+func _on_recovery_time_for_next_clap_timer_timeout() -> void:
+	_in_recovery_for_next_clap = false;
+	print("Recovery over ! Press the input action if you're not already to clap once more !");
+
+
+func _on_clap_vfx_visibility_time_timer_timeout() -> void:
+	clap_vfx_mesh_instance.hide();
+
+
+func _on_playable_luna_snow_identity_changed() -> void:
 	update_configuration_warnings();

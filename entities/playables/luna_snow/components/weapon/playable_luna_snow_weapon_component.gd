@@ -10,7 +10,7 @@ enum _ManualMode {
 };
 
 @export_group("Dependencies")
-@export var luna_snow_identity: EntityIdentity;
+@export var playable_luna_snow_identity: EntityIdentity;
 @export var camera_component: PlayableCameraComponent;
 
 @export_group("Settings")
@@ -89,45 +89,50 @@ func _shoot_bullet() -> void:
 	var aim_point_on_what_player_aims_at: Vector3 = bullet_ray_cast.get_collision_point();
 
 	if EntityComponent.is_object_an_entity(what_player_aims_at):
-		var entity_to_heal_or_damage: Node = EntityComponent.cast_object_to_entity(what_player_aims_at);
-		var entity_to_heal_or_damage_identity := EntityIdentity.from_entity(entity_to_heal_or_damage);
-		
-		if not entity_to_heal_or_damage_identity: return;
+		var entity_player_aims_at: PhysicsBody3D = \
+				EntityComponent.cast_object_to_entity(what_player_aims_at);
+		var entity_player_aims_at_identity := EntityIdentity.from_entity(entity_player_aims_at);
 
-		if healing_or_damage_manual_mode:
-			if _manual_mode == _ManualMode.HEALING:
-				_apply_healing_to_entity(entity_to_heal_or_damage);
-			elif _manual_mode == _ManualMode.DAMAGE:
-				_apply_damage_to_entity(entity_to_heal_or_damage);
+		if entity_player_aims_at_identity: 
+			if healing_or_damage_manual_mode:
+				if _manual_mode == _ManualMode.HEALING:
+					_apply_healing_to_entity(entity_player_aims_at);
 
-		else:
-			if entity_to_heal_or_damage_identity.team == luna_snow_identity.team:
-				_apply_healing_to_entity(entity_to_heal_or_damage);
+				elif _manual_mode == _ManualMode.DAMAGE:
+					_apply_damage_to_entity(entity_player_aims_at);
+
 			else:
-				_apply_damage_to_entity(entity_to_heal_or_damage);
+				if entity_player_aims_at_identity.team == playable_luna_snow_identity.team:
+					_apply_healing_to_entity(entity_player_aims_at);
+
+				else:
+					_apply_damage_to_entity(entity_player_aims_at);
 
 	_draw_line_end = aim_point_on_what_player_aims_at;
 	await get_tree().create_timer(0.1).timeout;
 	_draw_line_end = Vector3.ZERO;
 
 
-func _apply_healing_to_entity(entity: Node) -> void:
-	var target_health_component: EntityHealthComponent = EntityHealthComponent.from_entity(entity);
+func _apply_healing_to_entity(entity: PhysicsBody3D) -> void:
+	var entity_health_component: EntityHealthComponent = EntityHealthComponent.from_entity(entity);
 
-	if not target_health_component: return;
+	if not entity_health_component: return;
 
-	var final_healing_done: float = target_health_component.heal(healing_per_shot, luna_snow_identity);
+	var final_healing_done: float = entity_health_component.heal(
+			healing_per_shot, 
+			playable_luna_snow_identity,
+	);
 
 	if final_healing_done > 0.0:
 		healed_someone.emit(final_healing_done);
 
 
-func _apply_damage_to_entity(entity: Node) -> void:
-	var target_health_component: EntityHealthComponent = EntityHealthComponent.from_entity(entity);
+func _apply_damage_to_entity(entity: PhysicsBody3D) -> void:
+	var entity_health_component: EntityHealthComponent = EntityHealthComponent.from_entity(entity);
 
-	if not target_health_component: return;
+	if not entity_health_component: return;
 
-	target_health_component.damage(damage_per_shot, luna_snow_identity);
+	entity_health_component.damage(damage_per_shot, playable_luna_snow_identity);
 
 
 func _toggle_manual_mode() -> void:

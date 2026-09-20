@@ -2,7 +2,7 @@ extends Node
 
 
 @export_group("Dependencies")
-@export var luna_snow_identity: EntityIdentity;
+@export var playable_luna_snow_identity: EntityIdentity;
 @export var camera_component: PlayableCameraComponent;
 
 @export var weapon_component: PlayableLunaSnowWeaponComponent;
@@ -41,14 +41,24 @@ func _flake_entity_player_aims_at() -> void:
 	# Using `Object` type because a ray's collider will always be an `Object`.
 	var what_player_aims_at: Object = ray_to_get_what_player_aims_at_results.get("collider");
 
-	var target_identity: EntityIdentity = EntityIdentity.from_entity(what_player_aims_at);
-	var target_health_component := EntityHealthComponent.from_entity(what_player_aims_at);
+	if not EntityComponent.is_object_an_entity(what_player_aims_at): return;
 
-	if not target_identity or not target_health_component: return;
-	if not allow_flake_for_any_entity and target_identity.team != luna_snow_identity.team: return;
+	var entity_to_flake: PhysicsBody3D = EntityComponent.cast_object_to_entity(what_player_aims_at);
+	var entity_to_flake_identity: EntityIdentity = EntityIdentity.from_entity(entity_to_flake);
+	var entity_to_flake_health_component := EntityHealthComponent.from_entity(entity_to_flake);
 
-	_flaked_entity_health_component = target_health_component;
-	print("%s has been flaked !" % target_identity.name);
+	if not entity_to_flake_identity or not entity_to_flake_health_component: 
+		return;
+
+	if (
+			not allow_flake_for_any_entity \
+			and \
+			entity_to_flake_identity.team != playable_luna_snow_identity.team
+	): 
+		return;
+
+	_flaked_entity_health_component = entity_to_flake_health_component;
+	print("%s has been flaked !" % entity_to_flake_identity.name);
 
 
 func _revoke_flake() -> void:
@@ -61,7 +71,7 @@ func _heal_flaked_entity(real_amount_healed: float) -> void:
 	if not _flaked_entity_health_component: return;
 
 	var healing_to_do: float = _what_is_percentage_of(percentage_from_healing, real_amount_healed);
-	_flaked_entity_health_component.heal(healing_to_do, luna_snow_identity);
+	_flaked_entity_health_component.heal(healing_to_do, playable_luna_snow_identity);
 
 
 func _what_is_percentage_of(percentage: int, of: float) -> float:

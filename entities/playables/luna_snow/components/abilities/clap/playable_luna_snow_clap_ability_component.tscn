@@ -3,36 +3,68 @@
 [ext_resource type="Script" uid="uid://cbm0mmefq0hy" path="res://entities/playables/luna_snow/components/abilities/clap/playable_luna_snow_clap_ability_component.gd" id="1_x2nfb"]
 [ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/identity/entity_identity.gd" id="2_otg8i"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_ebswh"]
-
-[sub_resource type="Resource" id="Resource_ebswh"]
+[sub_resource type="Resource" id="Resource_otg8i"]
 script = ExtResource("2_otg8i")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_otg8i"]
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_otg8i"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ebswh"]
 albedo_color = Color(0.42882344, 0.54820573, 0.99335474, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_ebswh"]
-material = SubResource("StandardMaterial3D_otg8i")
-size = Vector3(1, 1, 5)
+[sub_resource type="CylinderMesh" id="CylinderMesh_nbgk1"]
+material = SubResource("StandardMaterial3D_ebswh")
 
-[node name="PlayableLunaSnowClapAbilityComponent" type="ShapeCast3D" unique_id=1250991652]
-top_level = true
-enabled = false
-shape = SubResource("BoxShape3D_ebswh")
-exclude_parent = false
-target_position = Vector3(0, 0, 0)
+[node name="PlayableLunaSnowClapAbilityComponent" type="Node3D" unique_id=824551077]
 script = ExtResource("1_x2nfb")
-luna_snow_identity = SubResource("Resource_ebswh")
+playable_luna_snow_identity = SubResource("Resource_otg8i")
 
-[node name="ObstacleAtCenterDetector" type="RayCast3D" parent="." unique_id=2041355603]
+[node name="Detectors" type="Node3D" parent="." unique_id=691485049]
+
+[node name="EntitiesDetectorPivot" type="Node3D" parent="Detectors" unique_id=1254183556]
+unique_name_in_owner = true
+top_level = true
+
+[node name="EntitiesDetector" type="ShapeCast3D" parent="Detectors/EntitiesDetectorPivot" unique_id=449162983]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, -8.940697e-08, 1, 0, -1, -8.940697e-08, 0, 0, 0)
+enabled = false
+shape = SubResource("CylinderShape3D_otg8i")
+target_position = Vector3(0, 0, 0)
+
+[node name="ObstacleAtCenterDetector" type="RayCast3D" parent="Detectors" unique_id=2041355603]
 unique_name_in_owner = true
 top_level = true
 enabled = false
 target_position = Vector3(0, 0, 0)
 collision_mask = 2
 
-[node name="ClapVFX" type="MeshInstance3D" parent="." unique_id=1596381071]
+[node name="Timers" type="Node" parent="." unique_id=1066985193]
+
+[node name="StartTime" type="Timer" parent="Timers" unique_id=1515455296]
+unique_name_in_owner = true
+process_callback = 0
+one_shot = true
+
+[node name="DurationTime" type="Timer" parent="Timers" unique_id=233178027]
+unique_name_in_owner = true
+process_callback = 0
+one_shot = true
+
+[node name="RecoveryTimeForNextClap" type="Timer" parent="Timers" unique_id=1574834678]
+unique_name_in_owner = true
+process_callback = 0
+one_shot = true
+
+[node name="ClapVFXVisibilityTime" type="Timer" parent="Timers" unique_id=315050630]
+unique_name_in_owner = true
+one_shot = true
+
+[node name="ClapVFXPivot" type="Node3D" parent="." unique_id=699415540]
 unique_name_in_owner = true
 top_level = true
+
+[node name="ClapVFX" type="MeshInstance3D" parent="ClapVFXPivot" unique_id=1596381071]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
 visible = false
-mesh = SubResource("BoxMesh_ebswh")
+mesh = SubResource("CylinderMesh_nbgk1")

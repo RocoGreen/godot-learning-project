@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://coqcni43ymjxa" path="res://entities/_shared/components/entity/entity_component.tscn" id="1_a6ekt"]
 [ext_resource type="Script" uid="uid://cgqqucxi8vmni" path="res://entities/playables/luna_snow/playable_luna_snow.gd" id="1_hvm6w"]
-[ext_resource type="Resource" uid="uid://chhw2k28x473" path="res://entities/playables/luna_snow/playable_luna_snow_identity.tres" id="2_6hi6u"]
+[ext_resource type="Resource" uid="uid://chhw2k28x473" path="res://entities/playables/luna_snow/identity/playable_luna_snow_identity.tres" id="2_6hi6u"]
 [ext_resource type="PackedScene" uid="uid://dpm4llvw6alin" path="res://entities/playables/_shared/components/character_body_3d_utils/playable_character_body_3d_utils_component.tscn" id="3_gfjr5"]
 [ext_resource type="PackedScene" uid="uid://cbeqj73rklldr" path="res://entities/playables/_shared/components/camera/playable_camera_component.tscn" id="4_hvm6w"]
 [ext_resource type="PackedScene" uid="uid://dgavxxiu7xo4s" path="res://entities/playables/_shared/components/rotation_handling_by_mouse/playable_rotation_handling_by_mouse_component.tscn" id="5_ak8u0"]
@@ -35,17 +35,19 @@ position_anchor_hub_component = NodePath("../Components/GameMechanicsSupport/Pos
 
 [node name="Components" type="Node3D" parent="." unique_id=645852326]
 
-[node name="CharacterBodyUtils" parent="Components" unique_id=40130539 node_paths=PackedStringArray("playable") instance=ExtResource("3_gfjr5")]
-playable = NodePath("../..")
+[node name="Uncategorized" type="Node3D" parent="Components" unique_id=1818841968]
 
-[node name="ForPlayerControls" type="Node3D" parent="Components" unique_id=1273793414]
+[node name="CharacterBodyUtils" parent="Components/Uncategorized" unique_id=40130539 node_paths=PackedStringArray("playable") instance=ExtResource("3_gfjr5")]
+playable = NodePath("../../..")
 
-[node name="Camera" parent="Components/ForPlayerControls" unique_id=825915530 node_paths=PackedStringArray("playable") instance=ExtResource("4_hvm6w")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8974626, 0.61176896, 0)
+[node name="ForPlayer" type="Node3D" parent="Components" unique_id=1273793414]
+
+[node name="Camera" parent="Components/ForPlayer" unique_id=825915530 node_paths=PackedStringArray("playable") instance=ExtResource("4_hvm6w")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1276095, 0.61176896, 0)
 playable = NodePath("../../..")
 following_smoothness = 0.9
 
-[node name="RotationHandlingByMouse" parent="Components/ForPlayerControls" unique_id=1377482824 node_paths=PackedStringArray("playable") instance=ExtResource("5_ak8u0")]
+[node name="RotationHandlingByMouse" parent="Components/ForPlayer" unique_id=1377482824 node_paths=PackedStringArray("playable") instance=ExtResource("5_ak8u0")]
 playable = NodePath("../../..")
 
 [node name="InteractionWithGame" type="Node3D" parent="Components" unique_id=2001931699]
@@ -66,17 +68,17 @@ center_anchor = NodePath("CenterAnchor")
 [node name="Capabilities" type="Node3D" parent="Components" unique_id=994099245]
 
 [node name="Weapon" parent="Components/Capabilities" unique_id=2139518994 node_paths=PackedStringArray("camera_component") instance=ExtResource("9_6hi6u")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.76152384, 0, 0)
-luna_snow_identity = ExtResource("2_6hi6u")
-camera_component = NodePath("../../ForPlayerControls/Camera")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6132339, 0.3297001, 0)
+playable_luna_snow_identity = ExtResource("2_6hi6u")
+camera_component = NodePath("../../ForPlayer/Camera")
 recovery_delay_after_valley = 0.2
 healing_or_damage_manual_mode = true
 
 [node name="Abilities" type="Node3D" parent="Components/Capabilities" unique_id=1216301184]
 
 [node name="Flake" parent="Components/Capabilities/Abilities" unique_id=1180374649 node_paths=PackedStringArray("camera_component", "weapon_component", "clap_ability_component", "ultimate_component") instance=ExtResource("10_gfjr5")]
-luna_snow_identity = ExtResource("2_6hi6u")
-camera_component = NodePath("../../../ForPlayerControls/Camera")
+playable_luna_snow_identity = ExtResource("2_6hi6u")
+camera_component = NodePath("../../../ForPlayer/Camera")
 weapon_component = NodePath("../../Weapon")
 clap_ability_component = NodePath("../Clap")
 ultimate_component = NodePath("../../Ultimate")
@@ -84,12 +86,12 @@ allow_flake_for_any_entity = true
 
 [node name="Clap" parent="Components/Capabilities/Abilities" unique_id=1450733872 node_paths=PackedStringArray("playable_luna_snow", "camera_component", "weapon_component") instance=ExtResource("9_ou7k7")]
 playable_luna_snow = NodePath("../../../..")
-luna_snow_identity = ExtResource("2_6hi6u")
-camera_component = NodePath("../../../ForPlayerControls/Camera")
+playable_luna_snow_identity = ExtResource("2_6hi6u")
+camera_component = NodePath("../../../ForPlayer/Camera")
 weapon_component = NodePath("../../Weapon")
 
 [node name="Ultimate" parent="Components/Capabilities" unique_id=794912583 node_paths=PackedStringArray("dancefloor_position_anchor") instance=ExtResource("10_2bkg8")]
-luna_snow_identity = ExtResource("2_6hi6u")
+playable_luna_snow_identity = ExtResource("2_6hi6u")
 dancefloor_position_anchor = NodePath("DancefloorPositionAnchor")
 healing_amount_per_second = 20.0
 
@@ -106,16 +108,13 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="Crosshair" type="ColorRect" parent="UI" unique_id=1507356431]
+custom_minimum_size = Vector2(3, 3)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -5.0
-offset_top = -5.0
-offset_right = 5.0
-offset_bottom = 5.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2

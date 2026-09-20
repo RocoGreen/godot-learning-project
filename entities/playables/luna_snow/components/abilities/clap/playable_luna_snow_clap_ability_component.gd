@@ -171,33 +171,22 @@ func _get_where_clap_starts() -> Vector3:
 
 
 func _get_where_clap_ends() -> Vector3:
-	var ray_to_get_obstacle_player_aims_at_info: Dictionary = camera_component.ray_to_aim_direction(
-			CollisionMaskLibrary.get_obstacles()
-	);
-
-	var where_to_clap_at: Vector3;
-
-	if ray_to_get_obstacle_player_aims_at_info.has("position"):
-		where_to_clap_at = ray_to_get_obstacle_player_aims_at_info.get("position");
-	else:
-		where_to_clap_at = camera_component.get_position_to_look_at_aim_direction();
-
 	var where_clap_starts: Vector3 = _get_where_clap_starts();
+	var where_to_clap_at: Vector3 = camera_component.get_position_to_look_at_aim_direction(
+			false,
+			CollisionMaskLibrary.get_obstacles(),
+	);
 
 	obstacle_at_center_detector_ray_cast.look_at_from_position(where_clap_starts, where_to_clap_at);
 	obstacle_at_center_detector_ray_cast.target_position.z = -clap_maximum_length_meters;
 
 	obstacle_at_center_detector_ray_cast.force_raycast_update();
 
-	var where_clap_ends: Vector3;
-
 	if obstacle_at_center_detector_ray_cast.is_colliding():
-		where_clap_ends = obstacle_at_center_detector_ray_cast.get_collision_point();
+		return obstacle_at_center_detector_ray_cast.get_collision_point();
 	else:
 		var clap_direction: Vector3 = where_clap_starts.direction_to(where_to_clap_at);
-		where_clap_ends = where_clap_starts + (clap_direction * clap_maximum_length_meters);
-
-	return where_clap_ends;
+		return where_clap_starts + (clap_direction * clap_maximum_length_meters);
 
 
 func _heal_or_damage_entities_hit_by_clap() -> void:

@@ -257,7 +257,7 @@ func _on_body_entered(body: Node3D) -> void:
 	if not EntityComponent.is_object_an_entity(body): return;
 
 	var entity_who_entered: PhysicsBody3D = EntityComponent.cast_object_to_entity(body);
-	var entity_who_entered_identity := EntityIdentity.from_entity(entity_who_entered);
+	var entity_who_entered_identity: EntityIdentity = EntityIdentity.from_entity(entity_who_entered);
 
 	if not entity_who_entered_identity: return;
 	if not entity_who_entered_identity.team == playable_luna_snow_identity.team: return;
@@ -274,7 +274,7 @@ func _on_body_exited(body: Node3D) -> void:
 	if not EntityComponent.is_object_an_entity(body): return;
 
 	var entity_who_exited: PhysicsBody3D = EntityComponent.cast_object_to_entity(body);
-	var entity_who_exited_identity := EntityIdentity.from_entity(entity_who_exited);
+	var entity_who_exited_identity: EntityIdentity = EntityIdentity.from_entity(entity_who_exited);
 
 	if not entity_who_exited_identity: return;
 	if not entity_who_exited_identity.team == playable_luna_snow_identity.team: return;

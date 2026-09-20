@@ -21,12 +21,18 @@ enum _ManualMode {
 @export var healing_or_damage_manual_mode: bool = false;
 @export_custom(PROPERTY_HINT_INPUT_NAME, "") var weapon_input_action: StringName = &"primary_fire";
 
+@export_group("Bullet Debug VFX Line Settings")
+@export var bullet_debug_vfx_line_display_duration_seconds: float = 0.1;
+@export var bullet_debug_vfx_line_color: Color = Color.SKY_BLUE;
+
 @onready var bullet_start_position_anchor_marker_3d: Marker3D = %BulletStartPositionAnchor;
 @onready var bullet_ray_cast: PlayableHitscanBullet = %Bullet;
 
 @onready var debug_draw: DebugDraw3D = %DebugDraw3D;
 
-var _draw_line_end: Vector3 = Vector3.ZERO;
+var _show_bullet_debug_vfx_line: bool = false;
+var _bullet_debug_vfx_line_start_position: Vector3 = Vector3.ZERO;
+var _bullet_debug_vfx_line_end_position: Vector3 = Vector3.ZERO;
 
 var _shooting_valley: bool = false;
 var _in_recovery: bool = false;
@@ -35,14 +41,9 @@ var _manual_mode: _ManualMode = _ManualMode.HEALING;
 
 
 func _process(_delta: float) -> void:
-	if _draw_line_end == Vector3.ZERO: return;
+	if not _show_bullet_debug_vfx_line: return;
 
-	debug_draw.draw_line(
-			debug_draw.to_local(bullet_start_position_anchor_marker_3d.global_position),
-			debug_draw.to_local(_draw_line_end),
-			Color.SKY_BLUE,
-			5.0
-	);
+	_display_bullet_debug_vfx_line();
 
 
 func _physics_process(_delta: float) -> void:
@@ -67,10 +68,9 @@ func _shoot_valley() -> void:
 		await get_tree().create_timer(delay_between_shots).timeout;
 
 	_shooting_valley = false;
+
 	_in_recovery = true;
-
 	await get_tree().create_timer(recovery_delay_after_valley).timeout;
-
 	_in_recovery = false;
 
 
@@ -79,38 +79,54 @@ func _shoot_bullet() -> void:
 
 	if ray_to_get_what_player_aims_at_results.is_empty(): return;
 
-	var where_bullet_starts: Vector3 = bullet_start_position_anchor_marker_3d.global_position;
+	var where_bullet_starts: Vector3 = _get_where_bullet_starts();
 	var where_bullet_ends: Vector3 = ray_to_get_what_player_aims_at_results.get("position");
+
 	var hit_something: bool = bullet_ray_cast.launch(where_bullet_starts, where_bullet_ends);
 
 	if not hit_something: return;
 
+	_handle_bullet_hit_something_response();
+
+
+func _get_where_bullet_starts() -> Vector3:
+	return bullet_start_position_anchor_marker_3d.global_position;
+
+
+func _handle_bullet_hit_something_response() -> void:
+	var where_bullet_starts: Vector3 = _get_where_bullet_starts();
 	var what_player_aims_at: Object = bullet_ray_cast.get_collider();
 	var aim_point_on_what_player_aims_at: Vector3 = bullet_ray_cast.get_collision_point();
 
 	if EntityComponent.is_object_an_entity(what_player_aims_at):
-		var entity_player_aims_at: PhysicsBody3D = \
-				EntityComponent.cast_object_to_entity(what_player_aims_at);
-		var entity_player_aims_at_identity := EntityIdentity.from_entity(entity_player_aims_at);
+		_handle_bullet_hit_entity_response(what_player_aims_at);
 
-		if entity_player_aims_at_identity: 
-			if healing_or_damage_manual_mode:
-				if _manual_mode == _ManualMode.HEALING:
-					_apply_healing_to_entity(entity_player_aims_at);
+	_setup_and_start_displaying_bullet_debug_vfx_line(
+			where_bullet_starts,
+			aim_point_on_what_player_aims_at,
+			bullet_debug_vfx_line_display_duration_seconds,
+			
+	);
 
-				elif _manual_mode == _ManualMode.DAMAGE:
-					_apply_damage_to_entity(entity_player_aims_at);
 
-			else:
-				if entity_player_aims_at_identity.team == playable_luna_snow_identity.team:
-					_apply_healing_to_entity(entity_player_aims_at);
+func _handle_bullet_hit_entity_response(entity_hit: PhysicsBody3D) -> void:
+	var entity_hit_identity: EntityIdentity = EntityIdentity.from_entity(entity_hit);
 
-				else:
-					_apply_damage_to_entity(entity_player_aims_at);
+	if not entity_hit_identity: return;
 
-	_draw_line_end = aim_point_on_what_player_aims_at;
-	await get_tree().create_timer(0.1).timeout;
-	_draw_line_end = Vector3.ZERO;
+	if healing_or_damage_manual_mode:
+		if _manual_mode == _ManualMode.HEALING:
+			_apply_healing_to_entity(entity_hit);
+
+		elif _manual_mode == _ManualMode.DAMAGE:
+			_apply_damage_to_entity(entity_hit);
+
+	else:
+		if entity_hit_identity.team == playable_luna_snow_identity.team:
+			_apply_healing_to_entity(entity_hit);
+
+		else:
+			_apply_damage_to_entity(entity_hit);
 
 
 func _apply_healing_to_entity(entity: PhysicsBody3D) -> void:
@@ -143,3 +159,26 @@ func _toggle_manual_mode() -> void:
 	elif _manual_mode == _ManualMode.DAMAGE:
 		_manual_mode = _ManualMode.HEALING;
 		print("Luna Snow Weapon Healing Mode engaged !");
+
+
+func _setup_and_start_displaying_bullet_debug_vfx_line(
+		line_start_position: Vector3,
+		line_end_position: Vector3,
+		display_duration_seconds: float, 
+) -> void:
+	_show_bullet_debug_vfx_line = true;
+	_bullet_debug_vfx_line_start_position = line_start_position;
+	_bullet_debug_vfx_line_end_position = line_end_position;
+
+	await get_tree().create_timer(display_duration_seconds).timeout;
+
+	_show_bullet_debug_vfx_line = false;
+
+
+func _display_bullet_debug_vfx_line() -> void:
+	debug_draw.draw_line(
+			debug_draw.to_local(_bullet_debug_vfx_line_start_position),
+			debug_draw.to_local(_bullet_debug_vfx_line_end_position),
+			bullet_debug_vfx_line_color,
+			5.0,
+	);

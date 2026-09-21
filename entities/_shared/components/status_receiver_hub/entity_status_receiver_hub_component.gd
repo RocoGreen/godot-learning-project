@@ -21,6 +21,43 @@ extends Node
 @onready var damage_boost_receiver: EntityDamageBoostStatusReceiver = %DamageBoost;
 
 
+static func from_entity(entity: PhysicsBody3D) -> EntityStatusReceiverHubComponent:
+	if not entity:
+		return null;
+
+	if not EntityComponent.is_entity(entity):
+		return null;
+
+	var entity_entity_component: EntityComponent = EntityComponent.get_from(entity);
+
+	if not entity_entity_component:
+		return null;
+
+	var entity_status_receiver_hub_component := entity_entity_component.status_receiver_hub_component;
+
+	if not entity_status_receiver_hub_component:
+		return null;
+
+	return entity_status_receiver_hub_component;
+
+
+static func from_entity_as_object(object: Object) -> EntityStatusReceiverHubComponent:
+	if not object:
+		return null;
+
+	var entity: PhysicsBody3D = EntityComponent.cast_object_to_entity(object);
+
+	if not entity:
+		return null;
+
+	var entity_status_receiver_hub_component: EntityStatusReceiverHubComponent = from_entity(entity);
+
+	if not entity_status_receiver_hub_component:
+		return null;
+
+	return entity_status_receiver_hub_component;
+
+
 func _init() -> void:
 	if Engine.is_editor_hint() and entity_identity:
 		entity_identity.changed.connect(_on_entity_identity_changed);

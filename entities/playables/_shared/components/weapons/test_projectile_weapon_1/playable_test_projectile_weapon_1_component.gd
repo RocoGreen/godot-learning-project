@@ -10,16 +10,16 @@ enum _Mode {
 };
 
 @export_group("Dependencies")
-@export var entity: PhysicsBody3D:
-	set(new_entity):
-		entity = new_entity;
+@export var playable: CharacterBody3D:
+	set(new_playable):
+		playable = new_playable;
 		
 		if Engine.is_editor_hint():
 			update_configuration_warnings();
 
-@export var entity_identity: EntityIdentity = EntityIdentity.new():
-	set(new_entity_identity):
-		entity_identity = new_entity_identity;
+@export var playable_identity: EntityIdentity = EntityIdentity.new():
+	set(new_playable_identity):
+		playable_identity = new_playable_identity;
 		
 		if Engine.is_editor_hint():
 			update_configuration_warnings();
@@ -59,7 +59,7 @@ func _ready() -> void:
 
 	_bullet_start_transform_anchor.top_level = true;
 
-	_muzzle_forward_raycast.add_exception(entity);
+	_muzzle_forward_raycast.add_exception(playable);
 
 
 func _physics_process(_delta: float) -> void:
@@ -85,9 +85,9 @@ func _physics_process(_delta: float) -> void:
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = PackedStringArray();
 
-	warnings.append_array(ConfigurationWarningLibrary.get_for_entity(entity));
+	warnings.append_array(ConfigurationWarningLibrary.get_for_playable(playable));
 
-	warnings.append_array(ConfigurationWarningLibrary.get_for_entity_identity(entity_identity));
+	warnings.append_array(ConfigurationWarningLibrary.get_for_entity_identity(playable_identity));
 
 	warnings.append_array(ConfigurationWarningLibrary.get_for_camera_component(camera_component));
 
@@ -112,7 +112,7 @@ func _fire_bullet() -> void:
 
 
 func _update_mesh_instance_pivot() -> void:
-	_mesh_instance_pivot.look_at(camera_component.get_position_to_look_at_aim_direction());
+	_mesh_instance_pivot.look_at(camera_component.get_position_to_look_at_aim_direction(true));
 
 
 func _update_frame_ray_point_from_camera_forward() -> void:

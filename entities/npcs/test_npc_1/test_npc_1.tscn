@@ -15,7 +15,7 @@ size = Vector3(1, 2, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_jfmlv"]
 
-[node name="TestNPC1" type="StaticBody3D" unique_id=1120564623 groups=["entities"]]
+[node name="TestNPC1" type="StaticBody3D" unique_id=1120564623]
 collision_mask = 3
 script = ExtResource("1_jfmlv")
 

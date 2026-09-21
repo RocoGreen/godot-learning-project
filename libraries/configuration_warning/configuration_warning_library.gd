@@ -9,25 +9,28 @@ static func get_for_entity(entity: PhysicsBody3D) -> PackedStringArray:
 	if not is_instance_valid(entity):
 		warnings.append(
 				"An exported variable expecting a `PhysicsBody3D` that could possibly be an " +
-				"`Entity` is not set/valid."
+				"entity (since they don't have a type on their own, they have their own way to " +
+				"be one) is not set/valid."
 		);
 
 	else:
-		if not entity.is_in_group(&"entities"):
+		if not EntityComponent.is_entity(entity):
 			warnings.append(
-					"An `Entity` assigned to an exported variable is invalid :\n" +
-					"- Not in `entities` group."
+					"An exported variable expecting an entity does not hold one because " +
+					"the `EntityComponent` could not be found (the `Node`) as first child of " + 
+					"the `PhysicsBody3D` provided. An entity is considered one if it have the " +
+					"component as first child (and is a `PhysicsBody3D`)."
 			);
-
+		
 		if not entity.get_collision_mask_value(CollisionMaskLibrary.get_entities()):
 			warnings.append(
-					"An `Entity` assigned to an exported variable is invalid :\n" +
+					"An entity assigned to an exported variable is invalid :\n" +
 					"- Collision mask does not include `entities` layer."
 			);
 
 		if not entity.get_collision_mask_value(CollisionMaskLibrary.get_obstacles()):
 			warnings.append(
-					"An `Entity` assigned to an exported variable is invalid :\n" +
+					"An entity assigned to an exported variable is invalid :\n" +
 					"- Collision mask does not include `obstacles` layer."
 			);
 

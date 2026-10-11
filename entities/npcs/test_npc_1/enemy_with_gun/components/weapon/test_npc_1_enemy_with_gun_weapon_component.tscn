@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://bkqn27rqex8dd"]
+
+[ext_resource type="Script" uid="uid://cqqkrg4j2btwh" path="res://entities/npcs/test_npc_1/enemy_with_gun/components/weapon/test_npc_1_enemy_with_gun_weapon_component.gd" id="1_0gmqs"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_otgpu"]
+
+[node name="TestNPC1EnemyWithGunWeaponComponent" type="Node3D" unique_id=1252039541]
+script = ExtResource("1_0gmqs")
+
+[node name="FireRatePerSecondTimer" type="Timer" parent="." unique_id=782758411]
+unique_name_in_owner = true
+process_callback = 0
+
+[node name="BulletSpawnTransformAnchorMarker3D" type="Marker3D" parent="." unique_id=1028179772]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1194897553]
+transform = Transform3D(0.2, 0, 0, 0, -8.742278e-09, -0.2, 0, 0.2, -8.742278e-09, 0, 0, 0)
+mesh = SubResource("CylinderMesh_otgpu")
+
+[connection signal="timeout" from="FireRatePerSecondTimer" to="." method="_on_fire_rate_per_second_timer_timeout"]

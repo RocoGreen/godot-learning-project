@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://cas4e5wsbxq28"]
+
+[ext_resource type="PackedScene" uid="uid://btrysidewnsmy" path="res://entities/npcs/test_npc_1/test_npc_1.tscn" id="1_karv6"]
+[ext_resource type="Script" uid="uid://dhuo0uii7fbcd" path="res://entities/npcs/test_npc_1/enemy_with_gun/test_npc_1_enemy_with_gun.gd" id="2_f08k7"]
+[ext_resource type="Resource" uid="uid://bh0s2oiuk744p" path="res://entities/npcs/test_npc_1/enemy_with_gun/identity/test_npc_1_enemy_with_gun_identity.tres" id="3_l3vfs"]
+[ext_resource type="PackedScene" uid="uid://bkqn27rqex8dd" path="res://entities/npcs/test_npc_1/enemy_with_gun/components/weapon/test_npc_1_enemy_with_gun_weapon_component.tscn" id="4_luitc"]
+
+[node name="TestNPC1EnemyWithGun" unique_id=1120564623 instance=ExtResource("1_karv6")]
+script = ExtResource("2_f08k7")
+
+[node name="EntityComponent" parent="." index="0" unique_id=532691025]
+identity = ExtResource("3_l3vfs")
+
+[node name="EntityHealthComponent" parent="Components" parent_id_path=PackedInt32Array(1817788584) index="0" unique_id=930351444]
+entity_identity = ExtResource("3_l3vfs")
+
+[node name="EntityStatusReceiverHubComponent" parent="Components" parent_id_path=PackedInt32Array(1817788584) index="1" unique_id=1530625951]
+entity_identity = ExtResource("3_l3vfs")
+
+[node name="EntityHealthBar3DComponent" parent="Components" parent_id_path=PackedInt32Array(1817788584) index="2" unique_id=730241747]
+health_bar_health_remaining_color = Color(0.9828966, 0.77207124, 0.7065165, 1)
+override_current_and_maximum_health = true
+
+[node name="Weapon" parent="Components" parent_id_path=PackedInt32Array(1817788584) index="4" unique_id=1252039541 node_paths=PackedStringArray("test_npc_1_enemy_with_gun") instance=ExtResource("4_luitc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0937133, 0, 0)
+test_npc_1_enemy_with_gun = NodePath("../..")
+test_npc_1_enemy_with_gun_identity = ExtResource("3_l3vfs")

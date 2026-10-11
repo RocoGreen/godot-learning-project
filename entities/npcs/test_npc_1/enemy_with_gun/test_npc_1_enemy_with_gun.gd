@@ -1,0 +1,2 @@
+class_name TestNPC1EnemyWithGun
+extends TestNPC1

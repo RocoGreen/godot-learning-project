@@ -1,3 +1,4 @@
+class_name TestNPC1
 extends StaticBody3D
 
 

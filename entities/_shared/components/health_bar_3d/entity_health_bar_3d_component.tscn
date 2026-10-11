@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://cph3wjpvc6xy8"]
+
+[ext_resource type="Script" uid="uid://dv57m45686gi2" path="res://entities/_shared/components/health_bar_3d/entity_health_bar_3d_component.gd" id="1_5ppqw"]
+[ext_resource type="Shader" uid="uid://b23j1ag7dt1he" path="res://addons/progress_bar_3d/progress_bar_3d_unshaded_no_shadows_no_depth_test.gdshader" id="1_r2pul"]
+[ext_resource type="Script" uid="uid://dq7j2p7jtjmr8" path="res://addons/progress_bar_3d/progress_bar_3d.gd" id="2_5ppqw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_48lnx"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("1_r2pul")
+shader_parameter/background_color = Color(0, 0, 0, 1)
+shader_parameter/progress_color = Color(0, 1, 0, 1)
+shader_parameter/progress_value = 0.5
+shader_parameter/billboard_mode = 1
+
+[sub_resource type="QuadMesh" id="QuadMesh_p5i8c"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_48lnx")
+size = Vector2(1, 0.1)
+
+[node name="EntityHealthBar3DComponent" type="Node3D" unique_id=730241747]
+script = ExtResource("1_5ppqw")
+
+[node name="ProgressBar3D" type="MeshInstance3D" parent="." unique_id=575697637]
+unique_name_in_owner = true
+mesh = SubResource("QuadMesh_p5i8c")
+script = ExtResource("2_5ppqw")
+metadata/_custom_type_script = "uid://dq7j2p7jtjmr8"

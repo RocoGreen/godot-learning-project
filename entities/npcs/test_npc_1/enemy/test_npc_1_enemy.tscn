@@ -22,5 +22,9 @@ max_health = 500.0
 [node name="EntityStatusReceiverHubComponent" parent="Components" parent_id_path=PackedInt32Array(1817788584) index="1" unique_id=1530625951]
 entity_identity = ExtResource("2_nri6p")
 
+[node name="EntityHealthBar3DComponent" parent="Components" parent_id_path=PackedInt32Array(1817788584) index="2" unique_id=730241747]
+health_bar_health_remaining_color = Color(0.6602022, 0.8558037, 0.9958195, 1)
+override_current_and_maximum_health = true
+
 [node name="TeamIndicator" parent="TopIndicators" parent_id_path=PackedInt32Array(1769069705) index="1" unique_id=1564625014]
 mesh = SubResource("SphereMesh_jxecr")

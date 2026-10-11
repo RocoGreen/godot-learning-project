@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://d01sromo7yggt" path="res://entities/_shared/components/health/entity_health_component.tscn" id="2_u5y6i"]
 [ext_resource type="Resource" uid="uid://d1qa7jd7mrywx" path="res://entities/npcs/test_npc_1/test_npc_1_identity.tres" id="3_7fnp4"]
 [ext_resource type="PackedScene" uid="uid://dgqseji4pi27a" path="res://entities/_shared/components/status_receiver_hub/entity_status_receiver_hub_component.tscn" id="5_7fnp4"]
+[ext_resource type="PackedScene" uid="uid://cph3wjpvc6xy8" path="res://entities/_shared/components/health_bar_3d/entity_health_bar_3d_component.tscn" id="6_nqphd"]
 [ext_resource type="PackedScene" uid="uid://vfbdf5vqp3d" path="res://entities/_shared/components/position_anchor_hub/entity_position_anchor_hub_component.tscn" id="7_nqphd"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_7fnp4"]
@@ -40,6 +41,10 @@ entity_identity = ExtResource("3_7fnp4")
 
 [node name="EntityStatusReceiverHubComponent" parent="Components" unique_id=1530625951 instance=ExtResource("5_7fnp4")]
 entity_identity = ExtResource("3_7fnp4")
+
+[node name="EntityHealthBar3DComponent" parent="Components" unique_id=730241747 node_paths=PackedStringArray("health_component") instance=ExtResource("6_nqphd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+health_component = NodePath("../EntityHealthComponent")
 
 [node name="GameMechanicsSupport" type="Node3D" parent="Components" unique_id=1564628981]
 

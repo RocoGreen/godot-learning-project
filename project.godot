@@ -19,6 +19,14 @@ config/icon="res://icon.svg"
 
 gdscript/warnings/untyped_declaration=2
 
+[dotnet]
+
+project/assembly_name="Godot Learning Project"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/progress_bar_3d/plugin.cfg")
+
 [input]
 
 move_left={

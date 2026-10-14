@@ -1,5 +1,5 @@
 class_name PlayablePlayerUIComponent
-extends MarginContainer
+extends Control
 
 
 @export_group("Dependencies")

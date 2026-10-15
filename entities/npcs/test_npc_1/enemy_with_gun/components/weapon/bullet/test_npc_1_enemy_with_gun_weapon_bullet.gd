@@ -2,7 +2,7 @@ class_name TestNPC1EnemyWithGunWeaponBullet
 extends CharacterBody3D
 
 
-const _PACKED_SCENE: PackedScene = preload("res://entities/npcs/test_npc_1/enemy_with_gun/components/weapon/bullet/test_npc_1_enemy_with_gun_weapon_bullet.tscn");
+static var _PACKED_SCENE: PackedScene = load("res://entities/npcs/test_npc_1/enemy_with_gun/components/weapon/bullet/test_npc_1_enemy_with_gun_weapon_bullet.tscn");
 
 var _damage_amount_per_entity_hit: float;
 var _life_duration_in_seconds_after_launch: float;

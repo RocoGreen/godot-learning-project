@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="TestNPC1EnemyWithGunIdentity" format=3 uid="uid://bh0s2oiuk744p"]
+
+[ext_resource type="Script" uid="uid://bd3eqpa0dv8l2" path="res://entities/npcs/test_npc_1/enemy_with_gun/identity/test_npc_1_enemy_with_gun_identity.gd" id="1_4hphn"]
+
+[resource]
+script = ExtResource("1_4hphn")
+name = &"Test NPC 1 Enemy With Gun"
+team = 1
+metadata/_custom_type_script = "uid://cur8p8fjl0qvd"

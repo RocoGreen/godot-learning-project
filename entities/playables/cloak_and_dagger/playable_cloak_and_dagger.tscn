@@ -1,0 +1,142 @@
+[gd_scene format=3 uid="uid://d4jtoc7hoaca1"]
+
+[ext_resource type="Script" uid="uid://bjf6buukt68uj" path="res://entities/playables/cloak_and_dagger/playable_cloak_and_dagger.gd" id="1_2ks0m"]
+[ext_resource type="PackedScene" uid="uid://coqcni43ymjxa" path="res://entities/_shared/components/entity/entity_component.tscn" id="1_wsgip"]
+[ext_resource type="Resource" uid="uid://bksslxjhw5d05" path="res://entities/playables/cloak_and_dagger/identity/playable_cloak_and_dagger_identity.tres" id="2_2ks0m"]
+[ext_resource type="PackedScene" uid="uid://dpm4llvw6alin" path="res://entities/playables/_shared/components/character_body_3d_utils/playable_character_body_3d_utils_component.tscn" id="4_b78lp"]
+[ext_resource type="PackedScene" uid="uid://cbeqj73rklldr" path="res://entities/playables/_shared/components/camera/playable_camera_component.tscn" id="5_htty5"]
+[ext_resource type="PackedScene" uid="uid://dgavxxiu7xo4s" path="res://entities/playables/_shared/components/rotation_handling_by_mouse/playable_rotation_handling_by_mouse_component.tscn" id="6_apoda"]
+[ext_resource type="PackedScene" uid="uid://vfbdf5vqp3d" path="res://entities/_shared/components/position_anchor_hub/entity_position_anchor_hub_component.tscn" id="7_ihai2"]
+[ext_resource type="PackedScene" uid="uid://dgqseji4pi27a" path="res://entities/_shared/components/status_receiver_hub/entity_status_receiver_hub_component.tscn" id="8_ahlve"]
+[ext_resource type="PackedScene" uid="uid://n1bx8pva4it8" path="res://entities/_shared/components/visible_on_screen_notifier/entity_visible_on_screen_notifier_component.tscn" id="9_ihai2"]
+[ext_resource type="PackedScene" uid="uid://d01sromo7yggt" path="res://entities/_shared/components/health/entity_health_component.tscn" id="9_s1rpo"]
+[ext_resource type="PackedScene" uid="uid://b76tajlk007ee" path="res://entities/playables/cloak_and_dagger/components/_shared/abilities/toggle_person_played/playable_cloak_and_dagger_toggle_person_played_ability_component.tscn" id="10_b78lp"]
+[ext_resource type="PackedScene" uid="uid://bwui7cxyjbip7" path="res://entities/playables/cloak_and_dagger/components/_shared/ultimate/playable_cloak_and_dagger_ultimate_component.tscn" id="11_apoda"]
+[ext_resource type="PackedScene" uid="uid://b3alrc8pk1gi" path="res://entities/playables/cloak_and_dagger/components/dagger/weapon/playable_cloak_and_dagger_dagger_weapon.tscn" id="12_apoda"]
+[ext_resource type="PackedScene" uid="uid://d0eskmsqlgoh" path="res://entities/playables/cloak_and_dagger/components/dagger/abilities/light_explosion/playable_cloak_and_dagger_dagger_light_explosion_ability_component.tscn" id="12_htty5"]
+[ext_resource type="PackedScene" uid="uid://s7uybs151onq" path="res://entities/playables/_shared/components/player_ui/playable_player_ui_component.tscn" id="13_ahlve"]
+[ext_resource type="PackedScene" uid="uid://b5qyupdj2ctmu" path="res://entities/playables/cloak_and_dagger/components/dagger/abilities/storm/playable_cloak_and_dagger_dagger_storm_ability_component.tscn" id="13_htty5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bogoe"]
+albedo_color = Color(0.6501447, 0.25921303, 0.9999947, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_epxd5"]
+material = SubResource("StandardMaterial3D_bogoe")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_adtc0"]
+albedo_color = Color(0.98836416, 0.9123006, 1.540184e-06, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_uehvv"]
+material = SubResource("StandardMaterial3D_adtc0")
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_epxd5"]
+
+[node name="PlayableCloakAndDagger" type="CharacterBody3D" unique_id=262403199]
+collision_mask = 3
+script = ExtResource("1_2ks0m")
+default_person_played = 1
+
+[node name="EntityComponent" parent="." unique_id=532691025 node_paths=PackedStringArray("entity", "health_component", "status_receiver_hub_component", "position_anchor_hub_component") instance=ExtResource("1_wsgip")]
+entity = NodePath("..")
+identity = ExtResource("2_2ks0m")
+health_component = NodePath("../SharedComponents/ForInteractionWithGame/Health")
+status_receiver_hub_component = NodePath("../SharedComponents/ForGameMechanics/StatusReceiverHub")
+position_anchor_hub_component = NodePath("../SharedComponents/ForGameMechanics/PositionAnchorHub")
+
+[node name="SharedComponents" type="Node3D" parent="." unique_id=2112789632]
+
+[node name="CharacterBody3DUtils" parent="SharedComponents" unique_id=40130539 node_paths=PackedStringArray("playable") instance=ExtResource("4_b78lp")]
+playable = NodePath("../..")
+
+[node name="ForPlayer" type="Node3D" parent="SharedComponents" unique_id=838030952]
+
+[node name="Camera" parent="SharedComponents/ForPlayer" unique_id=825915530 node_paths=PackedStringArray("playable") instance=ExtResource("5_htty5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.76896596, 0.5490141, 0)
+playable = NodePath("../../..")
+
+[node name="RotationHandlingByMouse" parent="SharedComponents/ForPlayer" unique_id=1377482824 node_paths=PackedStringArray("playable") instance=ExtResource("6_apoda")]
+playable = NodePath("../../..")
+
+[node name="ForGameMechanics" type="Node3D" parent="SharedComponents" unique_id=334784683]
+
+[node name="PositionAnchorHub" parent="SharedComponents/ForGameMechanics" unique_id=787595999 node_paths=PackedStringArray("center_anchor") instance=ExtResource("7_ihai2")]
+center_anchor = NodePath("CenterChestAnchor")
+
+[node name="CenterChestAnchor" type="Marker3D" parent="SharedComponents/ForGameMechanics/PositionAnchorHub" unique_id=1913387030]
+
+[node name="StatusReceiverHub" parent="SharedComponents/ForGameMechanics" unique_id=1530625951 instance=ExtResource("8_ahlve")]
+entity_identity = ExtResource("2_2ks0m")
+
+[node name="VisibleOnScreenNotifier" parent="SharedComponents/ForGameMechanics" unique_id=1017128950 node_paths=PackedStringArray("entity") instance=ExtResource("9_ihai2")]
+aabb = AABB(-0.53790873, -1, -0.53583807, 1.0758175, 2, 1.0716761)
+entity = NodePath("../../..")
+
+[node name="ForInteractionWithGame" type="Node3D" parent="SharedComponents" unique_id=575172014]
+
+[node name="Health" parent="SharedComponents/ForInteractionWithGame" unique_id=930351444 instance=ExtResource("9_s1rpo")]
+entity_identity = ExtResource("2_2ks0m")
+max_health = 200.0
+
+[node name="Abilities" type="Node3D" parent="SharedComponents" unique_id=1744797910]
+
+[node name="TogglePersonPlayed" parent="SharedComponents/Abilities" unique_id=582839418 node_paths=PackedStringArray("playable_cloak_and_dagger") instance=ExtResource("10_b78lp")]
+playable_cloak_and_dagger = NodePath("../../..")
+
+[node name="Ultimate" parent="SharedComponents" unique_id=788236575 instance=ExtResource("11_apoda")]
+
+[node name="UI" type="Control" parent="SharedComponents" unique_id=448238457]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayerUI" parent="SharedComponents/UI" unique_id=843756222 node_paths=PackedStringArray("health_component") instance=ExtResource("13_ahlve")]
+layout_mode = 1
+health_component = NodePath("../../ForInteractionWithGame/Health")
+
+[node name="CloakNodes" type="Node3D" parent="." unique_id=1737752875]
+
+[node name="Components" type="Node3D" parent="CloakNodes" unique_id=1897696094]
+
+[node name="CloakMeshInstance3D" type="MeshInstance3D" parent="CloakNodes" unique_id=896109373]
+unique_name_in_owner = true
+visible = false
+mesh = SubResource("CapsuleMesh_epxd5")
+
+[node name="DaggerNodes" type="Node3D" parent="." unique_id=580115310]
+
+[node name="Components" type="Node3D" parent="DaggerNodes" unique_id=1550784685]
+
+[node name="Weapon" parent="DaggerNodes/Components" unique_id=528473580 node_paths=PackedStringArray("playable_cloak_and_dagger", "camera_component") instance=ExtResource("12_apoda")]
+playable_cloak_and_dagger = NodePath("../../..")
+playable_cloak_and_dagger_identity = ExtResource("2_2ks0m")
+camera_component = NodePath("../../../SharedComponents/ForPlayer/Camera")
+
+[node name="Abilities" type="Node3D" parent="DaggerNodes/Components" unique_id=133202172]
+
+[node name="LightExplosion" parent="DaggerNodes/Components/Abilities" unique_id=1165577091 node_paths=PackedStringArray("playable_cloak_and_dagger", "camera_component", "veil_deploy_start_position_anchor_marker_3d") instance=ExtResource("12_htty5")]
+playable_cloak_and_dagger = NodePath("../../../..")
+playable_cloak_and_dagger_identity = ExtResource("2_2ks0m")
+camera_component = NodePath("../../../../SharedComponents/ForPlayer/Camera")
+veil_deploy_start_position_anchor_marker_3d = NodePath("PositionToSpawnVeilAnchorMarker3D")
+
+[node name="PositionToSpawnVeilAnchorMarker3D" type="Marker3D" parent="DaggerNodes/Components/Abilities/LightExplosion" unique_id=641296031]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+
+[node name="Storm" parent="DaggerNodes/Components/Abilities" unique_id=1821127917 node_paths=PackedStringArray("playable_cloak_and_dagger", "camera_component", "position_to_spawn_valley_of_daggers_anchor_marker_3d") instance=ExtResource("13_htty5")]
+playable_cloak_and_dagger = NodePath("../../../..")
+playable_cloak_and_dagger_identity = ExtResource("2_2ks0m")
+camera_component = NodePath("../../../../SharedComponents/ForPlayer/Camera")
+position_to_spawn_valley_of_daggers_anchor_marker_3d = NodePath("PositionToSpawnValleyOfDaggersAnchorMarker3D")
+
+[node name="PositionToSpawnValleyOfDaggersAnchorMarker3D" type="Marker3D" parent="DaggerNodes/Components/Abilities/Storm" unique_id=1958144027]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+
+[node name="DaggerMeshInstance3D" type="MeshInstance3D" parent="DaggerNodes" unique_id=994930205]
+unique_name_in_owner = true
+mesh = SubResource("CapsuleMesh_uehvv")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=546643734]
+shape = SubResource("CapsuleShape3D_epxd5")

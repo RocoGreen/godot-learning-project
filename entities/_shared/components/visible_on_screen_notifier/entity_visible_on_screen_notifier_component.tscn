@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://n1bx8pva4it8"]
+
+[ext_resource type="Script" uid="uid://cjncesd00brep" path="res://entities/_shared/components/visible_on_screen_notifier/entity_visible_on_screen_notifier_component.gd" id="1_tu8vp"]
+
+[node name="EntityVisibleOnScreenNotifierComponent" type="VisibleOnScreenNotifier3D" unique_id=1017128950]
+script = ExtResource("1_tu8vp")
+
+[connection signal="screen_entered" from="." to="." method="_on_screen_entered"]
+[connection signal="screen_exited" from="." to="." method="_on_screen_exited"]

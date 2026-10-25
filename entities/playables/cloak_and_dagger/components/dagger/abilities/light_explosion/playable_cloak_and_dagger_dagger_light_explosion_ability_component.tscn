@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://d0eskmsqlgoh"]
+
+[ext_resource type="Script" uid="uid://n3fwpyq5xmyb" path="res://entities/playables/cloak_and_dagger/components/dagger/abilities/light_explosion/playable_cloak_and_dagger_dagger_light_explosion_ability_component.gd" id="1_meod4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bogoe"]
+albedo_color = Color(0.39898643, 0.70893306, 0.84071183, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_epxd5"]
+material = SubResource("StandardMaterial3D_bogoe")
+
+[node name="PlayableCloakAndDaggerDaggerLightExplosionAbilityComponent" type="Node3D" unique_id=1165577091]
+script = ExtResource("1_meod4")
+
+[node name="Timers" type="Node" parent="." unique_id=405258799]
+
+[node name="TimeToStartDeploymentTimer" type="Timer" parent="Timers" unique_id=1358641962]
+unique_name_in_owner = true
+process_callback = 0
+one_shot = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1444746566]
+top_level = true
+visible = false
+mesh = SubResource("SphereMesh_epxd5")
+
+[connection signal="timeout" from="Timers/TimeToStartDeploymentTimer" to="." method="_on_time_to_start_deployment_timer_timeout"]

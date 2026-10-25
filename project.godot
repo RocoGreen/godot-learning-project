@@ -27,6 +27,10 @@ project/assembly_name="Godot Learning Project"
 
 enabled=PackedStringArray("res://addons/progress_bar_3d/plugin.cfg")
 
+[global_group]
+
+entities_visible_on_screen=""
+
 [input]
 
 move_left={

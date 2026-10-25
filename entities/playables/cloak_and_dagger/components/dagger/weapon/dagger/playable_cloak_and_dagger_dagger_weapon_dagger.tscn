@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://8u5l42gywx71"]
+
+[ext_resource type="Script" uid="uid://cn2p3j30wxque" path="res://entities/playables/cloak_and_dagger/components/dagger/weapon/dagger/playable_cloak_and_dagger_dagger_weapon_dagger.gd" id="1_bjn5c"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bogoe"]
+albedo_color = Color(0.8906723, 0, 0.2996798, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_epxd5"]
+material = SubResource("StandardMaterial3D_bogoe")
+size = Vector3(0.2, 0.2, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uehvv"]
+size = Vector3(0.2, 0.2, 0.5)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_epxd5"]
+radius = 8.0
+
+[node name="PlayableCloakAndDaggerDaggerWeaponDagger" type="CharacterBody3D" unique_id=1668462563]
+top_level = true
+collision_layer = 0
+collision_mask = 3
+script = ExtResource("1_bjn5c")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=442544962]
+mesh = SubResource("BoxMesh_epxd5")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=482402519]
+shape = SubResource("BoxShape3D_uehvv")
+
+[node name="ShapeCast3DForImpactExplosion" type="ShapeCast3D" parent="." unique_id=1013594048]
+unique_name_in_owner = true
+enabled = false
+shape = SubResource("SphereShape3D_epxd5")
+exclude_parent = false
+target_position = Vector3(0, 0, 0)

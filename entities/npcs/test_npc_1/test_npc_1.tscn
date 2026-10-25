@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://dgqseji4pi27a" path="res://entities/_shared/components/status_receiver_hub/entity_status_receiver_hub_component.tscn" id="5_7fnp4"]
 [ext_resource type="PackedScene" uid="uid://cph3wjpvc6xy8" path="res://entities/_shared/components/health_bar_3d/entity_health_bar_3d_component.tscn" id="6_nqphd"]
 [ext_resource type="PackedScene" uid="uid://vfbdf5vqp3d" path="res://entities/_shared/components/position_anchor_hub/entity_position_anchor_hub_component.tscn" id="7_nqphd"]
+[ext_resource type="PackedScene" uid="uid://n1bx8pva4it8" path="res://entities/_shared/components/visible_on_screen_notifier/entity_visible_on_screen_notifier_component.tscn" id="7_qxiyp"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_7fnp4"]
 size = Vector3(1, 2, 1)
@@ -52,6 +53,10 @@ health_component = NodePath("../EntityHealthComponent")
 center_anchor = NodePath("CenterAnchor")
 
 [node name="CenterAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/EntityPositionAnchorHubComponent" unique_id=1984417057]
+
+[node name="EntityVisibleOnScreenNotifierComponent" parent="Components/GameMechanicsSupport" unique_id=1017128950 node_paths=PackedStringArray("entity") instance=ExtResource("7_qxiyp")]
+aabb = AABB(-0.51841265, -1, -0.53583807, 1.0368253, 2, 1.0716761)
+entity = NodePath("../../..")
 
 [node name="TopIndicators" type="Node3D" parent="." unique_id=1769069705]
 

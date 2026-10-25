@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://bm03dfemlxubq"]
+
+[ext_resource type="PackedScene" uid="uid://bk0l1pqky6xip" path="res://entities/playables/_shared/bullets/projectile/playable_projectile_bullet.tscn" id="1_0oubd"]
+[ext_resource type="Script" uid="uid://b6l6u2w51ys51" path="res://entities/playables/cloak_and_dagger/components/dagger/abilities/light_explosion/veil/playable_cloak_and_dagger_dagger_light_explosion_ability_veil.gd" id="2_4346j"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p08hs"]
+albedo_color = Color(0.7668301, 0.89928454, 0.9922617, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_epxd5"]
+material = SubResource("StandardMaterial3D_p08hs")
+size = Vector3(1, 1, 0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bogoe"]
+size = Vector3(1, 1, 0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_epxd5"]
+size = Vector3(1, 1, 0)
+
+[node name="PlayableCloakAndDaggerDaggerLightExplosionAbilityVeil" unique_id=1668462563 instance=ExtResource("1_0oubd")]
+collision_mask = 2
+script = ExtResource("2_4346j")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="0" unique_id=1264037916]
+unique_name_in_owner = true
+mesh = SubResource("BoxMesh_epxd5")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="1" unique_id=2074913886]
+unique_name_in_owner = true
+shape = SubResource("BoxShape3D_bogoe")
+
+[node name="EntityDetectorArea3D" type="Area3D" parent="." index="2" unique_id=1608474795]
+unique_name_in_owner = true
+collision_layer = 0
+
+[node name="EntityDetectorCollisionShape3D" type="CollisionShape3D" parent="EntityDetectorArea3D" index="0" unique_id=1500696046]
+unique_name_in_owner = true
+shape = SubResource("BoxShape3D_epxd5")
+
+[connection signal="collided" from="." to="." method="_on_collided"]
+[connection signal="launched" from="." to="." method="_on_launched"]
+[connection signal="maximum_travel_distance_reached" from="." to="." method="_on_maximum_travel_distance_reached"]
+[connection signal="body_entered" from="EntityDetectorArea3D" to="." method="_on_entity_detector_area_3d_body_entered"]

@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://b76tajlk007ee"]
+
+[ext_resource type="Script" uid="uid://c2tujg32d7k56" path="res://entities/playables/cloak_and_dagger/components/_shared/abilities/toggle_person_played/playable_cloak_and_dagger_toggle_person_played_ability_component.gd" id="1_45s18"]
+
+[node name="PlayableCloakAndDaggerTogglePersonPlayedAbilityComponent" type="Node" unique_id=582839418]
+script = ExtResource("1_45s18")

@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="PlayableCloakAndDaggerIdentity" format=3 uid="uid://bksslxjhw5d05"]
+
+[ext_resource type="Script" uid="uid://mjo3ibbdsyq5" path="res://entities/playables/cloak_and_dagger/identity/playable_cloak_and_dagger_identity.gd" id="1_x13dp"]
+
+[resource]
+script = ExtResource("1_x13dp")
+name = &"Playable Cloak And Dagger"

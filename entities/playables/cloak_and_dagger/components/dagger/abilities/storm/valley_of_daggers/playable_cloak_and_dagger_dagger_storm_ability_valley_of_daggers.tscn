@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://bdlaxrg78oco6"]
+
+[ext_resource type="PackedScene" uid="uid://bk0l1pqky6xip" path="res://entities/playables/_shared/bullets/projectile/playable_projectile_bullet.tscn" id="1_i54o6"]
+[ext_resource type="Script" uid="uid://dphv8blqqphum" path="res://entities/playables/cloak_and_dagger/components/dagger/abilities/storm/valley_of_daggers/playable_cloak_and_dagger_dagger_storm_ability_valley_of_daggers.gd" id="2_oyr06"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_332hy"]
+albedo_color = Color(0.76862746, 0.8980392, 0.99215686, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_oyr06"]
+material = SubResource("StandardMaterial3D_332hy")
+size = Vector3(0.2, 0.2, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_n7hjt"]
+size = Vector3(0.59420776, 0.5137329, 0.57299805)
+
+[node name="PlayableCloakAndDaggerDaggerStormAbilityValleyOfDaggers" unique_id=1668462563 instance=ExtResource("1_i54o6")]
+script = ExtResource("2_oyr06")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="0" unique_id=1538213770]
+mesh = SubResource("BoxMesh_oyr06")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="." index="1" unique_id=1468708641]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15956193, 0.22047603, 0)
+mesh = SubResource("BoxMesh_oyr06")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="." index="2" unique_id=921131707]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1699568, 0.18061817, 0)
+mesh = SubResource("BoxMesh_oyr06")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="3" unique_id=1198369749]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.01047796, 0.11861801, -0.004760742)
+shape = SubResource("BoxShape3D_n7hjt")

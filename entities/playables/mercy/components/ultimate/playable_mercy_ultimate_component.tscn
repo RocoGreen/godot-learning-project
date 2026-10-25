@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://lelsad7smbrt"]
+
+[ext_resource type="Script" uid="uid://c4ltfesr5y457" path="res://entities/playables/mercy/components/ultimate/playable_mercy_ultimate_component.gd" id="1_rdphq"]
+
+[node name="PlayableMercyUltimateComponent" type="Node" unique_id=82523328]
+script = ExtResource("1_rdphq")
+
+[node name="Timers" type="Node" parent="." unique_id=343454802]
+
+[node name="TimeToActivateTimer" type="Timer" parent="Timers" unique_id=582803223]
+unique_name_in_owner = true
+one_shot = true
+
+[node name="DurationTimeTimer" type="Timer" parent="Timers" unique_id=728989986]
+unique_name_in_owner = true
+one_shot = true
+
+[connection signal="timeout" from="Timers/TimeToActivateTimer" to="." method="_on_time_to_activate_timer_timeout"]
+[connection signal="timeout" from="Timers/DurationTimeTimer" to="." method="_on_duration_time_timer_timeout"]

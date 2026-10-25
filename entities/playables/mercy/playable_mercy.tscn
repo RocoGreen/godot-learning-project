@@ -1,12 +1,19 @@
 [gd_scene format=3 uid="uid://bgg3hrd44y8ee"]
 
 [ext_resource type="PackedScene" uid="uid://coqcni43ymjxa" path="res://entities/_shared/components/entity/entity_component.tscn" id="1_1nsre"]
+[ext_resource type="Script" uid="uid://b0aw3l4c01uts" path="res://entities/playables/mercy/playable_mercy.gd" id="1_ca3k8"]
 [ext_resource type="Resource" uid="uid://b6hbgxmbl1he5" path="res://entities/playables/mercy/identity/playable_mercy_identity.tres" id="2_pfypr"]
 [ext_resource type="PackedScene" uid="uid://cbeqj73rklldr" path="res://entities/playables/_shared/components/camera/playable_camera_component.tscn" id="3_eaq5y"]
 [ext_resource type="PackedScene" uid="uid://dgavxxiu7xo4s" path="res://entities/playables/_shared/components/rotation_handling_by_mouse/playable_rotation_handling_by_mouse_component.tscn" id="4_63xlc"]
+[ext_resource type="PackedScene" uid="uid://vfbdf5vqp3d" path="res://entities/_shared/components/position_anchor_hub/entity_position_anchor_hub_component.tscn" id="5_5hgqe"]
 [ext_resource type="PackedScene" uid="uid://dpm4llvw6alin" path="res://entities/playables/_shared/components/character_body_3d_utils/playable_character_body_3d_utils_component.tscn" id="5_ca3k8"]
 [ext_resource type="PackedScene" uid="uid://cmpy3e5np6x1d" path="res://entities/playables/mercy/components/weapons/staff/playable_mercy_staff_weapon_component.tscn" id="6_17od4"]
-[ext_resource type="PackedScene" uid="uid://60seaq170jqq" path="res://entities/playables/_shared/components/abilities/mercy_guardian_angel/playable_mercy_guardian_angel_ability_component.tscn" id="7_63xlc"]
+[ext_resource type="PackedScene" uid="uid://60seaq170jqq" path="res://entities/playables/mercy/components/abilities/guardian_angel/playable_mercy_guardian_angel_ability_component.tscn" id="7_63xlc"]
+[ext_resource type="PackedScene" uid="uid://d01sromo7yggt" path="res://entities/_shared/components/health/entity_health_component.tscn" id="7_dteyd"]
+[ext_resource type="PackedScene" uid="uid://pth7bspp0852" path="res://entities/playables/mercy/components/weapons/pistol/playable_mercy_pistol_weapon_component.tscn" id="8_17od4"]
+[ext_resource type="PackedScene" uid="uid://beufnx2amng30" path="res://entities/playables/mercy/components/passive_abilities/regeneration/playable_mercy_regeneration_passive_ability_component.tscn" id="10_n64jn"]
+[ext_resource type="PackedScene" uid="uid://lelsad7smbrt" path="res://entities/playables/mercy/components/ultimate/playable_mercy_ultimate_component.tscn" id="12_n64jn"]
+[ext_resource type="PackedScene" uid="uid://s7uybs151onq" path="res://entities/playables/_shared/components/player_ui/playable_player_ui_component.tscn" id="14_421uo"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gn2kn"]
 albedo_color = Color(0.74103546, 0.4595009, 0.10998956, 1)
@@ -16,38 +23,84 @@ material = SubResource("StandardMaterial3D_gn2kn")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xoinf"]
 
-[node name="PlayableMercy" type="CharacterBody3D" unique_id=517836893 groups=["entities"]]
+[node name="PlayableMercy" type="CharacterBody3D" unique_id=517836893]
 collision_mask = 3
+script = ExtResource("1_ca3k8")
 
-[node name="EntityComponent" parent="." unique_id=532691025 node_paths=PackedStringArray("entity") instance=ExtResource("1_1nsre")]
+[node name="EntityComponent" parent="." unique_id=532691025 node_paths=PackedStringArray("entity", "health_component", "position_anchor_hub_component") instance=ExtResource("1_1nsre")]
 entity = NodePath("..")
 identity = ExtResource("2_pfypr")
+health_component = NodePath("../Components/InteractionWithGame/Health")
+position_anchor_hub_component = NodePath("../Components/PositionAnchorHub")
 
 [node name="Components" type="Node3D" parent="." unique_id=1840746360]
 
-[node name="PlayableCameraComponent" parent="Components" unique_id=825915530 node_paths=PackedStringArray("playable") instance=ExtResource("3_eaq5y")]
+[node name="CharacterBodyUtils" parent="Components" unique_id=40130539 node_paths=PackedStringArray("playable") instance=ExtResource("5_ca3k8")]
+playable = NodePath("../..")
+
+[node name="PositionAnchorHub" parent="Components" unique_id=787595999 node_paths=PackedStringArray("center_anchor") instance=ExtResource("5_5hgqe")]
+center_anchor = NodePath("CenterAnchor")
+
+[node name="CenterAnchor" type="Marker3D" parent="Components/PositionAnchorHub" unique_id=1890736422]
+
+[node name="ForPlayer" type="Node3D" parent="Components" unique_id=1570436452]
+
+[node name="Camera" parent="Components/ForPlayer" unique_id=825915530 node_paths=PackedStringArray("playable") instance=ExtResource("3_eaq5y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7062482, 0.5728847, 0)
-playable = NodePath("../..")
+playable = NodePath("../../..")
 
-[node name="PlayableRotationHandlingByMouseComponent" parent="Components" unique_id=1377482824 node_paths=PackedStringArray("playable") instance=ExtResource("4_63xlc")]
-playable = NodePath("../..")
+[node name="RotationHandlingByMouse" parent="Components/ForPlayer" unique_id=1377482824 node_paths=PackedStringArray("playable") instance=ExtResource("4_63xlc")]
+playable = NodePath("../../..")
 
-[node name="PlayableCharacterBody3DUtilsComponent" parent="Components" unique_id=40130539 node_paths=PackedStringArray("playable") instance=ExtResource("5_ca3k8")]
-playable = NodePath("../..")
+[node name="InteractionWithGame" type="Node3D" parent="Components" unique_id=1552536520]
 
-[node name="PlayableMercyStaffWeaponComponent" parent="Components" unique_id=1776139651 node_paths=PackedStringArray("playable_mercy", "camera_component") instance=ExtResource("6_17od4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
-playable_mercy = NodePath("../..")
-playable_mercy_identity = ExtResource("2_pfypr")
-camera_component = NodePath("../PlayableCameraComponent")
-
-[node name="PlayableMercyGuardianAngelAbilityComponent" parent="Components" unique_id=892267797 node_paths=PackedStringArray("entity", "camera_component", "character_body_3d_utils_component") instance=ExtResource("7_63xlc")]
-entity = NodePath("../..")
+[node name="Health" parent="Components/InteractionWithGame" unique_id=930351444 instance=ExtResource("7_dteyd")]
 entity_identity = ExtResource("2_pfypr")
-camera_component = NodePath("../PlayableCameraComponent")
-character_body_3d_utils_component = NodePath("../PlayableCharacterBody3DUtilsComponent")
 
-[node name="UI" type="Control" parent="." unique_id=1859871527]
+[node name="Capabilities" type="Node3D" parent="Components" unique_id=749612059]
+
+[node name="Weapons" type="Node3D" parent="Components/Capabilities" unique_id=110130758]
+
+[node name="Staff" parent="Components/Capabilities/Weapons" unique_id=1776139651 node_paths=PackedStringArray("playable_mercy", "camera_component", "pistol_weapon_component", "ultimate_component") instance=ExtResource("6_17od4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+playable_mercy = NodePath("../../../..")
+playable_mercy_identity = ExtResource("2_pfypr")
+camera_component = NodePath("../../../ForPlayer/Camera")
+pistol_weapon_component = NodePath("../Pistol")
+ultimate_component = NodePath("../../Ultimate")
+beam_maximum_range_meters = 100.0
+healing_amount_per_second = 10.0
+
+[node name="Pistol" parent="Components/Capabilities/Weapons" unique_id=1054070605 node_paths=PackedStringArray("playable_mercy", "camera_component", "staff_weapon_component", "ultimate_component") instance=ExtResource("8_17od4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+playable_mercy = NodePath("../../../..")
+playable_mercy_identity = ExtResource("2_pfypr")
+camera_component = NodePath("../../../ForPlayer/Camera")
+staff_weapon_component = NodePath("../Staff")
+ultimate_component = NodePath("../../Ultimate")
+bullet_damage_amount = 50.0
+
+[node name="PassiveAbilities" type="Node3D" parent="Components/Capabilities" unique_id=277407196]
+
+[node name="Regeneration" parent="Components/Capabilities/PassiveAbilities" unique_id=1551956696 node_paths=PackedStringArray("health_component", "ultimate_component") instance=ExtResource("10_n64jn")]
+playable_mercy_identity = ExtResource("2_pfypr")
+health_component = NodePath("../../../InteractionWithGame/Health")
+ultimate_component = NodePath("../../Ultimate")
+
+[node name="Abilities" type="Node3D" parent="Components/Capabilities" unique_id=1695322868]
+
+[node name="GuardianAngel" parent="Components/Capabilities/Abilities" unique_id=892267797 node_paths=PackedStringArray("entity", "camera_component", "staff_weapon_component", "ultimate_component", "character_body_3d_utils_component") instance=ExtResource("7_63xlc")]
+entity = NodePath("../../../..")
+entity_identity = ExtResource("2_pfypr")
+camera_component = NodePath("../../../ForPlayer/Camera")
+staff_weapon_component = NodePath("../../Weapons/Staff")
+ultimate_component = NodePath("../../Ultimate")
+character_body_3d_utils_component = NodePath("../../../CharacterBodyUtils")
+target_finder_maximum_range = 100.0
+
+[node name="Ultimate" parent="Components/Capabilities" unique_id=82523328 instance=ExtResource("12_n64jn")]
+
+[node name="UI" type="Control" parent="Components" unique_id=2043364275]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -55,19 +108,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Crosshair" type="ColorRect" parent="UI" unique_id=15845396]
+[node name="PlayerUI" parent="Components/UI" unique_id=843756222 node_paths=PackedStringArray("health_component") instance=ExtResource("14_421uo")]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -5.0
-offset_top = -5.0
-offset_right = 5.0
-offset_bottom = 5.0
-grow_horizontal = 2
-grow_vertical = 2
+health_component = NodePath("../../InteractionWithGame/Health")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2097587948]
 mesh = SubResource("CapsuleMesh_qn7gm")

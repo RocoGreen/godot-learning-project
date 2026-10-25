@@ -8,249 +8,328 @@ enum _Mode {
 };
 
 @export_group("Dependencies")
-@export var playable_mercy: CharacterBody3D;
-@export var playable_mercy_identity: EntityIdentity;
-@export var camera_component: PlayableCameraComponent;
+@export var playable_mercy: PlayableMercy;
+@export var playable_mercy_identity: PlayableMercyIdentity;
 
-@export_group("Settings")
-@export var healing_amount_per_second: float = 60.0;
+@export_subgroup("Components")
+@export var camera_component: PlayableCameraComponent;
+@export var pistol_weapon_component: PlayableMercyPistolWeaponComponent;
+@export var ultimate_component: PlayableMercyUltimateComponent;
+
+@export_group("Weapon Settings")
+@export var default_weapon_held: bool = true;
+@export var time_seconds_to_swap_to_weapon: float = 0.2;
+
+@export_group("Beam Settings")
+@export var beam_maximum_range_meters: float = 15.0;
+@export_range(0, 100) var beam_maximum_range_meters_increase_percentage_when_ulting: int = 100;
+@export var beam_linger_effect_duration_seconds: float = 1.3;
+
+@export_subgroup("Healing Beam")
+@export var healing_amount_per_second: float = 55.0;
+@export var healing_amount_per_second_when_ulting: float = 65.0;
+
+@export_subgroup("Damage Boost Beam")
 @export_range(0, 100) var damage_boost_amount_percentage: int = 40;
-@export var target_entity_finder_maximum_range_meters: float = 40.0;
 
 @export_group("Input Actions Settings")
 @export_custom(PROPERTY_HINT_INPUT_NAME, "") var input_action_to_heal := &"primary_fire";
 @export_custom(PROPERTY_HINT_INPUT_NAME, "") var input_action_to_damage_boost := &"secondary_fire";
 
-var _target_entity: PhysicsBody3D;
-var _target_entity_damage_boost_request: EntityDamageBoostStatusReceiver.DamageBoostRequest;
+var _held: bool = false;
+var _swapped_to_weapon_this_frame: bool = false;
+var _swapping_to_weapon: bool = false;
+
+var _active: bool = false;
+var _beam_target: PhysicsBody3D: get = get_beam_target;
+var _beam_target_damage_boost_request: EntityDamageBoostStatusReceiver.DamageBoostRequest;
 
 var _mode: _Mode = _Mode.HEALING;
 
-var _vfx_start_position: Vector3;
-var _vfx_end_position: Vector3;
-
-@onready var target_entity_finder_ray_cast: RayCast3D = %TargetEntityFinder;
-
 @onready var debug_draw: DebugDraw3D = %DebugDraw3D;
+
+@onready var beam_target_finder_ray_cast: RayCast3D = %BeamTargetFinder;
+@onready var beam_linger_effect_timer: Timer = %BeamLingerEffectTimer;
+
+@onready var time_to_swap_to_weapon_timer: Timer = %TimeToSwapToWeaponTimer;
+
+@onready var mesh_instance: MeshInstance3D = %MeshInstance;
 
 
 func _ready() -> void:
-	target_entity_finder_ray_cast.add_exception(playable_mercy);
+	_held = default_weapon_held;
+
+	if not _held:
+		mesh_instance.hide();
+
+	beam_target_finder_ray_cast.add_exception(playable_mercy);
 
 
 func _process(_delta: float) -> void:
-	if not _target_entity: return;
+	if not _active: return;
 
-	_update_vfx_positions();
+	_display_beam_debug_vfx();
+
+
+func _physics_process(delta: float) -> void:
+	if _swapped_to_weapon_this_frame:
+		_swapped_to_weapon_this_frame = false;
+
+	elif _held and Input.is_action_just_pressed(&"swap_weapon"):
+		swap_to_pistol_weapon();
+		return;
+
+	if not _held or _swapping_to_weapon: return;
+
+	var input_action_to_heal_pressed: bool = Input.is_action_pressed(input_action_to_heal);
+	var input_action_to_damage_boost_pressed := Input.is_action_pressed(input_action_to_damage_boost);
+
+	if _active:
+		if not input_action_to_heal_pressed and not input_action_to_damage_boost_pressed:
+			_end_and_reset();
+			return;
+
+		elif _is_switch_from_healing_to_damage_boost_beam_requested():
+			_start_damage_boost_beam_to_entity(_beam_target);
+
+		elif _is_switch_from_damage_boost_to_healing_beam_requested():
+			_start_healing_beam_to_entity(_beam_target, delta);
+
+		elif _mode == _Mode.HEALING:
+			_heal_beam_target(delta);
+
+		if _is_entity_center_position_visible_and_in_range(_beam_target):
+			if not beam_linger_effect_timer.is_stopped():
+				beam_linger_effect_timer.stop();
+
+		elif beam_linger_effect_timer.is_stopped():
+			beam_linger_effect_timer.start(beam_linger_effect_duration_seconds);
+
+	else:
+		if Input.is_action_pressed(input_action_to_heal):
+			_start_healing_beam_to_entity_player_aims_at(delta);
+
+		elif Input.is_action_pressed(input_action_to_damage_boost):
+			_start_damage_boost_beam_to_entity_player_aims_at();
+
+
+func swap_to_this_weapon() -> void:
+	_held = true;
+	mesh_instance.show();
+
+	_swapped_to_weapon_this_frame = true;
+
+	time_to_swap_to_weapon_timer.start(time_seconds_to_swap_to_weapon);
+	_swapping_to_weapon = true;
+
+
+func swap_to_pistol_weapon() -> void:
+	if _active:
+		_end_and_reset();
+
+	_held = false;
+	mesh_instance.hide();
+
+	if not time_to_swap_to_weapon_timer.is_stopped():
+		time_to_swap_to_weapon_timer.stop();
+
+	pistol_weapon_component.swap_to_this_weapon();
+
+
+func get_beam_target() -> PhysicsBody3D:
+	return _beam_target;
+
+
+func _start_healing_beam_to_entity_player_aims_at(delta: float) -> void:
+	var entity_aimed_at: PhysicsBody3D = _get_entity_player_aims_at();
+
+	if not entity_aimed_at: return;
+	if not _is_entity_center_position_visible_and_in_range(entity_aimed_at): return;
+
+	_start_healing_beam_to_entity(entity_aimed_at, delta);
+
+
+func _start_healing_beam_to_entity(entity: PhysicsBody3D, delta: float) -> void:
+	if _active and _mode == _Mode.DAMAGE_BOOSTING and _beam_target_damage_boost_request:
+		_end_damage_boost_to_beam_target();
+
+	if not _active:
+		_active = true;
+
+	_beam_target = entity;
+	_mode = _Mode.HEALING;
+
+	_heal_beam_target(delta);
+
+
+func _heal_beam_target(delta: float) -> void:
+	var beam_target_health_component := EntityHealthComponent.from_entity(_beam_target);
+
+	if not beam_target_health_component: return;
+
+	var final_healing_amount_per_second: float = healing_amount_per_second;
+
+	if ultimate_component.is_active():
+		final_healing_amount_per_second = healing_amount_per_second_when_ulting;
+
+	final_healing_amount_per_second *= delta;
+
+	beam_target_health_component.heal(final_healing_amount_per_second, playable_mercy_identity);
+
+
+func _start_damage_boost_beam_to_entity_player_aims_at() -> void:
+	var entity_aimed_at: PhysicsBody3D = _get_entity_player_aims_at();
+
+	if not entity_aimed_at: return;
+	if not _is_entity_center_position_visible_and_in_range(entity_aimed_at): return;
+
+	_start_damage_boost_beam_to_entity(entity_aimed_at);
+
+
+func _start_damage_boost_beam_to_entity(entity: PhysicsBody3D) -> void:
+	if not _active:
+		_active = true;
+
+	_beam_target = entity;
+	_mode = _Mode.DAMAGE_BOOSTING;
+
+	var entity_damage_boost_status_receiver := EntityDamageBoostStatusReceiver.from_entity(entity);
+
+	if not entity_damage_boost_status_receiver: return;
+
+	var damage_boost_request := EntityDamageBoostStatusReceiver.DamageBoostRequest.new(
+			damage_boost_amount_percentage,
+			playable_mercy_identity
+	);
+
+	entity_damage_boost_status_receiver.add_damage_boost_request(damage_boost_request);
+	_beam_target_damage_boost_request = damage_boost_request;
+
+
+func _end_damage_boost_to_beam_target() -> void:
+	var beam_target_damage_boost_status_receiver := EntityDamageBoostStatusReceiver.from_entity(
+			_beam_target
+	);
+
+	if beam_target_damage_boost_status_receiver:
+		beam_target_damage_boost_status_receiver.remove_damage_boost_request(
+				_beam_target_damage_boost_request
+		);
+
+	_beam_target_damage_boost_request = null;
+
+
+func _display_beam_debug_vfx() -> void:
+	var beam_target_center_position: Vector3 = \
+			EntityPositionAnchorHubComponent.get_center_position_of_entity(_beam_target);
+
+	if not beam_target_center_position: return; 
 
 	debug_draw.draw_line(
-			debug_draw.to_local(_vfx_start_position),
-			debug_draw.to_local(_vfx_end_position),
+			debug_draw.to_local(beam_target_finder_ray_cast.global_position),
+			debug_draw.to_local(beam_target_center_position),
 			Color.YELLOW if _mode == _Mode.HEALING else Color.SKY_BLUE,
 			3.0
 	);
 
 
-func _physics_process(delta: float) -> void:
-	if _target_entity:
-		if (
-				not Input.is_action_pressed(input_action_to_heal) \
-				and \
-				not Input.is_action_pressed(input_action_to_damage_boost)
-		):
-			_end_and_reset();
+func _end_and_reset() -> void:
+	if _active and _mode == _Mode.DAMAGE_BOOSTING and _beam_target_damage_boost_request:
+		_end_damage_boost_to_beam_target();
 
-		elif Input.is_action_pressed(input_action_to_heal) and Input.is_action_just_pressed(input_action_to_damage_boost):
-			_switch_from_healing_to_damage_boost_mode();
-
-		elif Input.is_action_pressed(input_action_to_damage_boost) and Input.is_action_just_pressed(input_action_to_heal):
-			_switch_from_damage_boost_to_healing_mode(delta);
-
-		elif _mode == _Mode.HEALING:
-			if Input.is_action_pressed(input_action_to_damage_boost) and not Input.is_action_pressed(input_action_to_heal):
-				_switch_from_healing_to_damage_boost_mode();
-			else:
-				_heal_target_entity(delta);
-
-		elif _mode == _Mode.DAMAGE_BOOSTING and Input.is_action_pressed(input_action_to_heal) and not Input.is_action_pressed(input_action_to_damage_boost):
-			_switch_from_damage_boost_to_healing_mode(delta);
-
-	else:
-		if Input.is_action_pressed(input_action_to_heal) and _can_entity_player_aims_at_be_healed():
-			_start_healing_entity_player_aims_at(delta);
-
-		elif Input.is_action_pressed(input_action_to_damage_boost) and _can_entity_player_aims_at_be_damage_boosted():
-			_start_damage_boosting_entity_player_aims_at();
+	_active = false;
+	_beam_target = null;
 
 
-func _find_target_entity_player_aims_at() -> PhysicsBody3D:
-	var ray_to_get_what_player_aims_at_results: Dictionary = camera_component.ray_to_aim_direction();
+func _get_entity_player_aims_at() -> PhysicsBody3D:
+	var ray_to_get_what_is_aimed_at_results: Dictionary = camera_component.ray_to_aim_direction();
+
+	if ray_to_get_what_is_aimed_at_results.is_empty(): 
+		return null;
 	
-	if ray_to_get_what_player_aims_at_results.is_empty():
-		return;
+	var what_is_aimed_at: Object = ray_to_get_what_is_aimed_at_results.get("collider");
 
-	var target_aimed_at_aim_point: Vector3 = ray_to_get_what_player_aims_at_results.position;
-
-	target_entity_finder_ray_cast.look_at(target_aimed_at_aim_point);
-	target_entity_finder_ray_cast.target_position.z = -target_entity_finder_maximum_range_meters;
-
-	target_entity_finder_ray_cast.force_raycast_update();
-
-	if target_entity_finder_ray_cast.is_colliding():
-		var target_hit: PhysicsBody3D = target_entity_finder_ray_cast.get_collider();
-		
-		if target_hit.is_in_group(&"entities"):
-			var target_entity_component: EntityComponent = EntityComponent.from_entity(target_hit);
-			var target_position_anchor_hub := target_entity_component.position_anchor_hub_component;
-			
-			if not target_position_anchor_hub: 
-				return null;
-			
-			if not target_position_anchor_hub.center_anchor:
-				return null;
-			
-			return target_hit;
-		else: 
-			return null;
-
-	else:
+	if not EntityComponent.is_object_an_entity(what_is_aimed_at):
 		return null;
 
+	var entity_aimed_at: PhysicsBody3D = EntityComponent.cast_object_to_entity(what_is_aimed_at);
 
-func _can_entity_player_aims_at_be_healed() -> bool:
-	var entity: PhysicsBody3D = _find_target_entity_player_aims_at();
+	return entity_aimed_at;
 
-	if not entity:
+
+func _is_entity_center_position_visible_and_in_range(entity: PhysicsBody3D) -> bool:
+	var entity_center_position: Vector3 = \
+			EntityPositionAnchorHubComponent.get_center_position_of_entity(entity);
+
+	if not entity_center_position:
 		return false;
 
-	if _can_this_entity_be_healed(entity):
-		return true;
-	else:
-		return false;
-
-
-func _can_this_entity_be_healed(entity: PhysicsBody3D) -> bool:
-	var entity_entity_component: EntityComponent = EntityComponent.from_entity(entity);
-	var entity_health_component := entity_entity_component.health_component;
-
-	if entity_health_component:
-		return true;
-	else:
-		return false;
-
-
-func _start_healing_entity_player_aims_at(delta: float) -> void:
-	var entity_aimed_at: PhysicsBody3D = _find_target_entity_player_aims_at();
-
-	_start_healing_this_entity(entity_aimed_at, delta);
-
-
-func _start_healing_this_entity(entity: PhysicsBody3D, delta: float) -> void:
-	_mode = _Mode.HEALING;
-	_target_entity = entity;
-
-	_heal_target_entity(delta);
-
-
-func _heal_target_entity(delta: float) -> void:
-	var target_entity_entity_component: EntityComponent = EntityComponent.from_entity(_target_entity);
-	var target_entity_health_component := target_entity_entity_component.health_component;
-
-	target_entity_health_component.heal(healing_amount_per_second * delta, playable_mercy_identity);
-
-
-func _can_entity_player_aims_at_be_damage_boosted() -> bool:
-	var entity: PhysicsBody3D = _find_target_entity_player_aims_at();
-
-	if not entity:
-		return false;
-
-	if _can_this_entity_be_damage_boosted(entity):
-		return true;
-	else:
-		return false;
-
-
-func _can_this_entity_be_damage_boosted(entity: PhysicsBody3D) -> bool:
-	var entity_entity_component: EntityComponent = EntityComponent.from_entity(entity);
-	var entity_status_receiver_hub := entity_entity_component.status_receiver_hub_component;
-
-	if entity_status_receiver_hub:
-		return true;
-	else:
-		return false;
-
-
-func _start_damage_boosting_entity_player_aims_at() -> void:
-	var entity_aimed_at: PhysicsBody3D = _find_target_entity_player_aims_at();
-
-	_start_damage_boosting_this_entity(entity_aimed_at);
-
-
-func _start_damage_boosting_this_entity(entity: PhysicsBody3D) -> void:
-	if _target_entity_damage_boost_request:
-		_end_damage_boost_to_target_entity();
+	beam_target_finder_ray_cast.look_at(entity_center_position);
 	
-	var entity_entity_component: EntityComponent = EntityComponent.from_entity(entity);
-	var entity_status_receiver_hub := entity_entity_component.status_receiver_hub_component;
+	var final_beam_maximum_range_meters: float = beam_maximum_range_meters;
 	
-	var damage_boost_request := EntityDamageBoostStatusReceiver.DamageBoostRequest.new(
-		damage_boost_amount_percentage,
-		playable_mercy_identity
-	);
-	entity_status_receiver_hub.damage_boost_receiver.add_damage_boost_request(damage_boost_request);
-	_target_entity_damage_boost_request = damage_boost_request;
+	if ultimate_component.is_active():
+		final_beam_maximum_range_meters += _percentage_of_float(
+				beam_maximum_range_meters_increase_percentage_when_ulting,
+				final_beam_maximum_range_meters,
+		);
 
-	_target_entity = entity;
-	_mode = _Mode.DAMAGE_BOOSTING;
+	beam_target_finder_ray_cast.target_position.z = -final_beam_maximum_range_meters;
 
+	beam_target_finder_ray_cast.force_raycast_update();
 
-func _end_damage_boost_to_target_entity() -> void:
-	var entity_entity_component: EntityComponent = EntityComponent.from_entity(_target_entity);
-	var entity_status_receiver_hub := entity_entity_component.status_receiver_hub_component;
+	var entity_center_position_is_visible_and_in_range: bool = false;
 
-	entity_status_receiver_hub.damage_boost_receiver.remove_damage_boost_request(
-			_target_entity_damage_boost_request
-	);
-	
-	_target_entity_damage_boost_request = null;
+	while(beam_target_finder_ray_cast.is_colliding()):
+		var beam_target_finder_ray_cast_collider: Object = beam_target_finder_ray_cast.get_collider();
 
+		if not EntityComponent.is_object_an_entity(beam_target_finder_ray_cast_collider):
+			break;
 
-func _switch_from_healing_to_damage_boost_mode() -> void:
-	if _can_this_entity_be_damage_boosted(_target_entity):
-		_start_damage_boosting_this_entity(_target_entity);
+		elif beam_target_finder_ray_cast_collider == entity:
+			entity_center_position_is_visible_and_in_range = true;
+			break;
 
-	elif _can_entity_player_aims_at_be_damage_boosted():
-		_start_damage_boosting_entity_player_aims_at();
+		beam_target_finder_ray_cast.add_exception(beam_target_finder_ray_cast_collider);
+		beam_target_finder_ray_cast.force_raycast_update();
 
-	else:
-		_end_and_reset();
+	beam_target_finder_ray_cast.clear_exceptions();
+	beam_target_finder_ray_cast.add_exception(playable_mercy);
+
+	return entity_center_position_is_visible_and_in_range;
 
 
-func _switch_from_damage_boost_to_healing_mode(delta: float) -> void:
-	_end_damage_boost_to_target_entity();
+func _is_switch_from_healing_to_damage_boost_beam_requested() -> bool:
+	if Input.is_action_pressed(input_action_to_heal): 
+		if Input.is_action_just_pressed(input_action_to_damage_boost):
+			return true;
 
-	if _can_this_entity_be_healed(_target_entity):
-		_start_healing_this_entity(_target_entity, delta);
+	if _mode == _Mode.HEALING and Input.is_action_pressed(input_action_to_damage_boost):
+		if not Input.is_action_pressed(input_action_to_heal):
+			return true;
 
-	elif _can_entity_player_aims_at_be_healed():
-		_start_healing_entity_player_aims_at(delta);
-
-	else:
-		_end_and_reset();
-
-
-func _update_vfx_positions() -> void:
-	_vfx_start_position = target_entity_finder_ray_cast.global_position;
-
-	var target_entity_entity_component: EntityComponent = EntityComponent.from_entity(_target_entity);
-	var target_entity_position_anchor_hub := target_entity_entity_component.position_anchor_hub_component;
-
-	_vfx_end_position = target_entity_position_anchor_hub.center_anchor.global_position;
+	return false;
 
 
-func _end_and_reset() -> void:
-	if _target_entity_damage_boost_request:
-		_end_damage_boost_to_target_entity();
+func _is_switch_from_damage_boost_to_healing_beam_requested() -> bool:
+	if Input.is_action_pressed(input_action_to_damage_boost): 
+		if Input.is_action_just_pressed(input_action_to_heal):
+			return true;
 
-	_target_entity = null;
+	if _mode == _Mode.DAMAGE_BOOSTING and Input.is_action_pressed(input_action_to_heal):
+		if not Input.is_action_pressed(input_action_to_damage_boost):
+			return true;
+
+	return false;
+
+
+func _percentage_of_float(percentage: int, of: float) -> float:
+	return (float(percentage) * of) / 100.0;
+
+
+func _on_beam_linger_effect_timer_timeout() -> void:
+	_end_and_reset();
+
+
+func _on_time_to_swap_to_weapon_timer_timeout() -> void:
+	_swapping_to_weapon = false;

@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://pth7bspp0852"]
+
+[ext_resource type="Script" uid="uid://cj3lv0srjnjap" path="res://entities/playables/mercy/components/weapons/pistol/playable_mercy_pistol_weapon_component.gd" id="1_rsbkn"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_f751h"]
+top_radius = 0.1
+bottom_radius = 0.1
+height = 0.5
+
+[node name="PlayableMercyPistolWeaponComponent" type="Node3D" unique_id=1054070605]
+script = ExtResource("1_rsbkn")
+
+[node name="MeshInstance" type="MeshInstance3D" parent="." unique_id=1105587316]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+mesh = SubResource("CylinderMesh_f751h")
+
+[node name="BulletStartPositionAnchor" type="Marker3D" parent="." unique_id=922457858]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
+
+[node name="Timers" type="Node" parent="." unique_id=747948466]
+
+[node name="ReloadTime" type="Timer" parent="Timers" unique_id=80341441]
+unique_name_in_owner = true
+process_callback = 0
+one_shot = true
+
+[node name="DelayBetweenShots" type="Timer" parent="Timers" unique_id=1424424506]
+unique_name_in_owner = true
+process_callback = 0
+one_shot = true
+
+[node name="TimeToSwapToWeaponTimer" type="Timer" parent="Timers" unique_id=927172865]
+unique_name_in_owner = true
+process_callback = 0
+one_shot = true
+
+[node name="AutoReloadTimeAfterUnhold" type="Timer" parent="Timers" unique_id=146780089]
+unique_name_in_owner = true
+one_shot = true
+
+[connection signal="unheld" from="." to="." method="_on_unheld"]
+[connection signal="timeout" from="Timers/ReloadTime" to="." method="_on_reload_time_timer_timeout"]
+[connection signal="timeout" from="Timers/TimeToSwapToWeaponTimer" to="." method="_on_time_to_swap_to_weapon_timer_timeout"]
+[connection signal="timeout" from="Timers/AutoReloadTimeAfterUnhold" to="." method="_on_auto_reload_time_after_unhold_timer_timeout"]

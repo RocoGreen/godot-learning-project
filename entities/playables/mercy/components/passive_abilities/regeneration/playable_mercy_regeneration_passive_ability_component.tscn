@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://beufnx2amng30"]
+
+[ext_resource type="Script" uid="uid://de4yrlh3sq21g" path="res://entities/playables/mercy/components/passive_abilities/regeneration/playable_mercy_regeneration_passive_ability_component.gd" id="1_4i4gx"]
+
+[node name="PlayableMercyRegenerationPassiveAbilityComponent" type="Node" unique_id=1551956696]
+script = ExtResource("1_4i4gx")
+
+[node name="DelayToActivateTimer" type="Timer" parent="." unique_id=815320713]
+unique_name_in_owner = true
+one_shot = true
+
+[connection signal="timeout" from="DelayToActivateTimer" to="." method="_on_delay_to_activate_timer_timeout"]

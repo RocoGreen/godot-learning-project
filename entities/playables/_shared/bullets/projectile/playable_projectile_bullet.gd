@@ -2,6 +2,7 @@ class_name PlayableProjectileBullet
 extends CharacterBody3D
 
 
+signal launched;
 signal collided(collision: KinematicCollision3D);
 
 var _launched: bool = false;
@@ -31,5 +32,7 @@ func launch(
 	velocity = -global_basis.z.normalized() * at_speed;
 	velocity.y += with_up_tilt;
 
-	_launched = true;
 	_affected_by_gravity = affected_by_gravity;
+
+	_launched = true;
+	launched.emit();

@@ -24,12 +24,16 @@ extends Node
 			if entity_identity:
 				entity_identity.changed.connect(_on_entity_identity_changed);
 
+@export_subgroup("Components")
 @export var camera_component: PlayableCameraComponent:
 	set(new_camera_component):
 		camera_component = new_camera_component;
 
 		if Engine.is_editor_hint():
 			update_configuration_warnings();
+
+@export var staff_weapon_component: PlayableMercyStaffWeaponComponent;
+@export var ultimate_component: PlayableMercyUltimateComponent;
 
 @export_group("Optional Dependencies")
 @export var character_body_3d_utils_component: PlayableCharacterBody3DUtilsComponent:
@@ -40,11 +44,13 @@ extends Node
 			update_configuration_warnings();
 
 @export_group("Target Finder Settings")
-@export var target_finder_maximum_range: float = 100.0;
+@export var target_finder_maximum_range: float = 30.0;
+@export_range(0, 100) var target_finder_maximum_range_increase_percentage_when_ulting: int = 100;
 
 @export_group("Flying To Target Settings")
 @export var flying_to_target_travel_speed: float = 30.0;
-@export var stop_flying_to_target_when_distance_to_it_reaches: float = 1.0;
+@export var flying_to_target_travel_speed_when_ulting: float = 40.0;
+@export var stop_flying_to_target_when_distance_to_it_reaches: float = 5.0;
 
 @export_group("Slingshot Settings")
 @export var slingshot_force: float = 50.0;
@@ -77,6 +83,12 @@ func _init() -> void:
 		entity_identity.changed.connect(_on_entity_identity_changed);
 
 
+func _ready() -> void:
+	if Engine.is_editor_hint(): return;
+
+	ultimate_component.activated.connect(_on_ultimate_activated);
+
+
 func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint(): return;
 
@@ -85,6 +97,9 @@ func _physics_process(delta: float) -> void:
 			return;
 		else:
 			_pressing_again_ability_input_action_required = false;
+
+	if ultimate_component.is_activating():
+		return;
 
 	var ability_got_reset: bool = _handle_reset_conditions();
 
@@ -177,24 +192,64 @@ func _start_target_finding() -> void:
 
 
 func _handle_target_finding() -> void:
+	var final_target_finder_maximum_range: float = target_finder_maximum_range;
+	
+	if ultimate_component.is_active():
+		final_target_finder_maximum_range += _percentage_of_float(
+				target_finder_maximum_range_increase_percentage_when_ulting,
+				final_target_finder_maximum_range,
+		);
+
+	var started_flying_to_entity_player_aims_at: bool = _start_flying_to_entity_player_aims_at(
+			final_target_finder_maximum_range,
+	);
+	
+	if started_flying_to_entity_player_aims_at:
+		_finding_a_target = false;
+	
+	elif staff_weapon_component.get_beam_target():
+		var started_flying_to_staff_weapon_beam_target: bool = \
+				_start_flying_to_staff_weapon_beam_target();
+		
+		if started_flying_to_staff_weapon_beam_target:
+			_finding_a_target = false;
+
+
+func _start_flying_to_entity_player_aims_at(maximum_range_from_playable_mercy: float) -> bool:
 	var ray_to_get_what_player_aims_at_results: Dictionary = camera_component.ray_to_aim_direction();
 
 	if ray_to_get_what_player_aims_at_results.is_empty():
-		return;
+		return false;
 
-	var target: PhysicsBody3D = ray_to_get_what_player_aims_at_results.get("collider") as PhysicsBody3D;
-	var target_aimed_at_aim_point: Vector3 = ray_to_get_what_player_aims_at_results.get("position");
-	
-	if not target.is_in_group(&"entities"): 
-		return;
+	var what_player_aims_at: Object = ray_to_get_what_player_aims_at_results.get("collider");
+	var aim_point_on_what_is_aimed_at: Vector3 = ray_to_get_what_player_aims_at_results.position;
 
-	if entity.global_position.distance_to(target_aimed_at_aim_point) > target_finder_maximum_range:
-		return;
+	if not EntityComponent.is_object_an_entity(what_player_aims_at):
+		return false;
 
-	_finding_a_target = false;
+	var playable_mercy_center_position: Vector3 = \
+			EntityPositionAnchorHubComponent.get_center_position_of_entity(entity);
 
-	var new_target_global_position_to_fly_to: Vector3 = target_aimed_at_aim_point;
-	_start_flying(new_target_global_position_to_fly_to);
+	if playable_mercy_center_position.distance_to(
+			aim_point_on_what_is_aimed_at
+	) > maximum_range_from_playable_mercy:
+		return false;
+
+	_start_flying(aim_point_on_what_is_aimed_at);
+	return true;
+
+
+func _start_flying_to_staff_weapon_beam_target() -> bool:
+	var beam_target: PhysicsBody3D = staff_weapon_component.get_beam_target();
+
+	if not beam_target: 
+		return false;
+
+	var beam_target_center_position: Vector3 = \
+			EntityPositionAnchorHubComponent.get_center_position_of_entity(beam_target);
+
+	_start_flying(beam_target_center_position);
+	return true;
 
 
 func _start_flying(target_global_position_to_fly_to: Vector3) -> void:
@@ -213,13 +268,17 @@ func _start_flying(target_global_position_to_fly_to: Vector3) -> void:
 
 
 func _handle_flying_to_target() -> void:
-	if entity.global_position.distance_to(_target_global_position) <= \
-			stop_flying_to_target_when_distance_to_it_reaches:
+	if entity.global_position.distance_to(
+			_target_global_position
+	) <= stop_flying_to_target_when_distance_to_it_reaches:
 		_reset();
 
 	else:
 		var flying_speed: float = flying_to_target_travel_speed;
-		
+
+		if ultimate_component.is_active():
+			flying_speed = flying_to_target_travel_speed_when_ulting;
+
 		entity.velocity = entity.global_position.direction_to(_target_global_position) * flying_speed;
 		entity.move_and_slide();
 
@@ -278,5 +337,13 @@ func _reset() -> void:
 		_pressing_again_ability_input_action_required = true;
 
 
+func _percentage_of_float(percentage: int, of: float) -> float:
+	return (float(percentage) * of) / 100.0;
+
+
 func _on_entity_identity_changed() -> void:
 	update_configuration_warnings();
+
+
+func _on_ultimate_activated() -> void:
+	_reset();

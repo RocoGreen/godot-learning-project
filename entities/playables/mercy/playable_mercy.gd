@@ -1,0 +1,2 @@
+class_name PlayableMercy
+extends CharacterBody3D

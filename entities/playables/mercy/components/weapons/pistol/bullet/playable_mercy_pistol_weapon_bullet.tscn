@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://bdsqad7i2qnq8"]
+
+[ext_resource type="PackedScene" uid="uid://bk0l1pqky6xip" path="res://entities/playables/_shared/bullets/projectile/playable_projectile_bullet.tscn" id="1_yc4va"]
+[ext_resource type="Script" uid="uid://di2ibiihveswl" path="res://entities/playables/mercy/components/weapons/pistol/bullet/playable_mercy_pistol_weapon_bullet.gd" id="2_5xt8l"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_fcdfh"]
+radius = 0.2
+height = 0.4
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_hk7db"]
+radius = 0.2
+
+[node name="PlayableProjectileBullet" unique_id=1668462563 instance=ExtResource("1_yc4va")]
+script = ExtResource("2_5xt8l")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="0" unique_id=1636158071]
+mesh = SubResource("SphereMesh_fcdfh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="1" unique_id=641820793]
+shape = SubResource("SphereShape3D_hk7db")
+
+[node name="LifeDurationTimeAfterFiring" type="Timer" parent="." index="2" unique_id=1896549635]
+unique_name_in_owner = true
+process_callback = 0
+one_shot = true
+
+[connection signal="collided" from="." to="." method="_on_collided"]
+[connection signal="launched" from="." to="." method="_on_launched"]
+[connection signal="timeout" from="LifeDurationTimeAfterFiring" to="." method="_on_life_duration_time_after_firing_timer_timeout"]

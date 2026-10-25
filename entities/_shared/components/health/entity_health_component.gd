@@ -100,6 +100,13 @@ func damage(amount: float = 0.0, attacker: EntityIdentity = EntityIdentity.new()
 	#if current_health <= 0.0: death.emit(amount, old_health, attacker);
 
 
+func is_maximum_health() -> bool:
+	if current_health >= max_health:
+		return true;
+	else:
+		return false;
+
+
 func _on_entity_identity_changed() -> void:
 	update_configuration_warnings();
 

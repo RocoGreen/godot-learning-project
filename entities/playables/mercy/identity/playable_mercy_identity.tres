@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="EntityIdentity" format=3 uid="uid://b6hbgxmbl1he5"]
+[gd_resource type="Resource" script_class="PlayableMercyIdentity" format=3 uid="uid://b6hbgxmbl1he5"]
 
-[ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/identity/entity_identity.gd" id="1_0lkfx"]
+[ext_resource type="Script" uid="uid://dtgvpcksm4hic" path="res://entities/playables/mercy/identity/playable_mercy_identity.gd" id="1_0lkfx"]
 
 [resource]
 script = ExtResource("1_0lkfx")
-name = &"Mercy"
+name = &"Playable Mercy"

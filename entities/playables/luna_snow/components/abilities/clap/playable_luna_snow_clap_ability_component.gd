@@ -193,14 +193,18 @@ func _heal_or_damage_entities_hit_by_clap() -> void:
 	for collider_index: int in range(entities_detector_shape_cast.get_collision_count()):
 		var collider: Object = entities_detector_shape_cast.get_collider(collider_index);
 
-		if not EntityComponent.is_object_an_entity(collider): return;
+		if not EntityComponent.is_object_an_entity(collider): continue;
 
 		var collider_entity: PhysicsBody3D = EntityComponent.cast_object_to_entity(collider);
 		var collider_entity_identity: EntityIdentity = EntityIdentity.from_entity(collider_entity);
 
-		if not collider_entity_identity: return;
+		if not collider_entity_identity: continue;
 
-		if collider_entity_identity.team == playable_luna_snow_identity.team:
+		var collider_entity_team: EntityIdentity.Team = collider_entity_identity.team;
+
+		if collider_entity_team == null: continue;
+
+		if collider_entity_team == playable_luna_snow_identity.team:
 			_apply_healing_to_entity(collider_entity);
 		else:
 			_apply_damage_to_entity(collider_entity);

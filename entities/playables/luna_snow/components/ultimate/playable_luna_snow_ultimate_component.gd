@@ -67,15 +67,16 @@ var _input_action_to_start_pressed_at_last_usage_ending: bool = false;
 
 
 func _init() -> void:
-	if Engine.is_editor_hint() and playable_luna_snow_identity:
-		playable_luna_snow_identity.changed.connect(_on_playable_luna_snow_identity_changed);
+	if Engine.is_editor_hint():
+		if playable_luna_snow_identity:
+			playable_luna_snow_identity.changed.connect(_on_playable_luna_snow_identity_changed);
+	else:
+		body_entered.connect(_on_body_entered);
+		body_exited.connect(_on_body_exited);
 
 
 func _ready() -> void:
 	if Engine.is_editor_hint(): return;
-
-	body_entered.connect(_on_body_entered);
-	body_exited.connect(_on_body_exited);
 
 	_dancefloor.top_level = true;
 
@@ -253,14 +254,29 @@ func _remove_all_damage_boosted_entities() -> void:
 		_remove_damage_boost_to_entity(damage_boosted_entity);
 
 
+func _is_entity_in_same_team_as_playable_luna_snow(entity: PhysicsBody3D) -> bool:
+	var entity_identity: EntityIdentity = EntityIdentity.from_entity(entity);
+
+	if not entity_identity: 
+		return false;
+
+	var entity_team: EntityIdentity.Team = entity_identity.team;
+
+	if entity_team == null: 
+		return false;
+
+	if entity_team != playable_luna_snow_identity.team: 
+		return false;
+
+	return true;
+
+
 func _on_body_entered(body: Node3D) -> void:
 	if not EntityComponent.is_object_an_entity(body): return;
 
 	var entity_who_entered: PhysicsBody3D = EntityComponent.cast_object_to_entity(body);
-	var entity_who_entered_identity: EntityIdentity = EntityIdentity.from_entity(entity_who_entered);
 
-	if not entity_who_entered_identity: return;
-	if not entity_who_entered_identity.team == playable_luna_snow_identity.team: return;
+	if not _is_entity_in_same_team_as_playable_luna_snow(entity_who_entered): return;
 
 	_entities_inside_ultimate.append(entity_who_entered);
 
@@ -274,10 +290,8 @@ func _on_body_exited(body: Node3D) -> void:
 	if not EntityComponent.is_object_an_entity(body): return;
 
 	var entity_who_exited: PhysicsBody3D = EntityComponent.cast_object_to_entity(body);
-	var entity_who_exited_identity: EntityIdentity = EntityIdentity.from_entity(entity_who_exited);
 
-	if not entity_who_exited_identity: return;
-	if not entity_who_exited_identity.team == playable_luna_snow_identity.team: return;
+	if not _is_entity_in_same_team_as_playable_luna_snow(entity_who_exited): return;
 
 	_entities_inside_ultimate.erase(entity_who_exited);
 

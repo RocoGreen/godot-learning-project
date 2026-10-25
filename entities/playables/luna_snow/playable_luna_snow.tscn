@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://bs5dguomkd64k" path="res://entities/playables/luna_snow/components/abilities/clap/playable_luna_snow_clap_ability_component.tscn" id="9_ou7k7"]
 [ext_resource type="PackedScene" uid="uid://gikkd26lo3hc" path="res://entities/playables/luna_snow/components/ultimate/playable_luna_snow_ultimate_component.tscn" id="10_2bkg8"]
 [ext_resource type="PackedScene" uid="uid://bhenygohfavyh" path="res://entities/playables/luna_snow/components/abilities/flake/playable_luna_snow_flake_ability_component.tscn" id="10_gfjr5"]
+[ext_resource type="PackedScene" uid="uid://s7uybs151onq" path="res://entities/playables/_shared/components/player_ui/playable_player_ui_component.tscn" id="14_ak8u0"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a6ekt"]
 albedo_color = Color(0.34918204, 0.69407076, 0.9880906, 1)
@@ -43,7 +44,7 @@ playable = NodePath("../../..")
 [node name="ForPlayer" type="Node3D" parent="Components" unique_id=1273793414]
 
 [node name="Camera" parent="Components/ForPlayer" unique_id=825915530 node_paths=PackedStringArray("playable") instance=ExtResource("4_hvm6w")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4317074, 0.61176896, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.983896, 0.61176896, 0)
 playable = NodePath("../../..")
 following_smoothness = 0.9
 
@@ -68,7 +69,7 @@ center_anchor = NodePath("CenterAnchor")
 [node name="Capabilities" type="Node3D" parent="Components" unique_id=994099245]
 
 [node name="Weapon" parent="Components/Capabilities" unique_id=2139518994 node_paths=PackedStringArray("camera_component") instance=ExtResource("9_6hi6u")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6132339, 0.3297001, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6132339, 0.12152135, 0)
 playable_luna_snow_identity = ExtResource("2_6hi6u")
 camera_component = NodePath("../../ForPlayer/Camera")
 recovery_delay_after_valley = 0.2
@@ -98,26 +99,17 @@ healing_amount_per_second = 20.0
 [node name="DancefloorPositionAnchor" type="Marker3D" parent="Components/Capabilities/Ultimate" unique_id=1450508015]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 
-[node name="UI" type="Control" parent="." unique_id=29901001]
+[node name="UI" type="Control" parent="Components" unique_id=181945459]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 
-[node name="Crosshair" type="ColorRect" parent="UI" unique_id=1507356431]
-custom_minimum_size = Vector2(3, 3)
+[node name="PlayerUI" parent="Components/UI" unique_id=42951505 node_paths=PackedStringArray("health_component") instance=ExtResource("14_ak8u0")]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
+health_component = NodePath("../../InteractionWithGame/Health")
 
 [node name="MeshInstance" type="MeshInstance3D" parent="." unique_id=1884383243]
 mesh = SubResource("CapsuleMesh_lf7ib")

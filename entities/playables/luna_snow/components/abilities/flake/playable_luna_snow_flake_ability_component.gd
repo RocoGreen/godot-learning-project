@@ -47,14 +47,15 @@ func _flake_entity_player_aims_at() -> void:
 	var entity_to_flake_identity: EntityIdentity = EntityIdentity.from_entity(entity_to_flake);
 	var entity_to_flake_health_component := EntityHealthComponent.from_entity(entity_to_flake);
 
-	if not entity_to_flake_identity or not entity_to_flake_health_component: 
+	if not entity_to_flake_identity: return;
+	if not entity_to_flake_health_component: return;
+
+	var entity_to_flake_team: EntityIdentity.Team = entity_to_flake_identity.team;
+
+	if entity_to_flake_team == null: 
 		return;
 
-	if (
-			not allow_flake_for_any_entity \
-			and \
-			entity_to_flake_identity.team != playable_luna_snow_identity.team
-	): 
+	if not allow_flake_for_any_entity and entity_to_flake_team != playable_luna_snow_identity.team: 
 		return;
 
 	_flaked_entity_health_component = entity_to_flake_health_component;

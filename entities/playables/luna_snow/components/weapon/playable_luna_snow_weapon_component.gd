@@ -47,7 +47,7 @@ func _process(_delta: float) -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if Input.is_action_just_pressed(&"toggle_weapon_mode"):
+	if Input.is_action_just_pressed(&"toggle_weapon_mode") and healing_or_damage_manual_mode:
 		_toggle_manual_mode();
 
 	if not Input.is_action_pressed(weapon_input_action): 
@@ -110,10 +110,6 @@ func _handle_bullet_hit_something_response() -> void:
 
 
 func _handle_bullet_hit_entity_response(entity_hit: PhysicsBody3D) -> void:
-	var entity_hit_identity: EntityIdentity = EntityIdentity.from_entity(entity_hit);
-
-	if not entity_hit_identity: return;
-
 	if healing_or_damage_manual_mode:
 		if _manual_mode == _ManualMode.HEALING:
 			_apply_healing_to_entity(entity_hit);
@@ -122,7 +118,15 @@ func _handle_bullet_hit_entity_response(entity_hit: PhysicsBody3D) -> void:
 			_apply_damage_to_entity(entity_hit);
 
 	else:
-		if entity_hit_identity.team == playable_luna_snow_identity.team:
+		var entity_hit_identity: EntityIdentity = EntityIdentity.from_entity(entity_hit);
+
+		if not entity_hit_identity: return;
+		
+		var entity_hit_team: EntityIdentity.Team = entity_hit_identity.team;
+
+		if entity_hit_team == null: return;
+
+		if entity_hit_team == playable_luna_snow_identity.team:
 			_apply_healing_to_entity(entity_hit);
 
 		else:

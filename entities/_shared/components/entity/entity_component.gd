@@ -15,8 +15,8 @@ extends Node
 ## Use the method [method EntityHealthComponent.from_entity] instead.
 @export var health_component: EntityHealthComponent;
 ## [b]Warning[/b]: Do NOT retrieve the component here.
-## Use the method [method EntityStatusReceiverHubComponent.from_entity] instead.
-@export var status_receiver_hub_component: EntityStatusReceiverHubComponent;
+## Use the method [method EntityStatusEffectReceiverHubComponent.from_entity] instead.
+@export var status_effect_receiver_hub_component: EntityStatusEffectReceiverHubComponent;
 ## [b]Warning[/b]: Do NOT retrieve the component here.
 ## Use the method [method EntityPositionAnchorHubComponent.from_entity] instead.
 @export var position_anchor_hub_component: EntityPositionAnchorHubComponent;

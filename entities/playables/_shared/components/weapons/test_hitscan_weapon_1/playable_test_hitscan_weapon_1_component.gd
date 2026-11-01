@@ -84,7 +84,7 @@ func _on_bullet_hit() -> void:
 				30.0,
 				bullet_damage_source,
 				playable,
-				false,
+				true,
 		);
 
 		if not collider_entity_health_component.is_request_allowed_to_damage(damage_request): return;

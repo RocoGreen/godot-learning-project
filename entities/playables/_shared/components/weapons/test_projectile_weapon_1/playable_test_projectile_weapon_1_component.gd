@@ -17,13 +17,6 @@ enum _Mode {
 		if Engine.is_editor_hint():
 			update_configuration_warnings();
 
-@export var playable_identity: EntityIdentity = EntityIdentity.new():
-	set(new_playable_identity):
-		playable_identity = new_playable_identity;
-		
-		if Engine.is_editor_hint():
-			update_configuration_warnings();
-
 @export var player_camera_component: PlayablePlayerCameraComponent:
 	set(new_player_camera_component):
 		player_camera_component = new_player_camera_component;
@@ -90,8 +83,6 @@ func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = PackedStringArray();
 
 	warnings.append_array(ConfigurationWarningLibrary.get_for_playable(playable));
-
-	warnings.append_array(ConfigurationWarningLibrary.get_for_entity_identity(playable_identity));
 
 	warnings.append_array(
 			ConfigurationWarningLibrary.get_for_player_camera_component(player_camera_component)

@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://qt11qx64as1o"]
 
 [ext_resource type="PackedScene" uid="uid://coqcni43ymjxa" path="res://entities/_shared/components/entity/entity_component.tscn" id="1_ybfop"]
-[ext_resource type="Resource" uid="uid://ch1uqhr4e8qym" path="res://entities/playables/test_character_1/test_character_1_identity.tres" id="2_3s4ss"]
 [ext_resource type="PackedScene" uid="uid://cbeqj73rklldr" path="res://entities/playables/_shared/components/player_camera/playable_player_camera_component.tscn" id="3_qc732"]
 [ext_resource type="PackedScene" uid="uid://dgavxxiu7xo4s" path="res://entities/playables/_shared/components/rotation_handling_by_mouse/playable_rotation_handling_by_mouse_component.tscn" id="4_7it47"]
 [ext_resource type="PackedScene" uid="uid://dpm4llvw6alin" path="res://entities/playables/_shared/components/character_body_3d_utils/playable_character_body_3d_utils_component.tscn" id="4_ybfop"]
@@ -21,10 +20,11 @@ collision_mask = 3
 
 [node name="EntityComponent" parent="." unique_id=532691025 node_paths=PackedStringArray("entity", "health_component", "status_effect_receiver_hub_component", "position_anchor_hub_component") instance=ExtResource("1_ybfop")]
 entity = NodePath("..")
-identity = ExtResource("2_3s4ss")
 health_component = NodePath("../Components/InteractionWithGame/Health")
 status_effect_receiver_hub_component = NodePath("../Components/InteractionWithGame/StatusEffectReceiverHub")
 position_anchor_hub_component = NodePath("../Components/GameMechanicsSupport/PositionAnchorHub")
+entity_debug_name = &"Playable Test Character 1"
+entity_team = 1
 
 [node name="Components" type="Node3D" parent="." unique_id=922078828]
 
@@ -40,18 +40,18 @@ playable = NodePath("../..")
 
 [node name="InteractionWithGame" type="Node" parent="Components" unique_id=1065685288]
 
-[node name="Health" parent="Components/InteractionWithGame" unique_id=930351444 instance=ExtResource("5_7it47")]
-entity_identity = ExtResource("2_3s4ss")
+[node name="Health" parent="Components/InteractionWithGame" unique_id=930351444 node_paths=PackedStringArray("_entity", "_entity_component") instance=ExtResource("5_7it47")]
+_entity = NodePath("../../..")
+_entity_component = NodePath("../../../EntityComponent")
 
-[node name="StatusEffectReceiverHub" parent="Components/InteractionWithGame" unique_id=1530625951 instance=ExtResource("6_wkwh7")]
-entity_identity = ExtResource("2_3s4ss")
+[node name="StatusEffectReceiverHub" parent="Components/InteractionWithGame" unique_id=1530625951 node_paths=PackedStringArray("entity_component") instance=ExtResource("6_wkwh7")]
+entity_component = NodePath("../../../EntityComponent")
 
 [node name="Capacities" type="Node3D" parent="Components" unique_id=747146008]
 
 [node name="PlayableTestProjectileWeapon1" parent="Components/Capacities" unique_id=450953173 node_paths=PackedStringArray("playable", "player_camera_component") instance=ExtResource("8_qc732")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7190482, 0, 0)
 playable = NodePath("../../..")
-playable_identity = ExtResource("2_3s4ss")
 player_camera_component = NodePath("../../Camera")
 
 [node name="GameMechanicsSupport" type="Node3D" parent="Components" unique_id=1930426155]

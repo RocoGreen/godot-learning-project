@@ -16,8 +16,8 @@ func _ready() -> void:
 
 
 func _update_health_label_and_progress_bar() -> void:
-	var current_health_rounded_int: int = roundi(health_component.current_health);
-	var maximum_health_rounded_rounded_int: int = roundi(health_component.maximum_health);
+	var current_health_rounded_int: int = roundi(health_component.get_current_health());
+	var maximum_health_rounded_rounded_int: int = roundi(health_component.get_maximum_health());
 
 	health_label.text = "%s/%s" % [current_health_rounded_int, maximum_health_rounded_rounded_int];
 

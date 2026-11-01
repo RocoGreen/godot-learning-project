@@ -6,7 +6,7 @@ extends Node
 signal granted(by_request: EntityDamageBoostStatusEffectGrantRequest);
 signal ungranted(was_granted_by_request: EntityDamageBoostStatusEffectGrantRequest);
 
-@export var _entity_status_effect_receiver_hub_component: EntityStatusEffectReceiverHubComponent;
+@export var _status_effect_receiver_hub_component: EntityStatusEffectReceiverHubComponent;
 
 var _grant_requests: Array[EntityDamageBoostStatusEffectGrantRequest] = [];
 
@@ -58,6 +58,8 @@ func _init() -> void:
 
 
 func grant(request: EntityDamageBoostStatusEffectGrantRequest) -> void:
+	if not request.is_valid(): return;
+
 	_grant_requests.append(request);
 	granted.emit(request);
 
@@ -79,18 +81,23 @@ func get_total_damage_boost_percentage() -> int:
 
 
 func _on_granted(by_request: EntityDamageBoostStatusEffectGrantRequest) -> void:
+	var granter_entity_entity_component := EntityComponent.get_from(by_request.granter_entity);
+
 	print("%s received a %s%% damage boost from %s !" % [
-			_entity_status_effect_receiver_hub_component.entity_identity.name, 
+			_status_effect_receiver_hub_component.entity_component.entity_debug_name, 
 			by_request.how_much_in_percentage, 
-			by_request.granter_entity_identity.name,
+			granter_entity_entity_component.entity_debug_name,
 		]
 	);
 
 
 func _on_ungranted(was_granted_by_request: EntityDamageBoostStatusEffectGrantRequest) -> void:
+	var granter_entity: PhysicsBody3D = was_granted_by_request.granter_entity;
+	var granter_entity_entity_component := EntityComponent.get_from(granter_entity);
+
 	print("%s revoked it's %s%% damage boost from %s..." % [
-			was_granted_by_request.granter_entity_identity.name, 
+			granter_entity_entity_component.entity_debug_name, 
 			was_granted_by_request.how_much_in_percentage, 
-			_entity_status_effect_receiver_hub_component.entity_identity.name,
+			_status_effect_receiver_hub_component.entity_component.entity_debug_name,
 		]
 	);

@@ -48,7 +48,7 @@ func _apply_damage_to_entity(entity: PhysicsBody3D) -> void:
 	var damage_request: EntityHealthDamageRequest = EntityHealthDamageRequest.new(
 			weapon.bullet_damage,
 			weapon.bullet_damage_source,
-			weapon.playable_identity,
+			weapon.playable,
 			true,
 	);
 
@@ -65,7 +65,7 @@ func _apply_healing_to_entity(entity: PhysicsBody3D) -> void:
 	var healing_request: EntityHealthHealingRequest = EntityHealthHealingRequest.new(
 			weapon.bullet_healing,
 			weapon.bullet_healing_source,
-			weapon.playable_identity,
+			weapon.playable,
 			true,
 	);
 

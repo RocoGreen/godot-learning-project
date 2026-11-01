@@ -10,7 +10,7 @@ var _life_duration_in_seconds_after_launch: float;
 var _healing_source: EntityHealthHealingSource;
 var _damage_source: EntityHealthDamageSource;
 
-var _test_npc_1_enemy_with_gun_identity: TestNPC1EnemyWithGunIdentity;
+var _test_npc_1_enemy_with_gun: TestNPC1EnemyWithGun;
 
 var _launched: bool = false;
 
@@ -24,8 +24,7 @@ static func create(
 		healing_source: EntityHealthHealingSource,
 		damage_source: EntityHealthDamageSource,
 
-		test_npc_1_enemy_with_gun_identity: TestNPC1EnemyWithGunIdentity,
-		test_npc_1_enemy_with_gun_to_exclude_from_collision: TestNPC1EnemyWithGun,
+		test_npc_1_enemy_with_gun: TestNPC1EnemyWithGun,
 ) -> TestNPC1EnemyWithGunWeaponBullet:
 	var bullet: TestNPC1EnemyWithGunWeaponBullet = _PACKED_SCENE.instantiate();
 
@@ -35,11 +34,13 @@ static func create(
 	bullet._healing_source = healing_source;
 	bullet._damage_source = damage_source;
 	
-	bullet._test_npc_1_enemy_with_gun_identity = test_npc_1_enemy_with_gun_identity;
-
-	bullet.add_collision_exception_with(test_npc_1_enemy_with_gun_to_exclude_from_collision);
+	bullet._test_npc_1_enemy_with_gun = test_npc_1_enemy_with_gun;
 
 	return bullet;
+
+
+func _ready() -> void:
+	add_collision_exception_with(_test_npc_1_enemy_with_gun);
 
 
 func _physics_process(delta: float) -> void:
@@ -76,7 +77,7 @@ func _apply_damage_to_entity(entity: PhysicsBody3D) -> void:
 	var damage_request: EntityHealthDamageRequest = EntityHealthDamageRequest.new(
 			_damage_amount_per_entity_hit,
 			_damage_source,
-			_test_npc_1_enemy_with_gun_identity,
+			_test_npc_1_enemy_with_gun,
 			true,
 	);
 

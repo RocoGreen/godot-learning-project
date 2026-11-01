@@ -4,7 +4,6 @@ extends Node3D
 
 @export_group("Dependencies")
 @export var test_npc_1_enemy_with_gun: TestNPC1EnemyWithGun;
-@export var test_npc_1_enemy_with_gun_identity: TestNPC1EnemyWithGunIdentity;
 
 @export_group("Weapon Settings")
 @export var fire_rate_per_second: float = 0.5;
@@ -34,7 +33,6 @@ func _create_bullet_and_get_it() -> TestNPC1EnemyWithGunWeaponBullet:
 			bullet_healing_source,
 			bullet_damage_source,
 
-			test_npc_1_enemy_with_gun_identity,
 			test_npc_1_enemy_with_gun,
 	);
 

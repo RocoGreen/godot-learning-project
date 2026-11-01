@@ -1,13 +1,9 @@
 [gd_scene format=3 uid="uid://b8re4b4rl6xul"]
 
 [ext_resource type="Script" uid="uid://b5l31p1wkwaue" path="res://entities/playables/_shared/components/weapons/test_projectile_weapon_1/playable_test_projectile_weapon_1_component.gd" id="1_b6vej"]
-[ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/identity/entity_identity.gd" id="2_grybm"]
 [ext_resource type="PackedScene" uid="uid://cdsjsn66l8dfo" path="res://entities/playables/_shared/components/weapons/test_projectile_weapon_1/bullet/playable_test_projectile_weapon_1_component_bullet.tscn" id="3_i7xbd"]
 [ext_resource type="Resource" uid="uid://c4vis76yosfdx" path="res://entities/playables/_shared/components/weapons/test_projectile_weapon_1/bullet/healing_source/healing_source_test_projectile_weapon_1_bullet.tres" id="4_kopua"]
 [ext_resource type="Resource" uid="uid://csyto18wcauu4" path="res://entities/playables/_shared/components/weapons/test_projectile_weapon_1/bullet/damage_source/damage_source_test_projectile_weapon_1_bullet.tres" id="5_w0uaq"]
-
-[sub_resource type="Resource" id="Resource_gw1ob"]
-script = ExtResource("2_grybm")
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_misiy"]
 
@@ -36,7 +32,6 @@ material = SubResource("StandardMaterial3D_4l1uk")
 
 [node name="PlayableTestProjectileWeapon1" type="Node3D" unique_id=450953173]
 script = ExtResource("1_b6vej")
-playable_identity = SubResource("Resource_gw1ob")
 _bullet = ExtResource("3_i7xbd")
 bullet_healing_source = ExtResource("4_kopua")
 bullet_damage_source = ExtResource("5_w0uaq")

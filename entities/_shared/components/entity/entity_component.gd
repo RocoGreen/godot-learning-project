@@ -1,14 +1,18 @@
 @tool
-
 class_name EntityComponent
 extends Node
 
 
+enum EntityTeam {
+	INVALID_TEAM,
+	TEAM_1,
+	TEAM_2,
+};
+
+const DEFAULT_ENTITY_DEBUG_NAME: StringName = &"DEFAULT ENTITY DEBUG NAME";
+
 @export_group("Dependencies")
 @export var entity: PhysicsBody3D;
-## [b]Warning[/b]: Do NOT retrieve the identity here.
-## Use the method [method EntityIdentity.from_entity] instead.
-@export var identity: EntityIdentity = EntityIdentity.new();
 
 @export_group("Optional Dependencies")
 ## [b]Warning[/b]: Do NOT retrieve the component here.
@@ -20,6 +24,10 @@ extends Node
 ## [b]Warning[/b]: Do NOT retrieve the component here.
 ## Use the method [method EntityPositionAnchorHubComponent.from_entity] instead.
 @export var position_anchor_hub_component: EntityPositionAnchorHubComponent;
+
+@export_group("Entity Settings")
+@export var entity_debug_name: StringName = DEFAULT_ENTITY_DEBUG_NAME;
+@export var entity_team: EntityTeam = EntityTeam.INVALID_TEAM;
 
 
 static func is_entity(node: Node) -> bool:
@@ -80,6 +88,31 @@ static func get_from(node: Node) -> EntityComponent:
 	return entity_component;
 
 
+static func in_same_team(entity_a: PhysicsBody3D, entity_b: PhysicsBody3D) -> bool:
+	if not is_entity(entity_a) or not is_entity(entity_b): 
+		return false;
+
+	var entity_a_entity_component: EntityComponent = get_from(entity_a);
+	var entity_b_entity_component: EntityComponent = get_from(entity_b);
+
+	if not entity_a_entity_component or not entity_b_entity_component:
+		return false;
+
+	var entity_a_team: EntityTeam = entity_a_entity_component.entity_team;
+	var entity_b_team: EntityTeam = entity_b_entity_component.entity_team;
+
+	if entity_a_team == EntityTeam.INVALID_TEAM:
+		return false;
+
+	if entity_b_team == EntityTeam.INVALID_TEAM:
+		return false;
+
+	if entity_a_team == entity_b_team:
+		return true;
+	else:
+		return false;
+
+
 func _process(_delta: float) -> void:
 	if not Engine.is_editor_hint(): return;
 
@@ -91,10 +124,4 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 	warnings.append_array(ConfigurationWarningLibrary.get_for_entity(entity));
 
-	warnings.append_array(ConfigurationWarningLibrary.get_for_entity_identity(identity));
-
 	return warnings;
-
-
-func _on_identity_changed() -> void:
-	update_configuration_warnings();

@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://c473237cvi31t"]
 
 [ext_resource type="PackedScene" uid="uid://btrysidewnsmy" path="res://entities/npcs/test_npc_1/test_npc_1.tscn" id="1_etwyt"]
-[ext_resource type="Resource" uid="uid://c3pk1dstwptg3" path="res://entities/npcs/test_npc_1/ally/test_npc_1_ally_identity.tres" id="2_etwyt"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_etwyt"]
 albedo_color = Color(0.25178292, 0.7977873, 0.22007018, 1)
@@ -12,15 +11,7 @@ material = SubResource("StandardMaterial3D_etwyt")
 [node name="TestNPC1Ally" unique_id=1120564623 instance=ExtResource("1_etwyt")]
 
 [node name="EntityComponent" parent="." index="0" unique_id=532691025]
-identity = ExtResource("2_etwyt")
-
-[node name="EntityHealthComponent" parent="Components" parent_id_path=PackedInt32Array(1817788584) index="0" unique_id=930351444]
-entity_identity = ExtResource("2_etwyt")
-current_health = 1.0
-max_health = 500.0
-
-[node name="EntityStatusEffectReceiverHubComponent" parent="Components" parent_id_path=PackedInt32Array(1817788584) index="1" unique_id=1530625951]
-entity_identity = ExtResource("2_etwyt")
+entity_debug_name = &"NPC Test NPC 1 Ally"
 
 [node name="EntityHealthBar3DComponent" parent="Components" parent_id_path=PackedInt32Array(1817788584) index="2" unique_id=730241747]
 health_bar_health_remaining_color = Color(0.83283854, 0.7953314, 0.9870066, 1)

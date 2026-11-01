@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://cdo0f65gd7uly" path="res://entities/npcs/test_npc_1/test_npc_1.gd" id="1_jfmlv"]
 [ext_resource type="PackedScene" uid="uid://coqcni43ymjxa" path="res://entities/_shared/components/entity/entity_component.tscn" id="1_npl2p"]
 [ext_resource type="PackedScene" uid="uid://d01sromo7yggt" path="res://entities/_shared/components/health/entity_health_component.tscn" id="2_u5y6i"]
-[ext_resource type="Resource" uid="uid://d1qa7jd7mrywx" path="res://entities/npcs/test_npc_1/test_npc_1_identity.tres" id="3_7fnp4"]
 [ext_resource type="PackedScene" uid="uid://dgqseji4pi27a" path="res://entities/_shared/components/status_effect_receiver_hub/entity_status_effect_receiver_hub_component.tscn" id="5_7fnp4"]
 [ext_resource type="PackedScene" uid="uid://cph3wjpvc6xy8" path="res://entities/_shared/components/health_bar_3d/entity_health_bar_3d_component.tscn" id="6_nqphd"]
 [ext_resource type="PackedScene" uid="uid://vfbdf5vqp3d" path="res://entities/_shared/components/position_anchor_hub/entity_position_anchor_hub_component.tscn" id="7_nqphd"]
@@ -23,10 +22,11 @@ script = ExtResource("1_jfmlv")
 
 [node name="EntityComponent" parent="." unique_id=532691025 node_paths=PackedStringArray("entity", "health_component", "status_effect_receiver_hub_component", "position_anchor_hub_component") instance=ExtResource("1_npl2p")]
 entity = NodePath("..")
-identity = ExtResource("3_7fnp4")
 health_component = NodePath("../Components/EntityHealthComponent")
 status_effect_receiver_hub_component = NodePath("../Components/EntityStatusEffectReceiverHubComponent")
 position_anchor_hub_component = NodePath("../Components/GameMechanicsSupport/EntityPositionAnchorHubComponent")
+entity_debug_name = &"NPC Test NPC 1"
+entity_team = 1
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=619815100]
 mesh = SubResource("BoxMesh_7fnp4")
@@ -36,12 +36,13 @@ shape = SubResource("BoxShape3D_t7buu")
 
 [node name="Components" type="Node3D" parent="." unique_id=1817788584]
 
-[node name="EntityHealthComponent" parent="Components" unique_id=930351444 instance=ExtResource("2_u5y6i")]
+[node name="EntityHealthComponent" parent="Components" unique_id=930351444 node_paths=PackedStringArray("_entity", "_entity_component") instance=ExtResource("2_u5y6i")]
 unique_name_in_owner = true
-entity_identity = ExtResource("3_7fnp4")
+_entity = NodePath("../..")
+_entity_component = NodePath("../../EntityComponent")
 
-[node name="EntityStatusEffectReceiverHubComponent" parent="Components" unique_id=1530625951 instance=ExtResource("5_7fnp4")]
-entity_identity = ExtResource("3_7fnp4")
+[node name="EntityStatusEffectReceiverHubComponent" parent="Components" unique_id=1530625951 node_paths=PackedStringArray("entity_component") instance=ExtResource("5_7fnp4")]
+entity_component = NodePath("../../EntityComponent")
 
 [node name="EntityHealthBar3DComponent" parent="Components" unique_id=730241747 node_paths=PackedStringArray("health_component") instance=ExtResource("6_nqphd")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
@@ -82,5 +83,3 @@ text = "000 / 000"
 [node name="TeamIndicator" type="MeshInstance3D" parent="TopIndicators" unique_id=1564625014]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 mesh = SubResource("SphereMesh_jfmlv")
-
-[connection signal="health_changed" from="Components/EntityHealthComponent" to="." method="_on_health_changed"]

@@ -8,7 +8,6 @@ enum _Mode {
 
 @export_group("Dependencies")
 @export var playable: CharacterBody3D;
-@export var playable_identity: EntityIdentity = EntityIdentity.new();
 @export var player_camera_component: PlayablePlayerCameraComponent;
 
 @export_group("Bullet Healing & Damage Sources")
@@ -72,7 +71,7 @@ func _on_bullet_hit() -> void:
 		var healing_request: EntityHealthHealingRequest = EntityHealthHealingRequest.new(
 				30.0,
 				bullet_healing_source,
-				playable_identity,
+				playable,
 				true,
 		);
 
@@ -84,7 +83,7 @@ func _on_bullet_hit() -> void:
 		var damage_request: EntityHealthDamageRequest = EntityHealthDamageRequest.new(
 				30.0,
 				bullet_damage_source,
-				playable_identity,
+				playable,
 				false,
 		);
 

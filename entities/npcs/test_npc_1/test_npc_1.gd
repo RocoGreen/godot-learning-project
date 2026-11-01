@@ -7,13 +7,15 @@ extends StaticBody3D
 
 
 func _ready() -> void:
+	health_component.health_changed.connect(_on_health_changed);
+
 	_update_health_indicator();
 
 
 func _update_health_indicator() -> void:
 	health_indicator_label_3d.text = "%s / %s" % [
-			health_component.current_health, 
-			health_component.maximum_health,
+			health_component.get_current_health(), 
+			health_component.get_maximum_health(),
 	];
 
 

@@ -20,23 +20,16 @@ static func get_entities_visible_on_screen(scene_tree: SceneTree) -> Array[Physi
 
 static func get_entities_in_team_visible_on_screen(
 		scene_tree: SceneTree,
-		team: EntityIdentity.Team, 
+		team: EntityComponent.EntityTeam, 
 ) -> Array[PhysicsBody3D]:
 	var entities_visible_on_screen: Array[PhysicsBody3D] = get_entities_visible_on_screen(scene_tree);
 	var entities_visible_on_screen_in_team: Array[PhysicsBody3D] = [];
 
 	for entity_visible_on_screen: PhysicsBody3D in entities_visible_on_screen:
-		var entity_visible_on_screen_identity := EntityIdentity.from_entity(entity_visible_on_screen);
+		var entity_visible_on_screen_entity_component := \
+				EntityComponent.get_from(entity_visible_on_screen);
 
-		if not entity_visible_on_screen_identity:
-			continue;
-
-		var entity_visible_on_screen_team: EntityIdentity.Team = entity_visible_on_screen_identity.team;
-
-		if entity_visible_on_screen_team == null:
-			continue;
-
-		if entity_visible_on_screen_team != team:
+		if entity_visible_on_screen_entity_component.entity_team != team:
 			continue;
 
 		entities_visible_on_screen_in_team.append(entity_visible_on_screen);

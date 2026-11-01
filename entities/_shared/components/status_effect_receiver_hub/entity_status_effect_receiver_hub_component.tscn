@@ -1,18 +1,13 @@
 [gd_scene format=3 uid="uid://dgqseji4pi27a"]
 
 [ext_resource type="Script" uid="uid://chxx6k8m7nq0v" path="res://entities/_shared/components/status_effect_receiver_hub/entity_status_effect_receiver_hub_component.gd" id="1_328ef"]
-[ext_resource type="Script" uid="uid://cur8p8fjl0qvd" path="res://entities/_shared/identity/entity_identity.gd" id="2_6bkee"]
 [ext_resource type="PackedScene" uid="uid://ds2telm2800pq" path="res://entities/_shared/components/status_effect_receiver_hub/status_effects/damage_boost/entity_damage_boost_status_effect_receiver.tscn" id="3_x0h5y"]
-
-[sub_resource type="Resource" id="Resource_gjtgf"]
-script = ExtResource("2_6bkee")
 
 [node name="EntityStatusEffectReceiverHubComponent" type="Node" unique_id=1530625951]
 script = ExtResource("1_328ef")
-entity_identity = SubResource("Resource_gjtgf")
 
 [node name="Receivers" type="Node" parent="." unique_id=15476779]
 
-[node name="DamageBoost" parent="Receivers" unique_id=1098142314 node_paths=PackedStringArray("_entity_status_effect_receiver_hub_component") instance=ExtResource("3_x0h5y")]
+[node name="DamageBoost" parent="Receivers" unique_id=1098142314 node_paths=PackedStringArray("_status_effect_receiver_hub_component") instance=ExtResource("3_x0h5y")]
 unique_name_in_owner = true
-_entity_status_effect_receiver_hub_component = NodePath("../..")
+_status_effect_receiver_hub_component = NodePath("../..")

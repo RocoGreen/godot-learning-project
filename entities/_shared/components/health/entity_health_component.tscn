@@ -4,6 +4,3 @@
 
 [node name="EntityHealthComponent" type="Node" unique_id=930351444]
 script = ExtResource("1_m6onw")
-
-[connection signal="damaged" from="." to="." method="_on_damaged"]
-[connection signal="healed" from="." to="." method="_on_healed"]

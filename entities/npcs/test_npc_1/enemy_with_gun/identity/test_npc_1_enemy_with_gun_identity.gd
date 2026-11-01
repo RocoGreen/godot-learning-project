@@ -1,4 +1,0 @@
-@tool
-
-class_name TestNPC1EnemyWithGunIdentity
-extends EntityIdentity

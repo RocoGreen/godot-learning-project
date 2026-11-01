@@ -45,7 +45,16 @@ func _apply_damage_to_entity(entity: PhysicsBody3D) -> void:
 
 	if not entity_health_component: return;
 
-	entity_health_component.damage(weapon.bullet_damage, weapon.playable_identity);
+	var damage_request: EntityHealthDamageRequest = EntityHealthDamageRequest.new(
+			weapon.bullet_damage,
+			weapon.bullet_damage_source,
+			weapon.playable_identity,
+			true,
+	);
+
+	if not entity_health_component.is_request_allowed_to_damage(damage_request): return;
+
+	entity_health_component.damage(damage_request);
 
 
 func _apply_healing_to_entity(entity: PhysicsBody3D) -> void:
@@ -53,7 +62,16 @@ func _apply_healing_to_entity(entity: PhysicsBody3D) -> void:
 
 	if not entity_health_component: return;
 
-	entity_health_component.heal(weapon.bullet_healing, weapon.playable_identity);
+	var healing_request: EntityHealthHealingRequest = EntityHealthHealingRequest.new(
+			weapon.bullet_healing,
+			weapon.bullet_healing_source,
+			weapon.playable_identity,
+			true,
+	);
+
+	if not entity_health_component.is_request_allowed_to_heal(healing_request): return;
+
+	entity_health_component.heal(healing_request);
 
 
 func _on_life_duration_timer_timeout() -> void:

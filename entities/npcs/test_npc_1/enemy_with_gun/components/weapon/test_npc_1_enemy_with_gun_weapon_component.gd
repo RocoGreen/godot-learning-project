@@ -14,6 +14,10 @@ extends Node3D
 @export var bullet_travel_speed_in_meters_per_second: float = 20.0;
 @export var bullet_life_duration_in_seconds_after_launch: float = 5.0;
 
+@export_group("Bullet Healing & Damage Sources")
+@export var bullet_healing_source: EntityHealthHealingSource;
+@export var bullet_damage_source: EntityHealthDamageSource;
+
 @onready var fire_rate_per_second_timer: Timer = %FireRatePerSecondTimer;
 @onready var bullet_start_transform_anchor_marker_3d: Marker3D = %BulletSpawnTransformAnchorMarker3D;
 
@@ -26,6 +30,10 @@ func _create_bullet_and_get_it() -> TestNPC1EnemyWithGunWeaponBullet:
 	var bullet: TestNPC1EnemyWithGunWeaponBullet = TestNPC1EnemyWithGunWeaponBullet.create(
 			bullet_damage_amount_per_entity_hit,
 			bullet_life_duration_in_seconds_after_launch,
+
+			bullet_healing_source,
+			bullet_damage_source,
+
 			test_npc_1_enemy_with_gun_identity,
 			test_npc_1_enemy_with_gun,
 	);

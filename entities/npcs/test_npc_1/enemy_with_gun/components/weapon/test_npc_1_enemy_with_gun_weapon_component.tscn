@@ -1,11 +1,15 @@
 [gd_scene format=3 uid="uid://bkqn27rqex8dd"]
 
 [ext_resource type="Script" uid="uid://cqqkrg4j2btwh" path="res://entities/npcs/test_npc_1/enemy_with_gun/components/weapon/test_npc_1_enemy_with_gun_weapon_component.gd" id="1_0gmqs"]
+[ext_resource type="Resource" uid="uid://c0w820kb1sr55" path="res://entities/npcs/test_npc_1/enemy_with_gun/components/weapon/bullet/healing_source/healing_source_test_npc_1_enemy_with_gun_weapon_bullet.tres" id="2_b1t1y"]
+[ext_resource type="Resource" uid="uid://chijl4gbvwkyu" path="res://entities/npcs/test_npc_1/enemy_with_gun/components/weapon/bullet/damage_source/damage_source_test_npc_1_enemy_with_gun_weapon_bullet.tres" id="3_op3d3"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_otgpu"]
 
 [node name="TestNPC1EnemyWithGunWeaponComponent" type="Node3D" unique_id=1252039541]
 script = ExtResource("1_0gmqs")
+bullet_healing_source = ExtResource("2_b1t1y")
+bullet_damage_source = ExtResource("3_op3d3")
 
 [node name="FireRatePerSecondTimer" type="Timer" parent="." unique_id=782758411]
 unique_name_in_owner = true

@@ -110,19 +110,19 @@ func _update_progress_bar_3d() -> void:
 		progress_bar_3d.value = overriden_current_health;
 
 	elif health_component:
-		progress_bar_3d.max_value = health_component.max_health;
+		progress_bar_3d.max_value = health_component.maximum_health;
 		progress_bar_3d.value = health_component.current_health;
 
 
 func _on_entity_healed(
 		_amount: float, _old_health: float, 
-		_new_health: float, _healer: EntityIdentity,
+		_new_health: float, _by_request: EntityHealthHealingRequest,
 ) -> void:
 	_update_progress_bar_3d();
 
 
 func _on_entity_damaged(
 		_amount: float, _old_health: float, 
-		_new_health: float, _attacker: EntityIdentity,
+		_new_health: float, _by_request: EntityHealthDamageRequest,
 ) -> void:
 	_update_progress_bar_3d();

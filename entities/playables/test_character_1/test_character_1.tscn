@@ -2,12 +2,12 @@
 
 [ext_resource type="PackedScene" uid="uid://coqcni43ymjxa" path="res://entities/_shared/components/entity/entity_component.tscn" id="1_ybfop"]
 [ext_resource type="Resource" uid="uid://ch1uqhr4e8qym" path="res://entities/playables/test_character_1/test_character_1_identity.tres" id="2_3s4ss"]
-[ext_resource type="PackedScene" uid="uid://cbeqj73rklldr" path="res://entities/playables/_shared/components/camera/playable_camera_component.tscn" id="3_qc732"]
+[ext_resource type="PackedScene" uid="uid://cbeqj73rklldr" path="res://entities/playables/_shared/components/player_camera/playable_player_camera_component.tscn" id="3_qc732"]
 [ext_resource type="PackedScene" uid="uid://dgavxxiu7xo4s" path="res://entities/playables/_shared/components/rotation_handling_by_mouse/playable_rotation_handling_by_mouse_component.tscn" id="4_7it47"]
 [ext_resource type="PackedScene" uid="uid://dpm4llvw6alin" path="res://entities/playables/_shared/components/character_body_3d_utils/playable_character_body_3d_utils_component.tscn" id="4_ybfop"]
 [ext_resource type="PackedScene" uid="uid://d01sromo7yggt" path="res://entities/_shared/components/health/entity_health_component.tscn" id="5_7it47"]
 [ext_resource type="PackedScene" uid="uid://dgqseji4pi27a" path="res://entities/_shared/components/status_receiver_hub/entity_status_receiver_hub_component.tscn" id="6_wkwh7"]
-[ext_resource type="PackedScene" uid="uid://bmuqad506y2ec" path="res://entities/playables/_shared/components/weapons/test_arcing_projectile_weapon_1/playable_test_arcing_projectile_weapon_1_component.tscn" id="8_wkwh7"]
+[ext_resource type="PackedScene" uid="uid://b8re4b4rl6xul" path="res://entities/playables/_shared/components/weapons/test_projectile_weapon_1/playable_test_projectile_weapon_1_component.tscn" id="8_qc732"]
 [ext_resource type="PackedScene" uid="uid://vfbdf5vqp3d" path="res://entities/_shared/components/position_anchor_hub/entity_position_anchor_hub_component.tscn" id="13_3gihv"]
 [ext_resource type="PackedScene" uid="uid://s7uybs151onq" path="res://entities/playables/_shared/components/player_ui/playable_player_ui_component.tscn" id="13_64usw"]
 
@@ -47,10 +47,11 @@ entity_identity = ExtResource("2_3s4ss")
 
 [node name="Capacities" type="Node3D" parent="Components" unique_id=747146008]
 
-[node name="TestArcingProjectileWeapon1" parent="Components/Capacities" unique_id=831655461 node_paths=PackedStringArray("playable", "camera_component") instance=ExtResource("8_wkwh7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6986413, 0, 0)
+[node name="PlayableTestProjectileWeapon1" parent="Components/Capacities" unique_id=450953173 node_paths=PackedStringArray("playable", "player_camera_component") instance=ExtResource("8_qc732")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7190482, 0, 0)
 playable = NodePath("../../..")
-camera_component = NodePath("../../Camera")
+playable_identity = ExtResource("2_3s4ss")
+player_camera_component = NodePath("../../Camera")
 
 [node name="GameMechanicsSupport" type="Node3D" parent="Components" unique_id=1930426155]
 

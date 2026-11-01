@@ -9,7 +9,7 @@ enum _Mode {
 @export_group("Dependencies")
 @export var playable: CharacterBody3D;
 @export var playable_identity: EntityIdentity = EntityIdentity.new();
-@export var camera_component: PlayableCameraComponent;
+@export var player_camera_component: PlayablePlayerCameraComponent;
 
 var _mode: _Mode = _Mode.HEAL;
 
@@ -24,7 +24,7 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	_mesh_instance_pivot.look_at(camera_component.get_position_to_look_at_aim_direction(true));
+	_mesh_instance_pivot.look_at(player_camera_component.get_position_to_point_at_aim_direction());
 	
 	if Input.is_action_just_pressed(&"toggle_weapon_mode"):
 		if _mode == _Mode.HEAL:
@@ -37,12 +37,19 @@ func _physics_process(_delta: float) -> void:
 
 	if not Input.is_action_just_pressed(&"primary_fire"): return;
 
-	var ray_to_get_what_player_aims_at_results: Dictionary = camera_component.ray_to_aim_direction();
+	var global_position_to_shoot_at: Vector3;
 
-	if ray_to_get_what_player_aims_at_results.is_empty(): return;
+	var ray_to_hit_an_object_player_aims_at_results: Dictionary = \
+			player_camera_component.ray_to_hit_an_object_aimed_at(
+					CollisionMaskLibrary.get_entities_and_obstacles(),
+			);
 
-	var where_to_shoot_at: Vector3 = ray_to_get_what_player_aims_at_results.get("position");
-	_bullet.launch(_bullet_start_position_anchor.global_position, where_to_shoot_at);
+	if not ray_to_hit_an_object_player_aims_at_results.is_empty():
+		global_position_to_shoot_at = ray_to_hit_an_object_player_aims_at_results.position;
+	else:
+		global_position_to_shoot_at = player_camera_component.get_position_to_point_at_aim_direction();
+
+	_bullet.launch(_bullet_start_position_anchor.global_position, global_position_to_shoot_at);
 
 
 func _on_bullet_hit() -> void:

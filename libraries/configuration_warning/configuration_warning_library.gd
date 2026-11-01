@@ -85,14 +85,14 @@ static func get_for_cb_3d_utils_component(
 
 
 ## Note: To call again when exported variable changes (by using a setter).
-static func get_for_camera_component(
-		camera_component: PlayableCameraComponent,
+static func get_for_player_camera_component(
+		player_camera_component: PlayablePlayerCameraComponent,
 ) -> PackedStringArray:
 	var warnings: PackedStringArray = PackedStringArray();
 
-	if not is_instance_valid(camera_component):
+	if not is_instance_valid(player_camera_component):
 		warnings.append(
-				"An exported variable expecting an `PlayableCameraComponent` is not set/valid."
+				"An exported variable expecting an `PlayablePlayerCameraComponent` is not set/valid."
 		);
 
 	return warnings;

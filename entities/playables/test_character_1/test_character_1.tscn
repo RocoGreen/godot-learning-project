@@ -7,8 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://dpm4llvw6alin" path="res://entities/playables/_shared/components/character_body_3d_utils/playable_character_body_3d_utils_component.tscn" id="4_ybfop"]
 [ext_resource type="PackedScene" uid="uid://d01sromo7yggt" path="res://entities/_shared/components/health/entity_health_component.tscn" id="5_7it47"]
 [ext_resource type="PackedScene" uid="uid://dgqseji4pi27a" path="res://entities/_shared/components/status_receiver_hub/entity_status_receiver_hub_component.tscn" id="6_wkwh7"]
-[ext_resource type="PackedScene" uid="uid://n1bx8pva4it8" path="res://entities/_shared/components/visible_on_screen_notifier/entity_visible_on_screen_notifier_component.tscn" id="10_7it47"]
 [ext_resource type="PackedScene" uid="uid://b8re4b4rl6xul" path="res://entities/playables/_shared/components/weapons/test_projectile_weapon_1/playable_test_projectile_weapon_1_component.tscn" id="8_qc732"]
+[ext_resource type="PackedScene" uid="uid://n1bx8pva4it8" path="res://entities/_shared/components/visible_on_screen_notifier/entity_visible_on_screen_notifier_component.tscn" id="10_7it47"]
 [ext_resource type="PackedScene" uid="uid://vfbdf5vqp3d" path="res://entities/_shared/components/position_anchor_hub/entity_position_anchor_hub_component.tscn" id="13_3gihv"]
 [ext_resource type="PackedScene" uid="uid://s7uybs151onq" path="res://entities/playables/_shared/components/player_ui/playable_player_ui_component.tscn" id="13_64usw"]
 

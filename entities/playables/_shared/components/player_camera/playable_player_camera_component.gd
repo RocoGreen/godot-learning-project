@@ -103,3 +103,57 @@ func ray_to_hit_an_unobstructed_entity_aimed_at(
 func get_position_to_point_at_aim_direction() -> Vector3:
 	var camera_forward_vector: Vector3 = -_camera_3d.global_basis.z.normalized();
 	return _camera_3d.global_position + (camera_forward_vector * 1000.0);
+
+
+func get_entity_closest_to_view_center(
+		maximum_angle_degrees: float = 180.0,
+		exclude_playable: bool = true,
+		excluded_entities: Array[PhysicsBody3D] = [],
+) -> PhysicsBody3D:
+	if maximum_angle_degrees < 0.0:
+		maximum_angle_degrees = 0.0;
+
+	if maximum_angle_degrees > 180.0:
+		maximum_angle_degrees = 180.0;
+
+	var closest_entity: PhysicsBody3D;
+	var angle_between_view_center_and_closest_entity: float;
+
+	var entities_in_view: Array[PhysicsBody3D] = \
+			EntityVisibleOnScreenNotifierComponent.get_entities_visible_on_screen(get_tree());
+
+	for entity_in_view: PhysicsBody3D in entities_in_view:
+		if exclude_playable and entity_in_view == playable:
+			continue;
+
+		if excluded_entities.has(entity_in_view):
+			continue;
+
+		var entity_in_view_model_center_position_anchor: Marker3D = \
+				EntityPositionAnchorHubComponent.get_entity_model_center_anchor(entity_in_view);
+
+		if not entity_in_view_model_center_position_anchor:
+			continue;
+
+		var entity_model_center_global_position: Vector3 = \
+				entity_in_view_model_center_position_anchor.global_position;
+
+		var camera_forward_vector: Vector3 = -_camera_3d.global_basis.z.normalized();
+		var angle_between_view_center_and_entity_in_view: float = \
+				camera_forward_vector.dot(
+						_camera_3d.global_position.direction_to(entity_model_center_global_position)
+				);
+
+		if angle_between_view_center_and_entity_in_view < cos(deg_to_rad(maximum_angle_degrees)):
+			continue;
+
+		if angle_between_view_center_and_entity_in_view < angle_between_view_center_and_closest_entity:
+			continue;
+
+		closest_entity = entity_in_view;
+		angle_between_view_center_and_closest_entity = angle_between_view_center_and_entity_in_view;
+
+	if closest_entity:
+		return closest_entity;
+	else:
+		return null;

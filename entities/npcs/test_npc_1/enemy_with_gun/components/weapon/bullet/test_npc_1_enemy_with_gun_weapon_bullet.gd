@@ -6,6 +6,10 @@ static var _PACKED_SCENE: PackedScene = load("res://entities/npcs/test_npc_1/ene
 
 var _damage_amount_per_entity_hit: float;
 var _life_duration_in_seconds_after_launch: float;
+
+var _healing_source: EntityHealthHealingSource;
+var _damage_source: EntityHealthDamageSource;
+
 var _test_npc_1_enemy_with_gun_identity: TestNPC1EnemyWithGunIdentity;
 
 var _launched: bool = false;
@@ -17,6 +21,9 @@ static func create(
 		damage_amount_per_entity_hit: float,
 		life_duration_in_seconds_after_launch: float,
 
+		healing_source: EntityHealthHealingSource,
+		damage_source: EntityHealthDamageSource,
+
 		test_npc_1_enemy_with_gun_identity: TestNPC1EnemyWithGunIdentity,
 		test_npc_1_enemy_with_gun_to_exclude_from_collision: TestNPC1EnemyWithGun,
 ) -> TestNPC1EnemyWithGunWeaponBullet:
@@ -24,6 +31,9 @@ static func create(
 
 	bullet._damage_amount_per_entity_hit = damage_amount_per_entity_hit;
 	bullet._life_duration_in_seconds_after_launch = life_duration_in_seconds_after_launch;
+
+	bullet._healing_source = healing_source;
+	bullet._damage_source = damage_source;
 	
 	bullet._test_npc_1_enemy_with_gun_identity = test_npc_1_enemy_with_gun_identity;
 
@@ -63,10 +73,16 @@ func _apply_damage_to_entity(entity: PhysicsBody3D) -> void:
 
 	if not entity_health_component: return;
 
-	entity_health_component.damage(
-			_damage_amount_per_entity_hit, 
+	var damage_request: EntityHealthDamageRequest = EntityHealthDamageRequest.new(
+			_damage_amount_per_entity_hit,
+			_damage_source,
 			_test_npc_1_enemy_with_gun_identity,
+			true,
 	);
+
+	if not entity_health_component.is_request_allowed_to_damage(damage_request): return;
+
+	entity_health_component.damage(damage_request);
 
 
 func _on_life_duration_timer_timeout() -> void:

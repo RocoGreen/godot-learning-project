@@ -13,9 +13,9 @@ func _ready() -> void:
 func _update_health_indicator() -> void:
 	health_indicator_label_3d.text = "%s / %s" % [
 			health_component.current_health, 
-			health_component.max_health
+			health_component.maximum_health,
 	];
 
 
-func _on_health_changed(_old_health: float, _new_health: float, _source: EntityIdentity) -> void:
+func _on_health_changed(_old_health: float, _new_health: float) -> void:
 	_update_health_indicator();

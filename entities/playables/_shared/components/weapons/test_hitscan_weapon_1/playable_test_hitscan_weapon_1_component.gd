@@ -11,6 +11,10 @@ enum _Mode {
 @export var playable_identity: EntityIdentity = EntityIdentity.new();
 @export var player_camera_component: PlayablePlayerCameraComponent;
 
+@export_group("Bullet Healing & Damage Sources")
+@export var bullet_healing_source: EntityHealthHealingSource;
+@export var bullet_damage_source: EntityHealthDamageSource;
+
 var _mode: _Mode = _Mode.HEAL;
 
 @onready var _mesh_instance_pivot: Node3D = %MeshInstancePivot;
@@ -65,7 +69,25 @@ func _on_bullet_hit() -> void:
 	if not collider_entity_health_component: return;
 
 	if _mode == _Mode.HEAL:
-		collider_entity_health_component.heal(30.0, playable_identity);
+		var healing_request: EntityHealthHealingRequest = EntityHealthHealingRequest.new(
+				30.0,
+				bullet_healing_source,
+				playable_identity,
+				true,
+		);
+
+		if not collider_entity_health_component.is_request_allowed_to_heal(healing_request): return;
+
+		collider_entity_health_component.heal(healing_request);
 
 	elif _mode == _Mode.DAMAGE:
-		collider_entity_health_component.damage(30.0, playable_identity);
+		var damage_request: EntityHealthDamageRequest = EntityHealthDamageRequest.new(
+				30.0,
+				bullet_damage_source,
+				playable_identity,
+				false,
+		);
+
+		if not collider_entity_health_component.is_request_allowed_to_damage(damage_request): return;
+
+		collider_entity_health_component.damage(damage_request);

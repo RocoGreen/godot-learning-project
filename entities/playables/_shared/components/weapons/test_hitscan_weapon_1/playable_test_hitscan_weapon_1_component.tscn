@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://mxi1pb2ax5hi" path="res://entities/playables/_shared/components/weapons/test_hitscan_weapon_1/playable_test_hitscan_weapon_1_component.gd" id="1_hisl2"]
 [ext_resource type="PackedScene" uid="uid://b7g7bcq6b8n2c" path="res://entities/playables/_shared/bullets/hitscan/playable_hitscan_bullet.tscn" id="2_7sp81"]
+[ext_resource type="Resource" uid="uid://c2wyfo8r7r0qo" path="res://entities/playables/_shared/components/weapons/test_hitscan_weapon_1/bullet/healing_source/healing_source_playable_test_hitscan_weapon_1.tres" id="2_vqp1f"]
+[ext_resource type="Resource" uid="uid://f3ndyygklydw" path="res://entities/playables/_shared/components/weapons/test_hitscan_weapon_1/bullet/damage_source/damage_source_playable_test_hitscan_weapon_1_bullet.tres" id="3_mj42d"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_tks7e"]
 
@@ -11,6 +13,8 @@ outer_radius = 0.4
 
 [node name="PlayableTestHitscanWeapon1Component" type="Node3D" unique_id=171433440]
 script = ExtResource("1_hisl2")
+bullet_healing_source = ExtResource("2_vqp1f")
+bullet_damage_source = ExtResource("3_mj42d")
 
 [node name="MeshInstancePivot" type="Node3D" parent="." unique_id=2036014488]
 unique_name_in_owner = true

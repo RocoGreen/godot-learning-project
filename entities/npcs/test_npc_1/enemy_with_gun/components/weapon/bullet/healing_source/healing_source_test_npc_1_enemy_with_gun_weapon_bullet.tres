@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="EntityHealthHealingSource" format=3 uid="uid://c0w820kb1sr55"]
+
+[ext_resource type="Script" uid="uid://bqrhs1ed3rnva" path="res://entities/_shared/components/health/healing_source/entity_health_healing_source.gd" id="1_qghlr"]
+
+[resource]
+script = ExtResource("1_qghlr")
+metadata/_custom_type_script = "uid://bqrhs1ed3rnva"

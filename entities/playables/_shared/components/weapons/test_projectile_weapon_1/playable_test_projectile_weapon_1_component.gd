@@ -39,6 +39,10 @@ enum _Mode {
 @export var bullet_healing: float = 30.0;
 @export var bullet_travel_speed: float = 50.0;
 
+@export_group("Bullet Healing & Damage Sources")
+@export var bullet_healing_source: EntityHealthHealingSource;
+@export var bullet_damage_source: EntityHealthDamageSource;
+
 var _mode: _Mode = _Mode.DAMAGE;
 
 var _frame_ray_point_from_camera_forward: Vector3 = Vector3.ZERO;

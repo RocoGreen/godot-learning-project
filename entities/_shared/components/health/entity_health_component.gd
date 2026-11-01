@@ -4,10 +4,9 @@ class_name EntityHealthComponent
 extends Node
 
 
-signal health_changed(old_health: float, new_health: float, source: EntityIdentity);
-signal healed(amount: float, old_health: float, new_health: float, healer: EntityIdentity);
-signal damaged(amount: float, old_health: float, new_health: float, attacker: EntityIdentity);
-#signal death(fatal_damage: float, old_health, killer: EntityIdentity);
+signal health_changed(old_health: float, new_health: float);
+signal healed(amount: float, old_health: float, new_health: float, by_request: EntityHealthHealingRequest);
+signal damaged(amount: float, old_health: float, new_health: float, by_request: EntityHealthDamageRequest);
 
 
 @export_group("Dependencies")
@@ -26,7 +25,7 @@ signal damaged(amount: float, old_health: float, new_health: float, attacker: En
 
 @export_group("Settings")
 @export var current_health: float = 100.0;
-@export var max_health: float = 100.0;
+@export var maximum_health: float = 100.0;
 
 
 static func from_entity(entity: PhysicsBody3D) -> EntityHealthComponent:
@@ -75,29 +74,88 @@ func _get_configuration_warnings() -> PackedStringArray:
 	return ConfigurationWarningLibrary.get_for_entity_identity(entity_identity);
 
 
-func heal(amount: float = 0.0, healer: EntityIdentity = EntityIdentity.new()) -> void:
+func heal(by_healing_request: EntityHealthHealingRequest) -> void:
+	if not by_healing_request: return;
+	if not by_healing_request.is_valid(): return;
+	if not is_request_allowed_to_heal(by_healing_request): return;
+
 	var old_health: float = current_health;
-	var new_health: float = clampf(old_health + amount, 0.0, max_health);
+	var new_health: float = clampf(old_health + by_healing_request.amount, 0.0, maximum_health);
 
 	if old_health == new_health: return;
 
 	current_health = new_health;
 
-	health_changed.emit(old_health, new_health, healer);
-	healed.emit(amount, old_health, current_health, healer);
+	health_changed.emit(old_health, new_health);
+	healed.emit(
+			by_healing_request.amount, 
+			old_health, 
+			current_health, 
+			by_healing_request,
+	);
 
 
-func damage(amount: float = 0.0, attacker: EntityIdentity = EntityIdentity.new()) -> void:
+func damage(by_damage_request: EntityHealthDamageRequest) -> void:
+	if not by_damage_request: return;
+	if not by_damage_request.is_valid(): return;
+	if not is_request_allowed_to_damage(by_damage_request): return;
+
 	var old_health: float = current_health;
-	var new_health: float = clampf(old_health - amount, 0.0, max_health);
+	var new_health: float = clampf(old_health - by_damage_request.amount, 0.0, maximum_health);
 
 	if old_health == new_health: return;
 
 	current_health = new_health;
 
-	health_changed.emit(old_health, new_health, attacker);
-	damaged.emit(amount, old_health, current_health, attacker);
-	#if current_health <= 0.0: death.emit(amount, old_health, attacker);
+	health_changed.emit(old_health, new_health);
+	damaged.emit(
+			by_damage_request.amount, 
+			old_health, 
+			current_health, 
+			by_damage_request,
+	);
+
+
+func is_request_allowed_to_heal(request: EntityHealthHealingRequest) -> bool:
+	if not request:
+		return false;
+
+	if not request.heal_any_entity:
+		var healer_entity_team: EntityIdentity.Team = request.healer_entity_identity.team;
+
+		if healer_entity_team == null:
+			return false;
+		
+		if healer_entity_team != entity_identity.team:
+			return false;
+
+	if is_full_health():
+		return false;
+
+	return true;
+
+
+func is_request_allowed_to_damage(request: EntityHealthDamageRequest) -> bool:
+	if not request.damage_any_entity:
+		var healer_entity_team: EntityIdentity.Team = request.attacker_entity_identity.team;
+
+		if healer_entity_team == null:
+			return false;
+		
+		if healer_entity_team == entity_identity.team:
+			return false;
+
+	if current_health <= 0.0:
+		return false;
+
+	return true;
+
+
+func is_full_health() -> bool:
+	if current_health >= maximum_health:
+		return true;
+	else:
+		return false;
 
 
 func _on_entity_identity_changed() -> void:
@@ -105,32 +163,32 @@ func _on_entity_identity_changed() -> void:
 
 
 ## Called when the entity got healed and processed here to print debug information about what happened.
-func _on_healed(amount: float, _old_health: float, _new_health: float, healer: EntityIdentity) -> void:
+func _on_healed(
+		amount: float, 
+		_old_health: float, 
+		_new_health: float, 
+		by_request: EntityHealthHealingRequest,
+) -> void:
 	print(
 			"=== HEALING DEBUG ===\n" +
-			"- Healer: %s\n" % healer.name +
+			"- Healer: %s\n" % by_request.healer_entity_identity.name +
 			"- Receiver: %s\n" % entity_identity.name +
 			"- Healing received: %s\n" % amount +
-			"- Current health: %s / %s\n\n" % [current_health, max_health]
+			"- Current health: %s / %s\n\n" % [current_health, maximum_health]
 	);
 
 
 ## Called when the entity took damage and processed here to print debug information about what happened.
-func _on_damaged(amount: float, _old_health: float, _new_health: float, attacker: EntityIdentity) -> void:
+func _on_damaged(
+		amount: float, 
+		_old_health: float, 
+		_new_health: float, 
+		by_request: EntityHealthDamageRequest,
+) -> void:
 	print(
 			"=== DAMAGE DEBUG ===\n" +
-			"- Attacker: %s\n" % attacker.name +
+			"- Attacker: %s\n" % by_request.attacker_entity_identity.name +
 			"- Attacked: %s\n" % entity_identity.name +
 			"- Damage taken: %s\n" % amount +
-			"- Current health: %s / %s\n\n" % [current_health, max_health]
+			"- Current health: %s / %s\n\n" % [current_health, maximum_health]
 	);
-
-
-#func _on_death(fatal_damage: float, old_health: Variant, killer: EntityIdentity) -> void:
-	#print(
-			#"=== DEATH DEBUG ===\n" +
-			#"- Killer: %s\n" % killer.name +
-			#"- Deceased: %s\n" % entity_component.identity.name +
-			#"- Health before death: %s\n" % old_health +
-			#"- Fatal damage: %s\n\n" % fatal_damage
-	#);

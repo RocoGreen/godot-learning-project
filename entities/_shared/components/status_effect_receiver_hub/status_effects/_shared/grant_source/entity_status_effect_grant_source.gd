@@ -1,0 +1,2 @@
+class_name EntityStatusEffectGrantSource
+extends Resource

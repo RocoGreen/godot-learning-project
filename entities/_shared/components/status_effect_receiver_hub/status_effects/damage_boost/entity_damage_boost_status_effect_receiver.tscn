@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://ds2telm2800pq"]
+
+[ext_resource type="Script" uid="uid://ct02qspvov01s" path="res://entities/_shared/components/status_effect_receiver_hub/status_effects/damage_boost/entity_damage_boost_status_effect_receiver.gd" id="1_a632c"]
+
+[node name="EntityDamageBoostStatusReceiver" type="Node" unique_id=1098142314]
+script = ExtResource("1_a632c")

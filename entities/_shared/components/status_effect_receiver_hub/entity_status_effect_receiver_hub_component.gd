@@ -1,6 +1,6 @@
 @tool
 
-class_name EntityStatusReceiverHubComponent
+class_name EntityStatusEffectReceiverHubComponent
 extends Node
 
 
@@ -18,10 +18,10 @@ extends Node
 			if entity_identity:
 				entity_identity.changed.connect(_on_entity_identity_changed);
 
-@onready var damage_boost_receiver: EntityDamageBoostStatusReceiver = %DamageBoost;
+@onready var damage_boost_receiver: EntityDamageBoostStatusEffectReceiver = %DamageBoost;
 
 
-static func from_entity(entity: PhysicsBody3D) -> EntityStatusReceiverHubComponent:
+static func from_entity(entity: PhysicsBody3D) -> EntityStatusEffectReceiverHubComponent:
 	if not entity:
 		return null;
 
@@ -33,15 +33,16 @@ static func from_entity(entity: PhysicsBody3D) -> EntityStatusReceiverHubCompone
 	if not entity_entity_component:
 		return null;
 
-	var entity_status_receiver_hub_component := entity_entity_component.status_receiver_hub_component;
+	var entity_status_effect_receiver_hub_component: EntityStatusEffectReceiverHubComponent = \
+			entity_entity_component.status_effect_receiver_hub_component;
 
-	if not entity_status_receiver_hub_component:
+	if not entity_status_effect_receiver_hub_component:
 		return null;
 
-	return entity_status_receiver_hub_component;
+	return entity_status_effect_receiver_hub_component;
 
 
-static func from_entity_as_object(object: Object) -> EntityStatusReceiverHubComponent:
+static func from_entity_as_object(object: Object) -> EntityStatusEffectReceiverHubComponent:
 	if not object:
 		return null;
 
@@ -50,12 +51,12 @@ static func from_entity_as_object(object: Object) -> EntityStatusReceiverHubComp
 	if not entity:
 		return null;
 
-	var entity_status_receiver_hub_component: EntityStatusReceiverHubComponent = from_entity(entity);
+	var entity_status_effect_receiver_hub_component := from_entity(entity);
 
-	if not entity_status_receiver_hub_component:
+	if not entity_status_effect_receiver_hub_component:
 		return null;
 
-	return entity_status_receiver_hub_component;
+	return entity_status_effect_receiver_hub_component;
 
 
 func _init() -> void:

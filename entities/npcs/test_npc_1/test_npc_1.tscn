@@ -48,10 +48,23 @@ health_component = NodePath("../EntityHealthComponent")
 
 [node name="GameMechanicsSupport" type="Node3D" parent="Components" unique_id=1564628981]
 
-[node name="EntityPositionAnchorHubComponent" parent="Components/GameMechanicsSupport" unique_id=787595999 node_paths=PackedStringArray("center_anchor") instance=ExtResource("7_nqphd")]
-center_anchor = NodePath("CenterAnchor")
+[node name="EntityPositionAnchorHubComponent" parent="Components/GameMechanicsSupport" unique_id=787595999 node_paths=PackedStringArray("entity_model_center_anchor", "anchors_to_check_if_entity_model_sees_an_area_of_effect") instance=ExtResource("7_nqphd")]
+entity_model_center_anchor = NodePath("EntityModelCenterAnchor")
+anchors_to_check_if_entity_model_sees_an_area_of_effect = [NodePath("EntityModelTopAnchor"), NodePath("EntityModelCenterAnchor"), NodePath("EntityModelBottomAnchor"), NodePath("EntityModelLeftAnchor"), NodePath("EntityModelRightAnchor")]
 
-[node name="CenterAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/EntityPositionAnchorHubComponent" unique_id=1984417057]
+[node name="EntityModelTopAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/EntityPositionAnchorHubComponent" unique_id=1094151506]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78551936, 0)
+
+[node name="EntityModelCenterAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/EntityPositionAnchorHubComponent" unique_id=718434604]
+
+[node name="EntityModelBottomAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/EntityPositionAnchorHubComponent" unique_id=1877250005]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.9200315, 0)
+
+[node name="EntityModelLeftAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/EntityPositionAnchorHubComponent" unique_id=1878276441]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.29596847, 0, 0)
+
+[node name="EntityModelRightAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/EntityPositionAnchorHubComponent" unique_id=308915620]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.28490102, 0, 0)
 
 [node name="TopIndicators" type="Node3D" parent="." unique_id=1769069705]
 

@@ -24,9 +24,9 @@ enum _Mode {
 		if Engine.is_editor_hint():
 			update_configuration_warnings();
 
-@export var camera_component: PlayableCameraComponent:
-	set(new_camera_component):
-		camera_component = new_camera_component;
+@export var player_camera_component: PlayablePlayerCameraComponent:
+	set(new_player_camera_component):
+		player_camera_component = new_player_camera_component;
 		
 		if Engine.is_editor_hint():
 			update_configuration_warnings();
@@ -89,7 +89,9 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 	warnings.append_array(ConfigurationWarningLibrary.get_for_entity_identity(playable_identity));
 
-	warnings.append_array(ConfigurationWarningLibrary.get_for_camera_component(camera_component));
+	warnings.append_array(
+			ConfigurationWarningLibrary.get_for_player_camera_component(player_camera_component)
+	);
 
 	return warnings;
 
@@ -112,28 +114,33 @@ func _fire_bullet() -> void:
 
 
 func _update_mesh_instance_pivot() -> void:
-	_mesh_instance_pivot.look_at(camera_component.get_position_to_look_at_aim_direction(true));
+	_mesh_instance_pivot.look_at(player_camera_component.get_position_to_point_at_aim_direction());
 
 
 func _update_frame_ray_point_from_camera_forward() -> void:
-	var ray_to_get_what_player_aims_at_results: Dictionary = camera_component.ray_to_aim_direction();
+	var ray_to_hit_an_object_player_aims_at_results: Dictionary = \
+			player_camera_component.ray_to_hit_an_object_aimed_at(
+					CollisionMaskLibrary.get_entities_and_obstacles(),
+			);
 
-	if ray_to_get_what_player_aims_at_results.is_empty():
+	if ray_to_hit_an_object_player_aims_at_results.is_empty():
 		_frame_ray_point_from_camera_forward = Vector3.ZERO;
 		return;
 
-	_frame_ray_point_from_camera_forward = ray_to_get_what_player_aims_at_results.get("position");
+	_frame_ray_point_from_camera_forward = ray_to_hit_an_object_player_aims_at_results.position;
 
 
 func _update_bullet_start_transform_anchor() -> void:
-	var where_to_shoot: Vector3 = camera_component.get_position_to_look_at_aim_direction();
-
+	var global_position_to_shoot_at: Vector3;
+	
 	if _frame_ray_point_from_camera_forward:
-		where_to_shoot = _frame_ray_point_from_camera_forward;
+		global_position_to_shoot_at = _frame_ray_point_from_camera_forward;
+	else:
+		global_position_to_shoot_at = player_camera_component.get_position_to_point_at_aim_direction();
 
 	_bullet_start_transform_anchor.look_at_from_position(
 			_bullet_start_transform_anchor_pivot.global_position,
-			where_to_shoot,
+			global_position_to_shoot_at,
 	);
 
 

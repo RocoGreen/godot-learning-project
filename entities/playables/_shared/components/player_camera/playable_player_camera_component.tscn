@@ -1,14 +1,13 @@
 [gd_scene format=3 uid="uid://cbeqj73rklldr"]
 
-[ext_resource type="Script" uid="uid://d23vx765nh511" path="res://entities/playables/_shared/components/camera/playable_camera_component.gd" id="1_mhf5v"]
+[ext_resource type="Script" uid="uid://d23vx765nh511" path="res://entities/playables/_shared/components/player_camera/playable_player_camera_component.gd" id="1_mhf5v"]
 
-[node name="PlayableCameraComponent" type="Marker3D" unique_id=825915530]
+[node name="PlayablePlayerCameraComponent" type="Marker3D" unique_id=825915530]
 gizmo_extents = 0.5
 script = ExtResource("1_mhf5v")
 
 [node name="CameraPivot" type="SpringArm3D" parent="." unique_id=484096846]
 unique_name_in_owner = true
-top_level = true
 collision_mask = 7
 spring_length = 3.0
 

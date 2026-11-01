@@ -40,18 +40,14 @@ func _physics_process(_delta: float) -> void:
 
 	if not Input.is_action_just_pressed(&"primary_fire"): return;
 
-	var global_position_to_shoot_at: Vector3;
-
 	var ray_to_hit_an_object_player_aims_at_results: Dictionary = \
 			player_camera_component.ray_to_hit_an_object_aimed_at(
 					CollisionMaskLibrary.get_entities_and_obstacles(),
 			);
 
-	if not ray_to_hit_an_object_player_aims_at_results.is_empty():
-		global_position_to_shoot_at = ray_to_hit_an_object_player_aims_at_results.position;
-	else:
-		global_position_to_shoot_at = player_camera_component.get_position_to_point_at_aim_direction();
+	if ray_to_hit_an_object_player_aims_at_results.is_empty(): return;
 
+	var global_position_to_shoot_at: Vector3 = ray_to_hit_an_object_player_aims_at_results.position;
 	_bullet.launch(_bullet_start_position_anchor.global_position, global_position_to_shoot_at);
 
 
@@ -75,7 +71,8 @@ func _on_bullet_hit() -> void:
 				true,
 		);
 
-		if not collider_entity_health_component.is_request_allowed_to_heal(healing_request): return;
+		if not collider_entity_health_component.is_request_allowed_to_heal(healing_request): 
+			return;
 
 		collider_entity_health_component.heal(healing_request);
 
@@ -87,6 +84,7 @@ func _on_bullet_hit() -> void:
 				true,
 		);
 
-		if not collider_entity_health_component.is_request_allowed_to_damage(damage_request): return;
+		if not collider_entity_health_component.is_request_allowed_to_damage(damage_request): 
+			return;
 
 		collider_entity_health_component.damage(damage_request);

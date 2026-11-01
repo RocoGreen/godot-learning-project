@@ -62,10 +62,10 @@ static func get_entity_model_center_anchor(entity: PhysicsBody3D) -> Marker3D:
 	if not entity_position_anchor_hub_component:
 		return null;
 
-	if not entity_position_anchor_hub_component.model_center_anchor:
+	if not entity_position_anchor_hub_component.entity_model_center_anchor:
 		return null;
 
-	return entity_position_anchor_hub_component.model_center_anchor;
+	return entity_position_anchor_hub_component.entity_model_center_anchor;
 
 
 static func get_entity_as_object_model_center_anchor(object: Object) -> Marker3D:

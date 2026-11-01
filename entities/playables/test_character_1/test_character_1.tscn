@@ -56,10 +56,23 @@ player_camera_component = NodePath("../../Camera")
 
 [node name="GameMechanicsSupport" type="Node3D" parent="Components" unique_id=1930426155]
 
-[node name="PositionAnchorHub" parent="Components/GameMechanicsSupport" unique_id=787595999 node_paths=PackedStringArray("center_anchor") instance=ExtResource("13_3gihv")]
-center_anchor = NodePath("CenterAnchor")
+[node name="PositionAnchorHub" parent="Components/GameMechanicsSupport" unique_id=787595999 node_paths=PackedStringArray("entity_model_center_anchor", "anchors_to_check_if_entity_model_sees_an_area_of_effect") instance=ExtResource("13_3gihv")]
+entity_model_center_anchor = NodePath("EntityModelCenterAnchor")
+anchors_to_check_if_entity_model_sees_an_area_of_effect = [NodePath("EntityModelTopAnchor"), NodePath("EntityModelCenterAnchor"), NodePath("EntityModelBottomAnchor"), NodePath("EntityModelLeftAnchor"), NodePath("EntityModelRightAnchor")]
 
-[node name="CenterAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/PositionAnchorHub" unique_id=1004767145]
+[node name="EntityModelTopAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/PositionAnchorHub" unique_id=1004767145]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78551936, 0)
+
+[node name="EntityModelCenterAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/PositionAnchorHub" unique_id=1860052106]
+
+[node name="EntityModelBottomAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/PositionAnchorHub" unique_id=1600667953]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.7951111, 0)
+
+[node name="EntityModelLeftAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/PositionAnchorHub" unique_id=1647096708]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.29596847, 0, 0)
+
+[node name="EntityModelRightAnchor" type="Marker3D" parent="Components/GameMechanicsSupport/PositionAnchorHub" unique_id=1122697960]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.28490102, 0, 0)
 
 [node name="VisibleOnScreenNotifier" parent="Components/GameMechanicsSupport" unique_id=514281578 node_paths=PackedStringArray("entity") instance=ExtResource("10_7it47")]
 aabb = AABB(-0.50495636, -1, -0.5056571, 1.0099127, 2, 1.0113142)

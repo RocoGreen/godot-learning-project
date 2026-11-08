@@ -109,7 +109,7 @@ func _fire_bullet() -> void:
 
 
 func _update_mesh_instance_pivot() -> void:
-	_mesh_instance_pivot.look_at(player_camera_component.get_position_to_point_at_aim_direction());
+	_mesh_instance_pivot.look_at(player_camera_component.get_position_to_point_at_aim_direction(true));
 
 
 func _update_frame_ray_point_from_camera_forward() -> void:
@@ -131,7 +131,8 @@ func _update_bullet_start_transform_anchor() -> void:
 	if _frame_ray_point_from_camera_forward:
 		global_position_to_shoot_at = _frame_ray_point_from_camera_forward;
 	else:
-		global_position_to_shoot_at = player_camera_component.get_position_to_point_at_aim_direction();
+		global_position_to_shoot_at = \
+				player_camera_component.get_position_to_point_at_aim_direction(true);
 
 	_bullet_start_transform_anchor.look_at_from_position(
 			_bullet_start_transform_anchor_pivot.global_position,

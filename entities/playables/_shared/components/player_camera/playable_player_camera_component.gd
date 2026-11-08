@@ -100,9 +100,28 @@ func ray_to_hit_an_unobstructed_entity_aimed_at(
 	return ray_to_hit_an_object_aimed_at_info;
 
 
-func get_position_to_point_at_aim_direction() -> Vector3:
+func get_position_to_point_at_aim_direction(
+		fallback_only: bool = false,
+		ray_collision_mask: int = CollisionMaskLibrary.get_entities_and_obstacles(),
+		exclude_entity_from_ray: bool = true,
+		ray_exclusions_by_object_rid: Array[RID] = [],
+) -> Vector3:
 	var camera_forward_vector: Vector3 = -_camera_3d.global_basis.z.normalized();
-	return _camera_3d.global_position + (camera_forward_vector * 1000.0);
+
+	var position_to_point_at_aim_direction: Vector3 = \
+			_camera_3d.global_position + (camera_forward_vector * 1000.0);
+
+	if not fallback_only:
+		var ray_to_hit_an_object_aimed_at_results: Dictionary = ray_to_hit_an_object_aimed_at(
+				ray_collision_mask,
+				exclude_entity_from_ray,
+				ray_exclusions_by_object_rid,
+		);
+
+		if not ray_to_hit_an_object_aimed_at_results.is_empty():
+			position_to_point_at_aim_direction = ray_to_hit_an_object_aimed_at_results.position;
+
+	return position_to_point_at_aim_direction;
 
 
 func get_entity_closest_to_view_center(

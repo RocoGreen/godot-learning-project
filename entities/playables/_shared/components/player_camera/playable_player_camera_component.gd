@@ -45,13 +45,10 @@ func _get_configuration_warnings() -> PackedStringArray:
 ## The [Dictionary] returned is the same as the one returned from the method
 ## [method PhysicsDirectSpaceState3D.intersect_ray].
 func ray_to_hit_an_object_aimed_at(
-		ray_collision_mask: int,
+		ray_collision_mask: int = CollisionMaskLibrary.get_entities_and_obstacles(),
 		exclude_playable_from_ray: bool = true,
 		ray_exclusions_by_object_rid: Array[RID] = [],
 ) -> Dictionary:
-	if not ray_collision_mask:
-		return {};
-
 	var space_state: PhysicsDirectSpaceState3D = get_world_3d().get_direct_space_state();
 
 	var ray_start: Vector3 = _camera_3d.get_global_position();
@@ -69,35 +66,9 @@ func ray_to_hit_an_object_aimed_at(
 			ray_exclusions_by_object_rid,
 	);
 
-	var ray_info: Dictionary = space_state.intersect_ray(ray_query);
-	
-	if not ray_info.is_empty():
-		return ray_info;
-	else:
-		return {};
+	var ray_results: Dictionary = space_state.intersect_ray(ray_query);
 
-
-## The [Dictionary] returned is the same as the one returned from the method
-## [method PhysicsDirectSpaceState3D.intersect_ray].
-func ray_to_hit_an_unobstructed_entity_aimed_at(
-		exclude_playable_from_ray: bool = true,
-		excluded_entities_by_rid_from_ray: Array[RID] = [],
-) -> Dictionary:
-	var ray_to_hit_an_object_aimed_at_info: Dictionary = ray_to_hit_an_object_aimed_at(
-			CollisionMaskLibrary.get_entities_and_obstacles(),
-			exclude_playable_from_ray,
-			excluded_entities_by_rid_from_ray,
-	);
-
-	if ray_to_hit_an_object_aimed_at_info.is_empty(): 
-		return {};
-
-	var ray_collider: Object = ray_to_hit_an_object_aimed_at_info.get("collider");
-
-	if not EntityComponent.is_object_an_entity(ray_collider):
-		return {};
-
-	return ray_to_hit_an_object_aimed_at_info;
+	return ray_results;
 
 
 func get_position_to_point_at_aim_direction(

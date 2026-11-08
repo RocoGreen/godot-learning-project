@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="EntityStatusEffectInflictSource" format=3 uid="uid://btkncep4dr7mf"]
+
+[ext_resource type="Script" uid="uid://na58lj3dhbde" path="res://entities/_shared/components/status_effect_receiver_hub/status_effects/_shared/inflict_source/entity_status_effect_inflict_source.gd" id="1_jfg51"]
+
+[resource]
+script = ExtResource("1_jfg51")
+metadata/_custom_type_script = "uid://na58lj3dhbde"

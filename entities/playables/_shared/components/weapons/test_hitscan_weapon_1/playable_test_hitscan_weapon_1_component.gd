@@ -71,7 +71,7 @@ func _on_bullet_hit() -> void:
 				true,
 		);
 
-		if not collider_entity_health_component.is_request_allowed_to_heal(healing_request): 
+		if not collider_entity_health_component.can_request_heal(healing_request): 
 			return;
 
 		collider_entity_health_component.heal(healing_request);
@@ -84,7 +84,7 @@ func _on_bullet_hit() -> void:
 				true,
 		);
 
-		if not collider_entity_health_component.is_request_allowed_to_damage(damage_request): 
+		if not collider_entity_health_component.can_request_damage(damage_request): 
 			return;
 
 		collider_entity_health_component.damage(damage_request);

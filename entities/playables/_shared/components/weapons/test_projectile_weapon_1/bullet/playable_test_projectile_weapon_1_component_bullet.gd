@@ -52,7 +52,7 @@ func _apply_damage_to_entity(entity: PhysicsBody3D) -> void:
 			true,
 	);
 
-	if not entity_health_component.is_request_allowed_to_damage(damage_request): return;
+	if not entity_health_component.can_request_damage(damage_request): return;
 
 	entity_health_component.damage(damage_request);
 
@@ -69,7 +69,7 @@ func _apply_healing_to_entity(entity: PhysicsBody3D) -> void:
 			true,
 	);
 
-	if not entity_health_component.is_request_allowed_to_heal(healing_request): return;
+	if not entity_health_component.can_request_heal(healing_request): return;
 
 	entity_health_component.heal(healing_request);
 

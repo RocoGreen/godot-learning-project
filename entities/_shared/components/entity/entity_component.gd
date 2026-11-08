@@ -9,8 +9,6 @@ enum EntityTeam {
 	TEAM_2,
 };
 
-const DEFAULT_ENTITY_DEBUG_NAME: StringName = &"DEFAULT ENTITY DEBUG NAME";
-
 @export_group("Dependencies")
 @export var entity: PhysicsBody3D;
 
@@ -26,7 +24,7 @@ const DEFAULT_ENTITY_DEBUG_NAME: StringName = &"DEFAULT ENTITY DEBUG NAME";
 @export var position_anchor_hub_component: EntityPositionAnchorHubComponent;
 
 @export_group("Entity Settings")
-@export var entity_debug_name: StringName = DEFAULT_ENTITY_DEBUG_NAME;
+@export var entity_debug_name: StringName = &"DEFAULT ENTITY DEBUG NAME";
 @export var entity_team: EntityTeam = EntityTeam.INVALID_TEAM;
 
 

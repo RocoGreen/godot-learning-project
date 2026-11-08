@@ -103,7 +103,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 				"Without any anchor in the array, game mechanics like Area of " + 
 				"Effects won't be able to check if the entity's model can see it.\n" + 
 				"Please, add an anchor to the array. Else, it'll be considered " +
-				"that the model cannot see a position no matter what."
+				"that the model cannot see an area of effect no matter what."
 		);
 
 	return warnings;
@@ -113,11 +113,11 @@ func is_area_of_effect_visible_to_entity_model(origin_global_position: Vector3) 
 	if anchors_to_check_if_entity_model_sees_an_area_of_effect.is_empty():
 		return false;
 
-	var space_state: PhysicsDirectSpaceState3D = get_world_3d().get_direct_space_state();
+	var space_state: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state;
 
 	for anchor: Marker3D in anchors_to_check_if_entity_model_sees_an_area_of_effect:
-		var ray_start: Vector3 = anchor.get_global_position();
-		var ray_length: float = ray_start.distance_to(origin_global_position) + 1.0;
+		var ray_start: Vector3 = anchor.global_position;
+		var ray_length: float = anchor.global_position.distance_to(origin_global_position) + 1.0;
 		var ray_end: Vector3 = ray_start + (ray_start.direction_to(origin_global_position) * ray_length);
 
 		var ray_query: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(

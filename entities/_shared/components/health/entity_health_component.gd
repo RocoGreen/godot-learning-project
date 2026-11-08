@@ -36,7 +36,7 @@ static func from_entity(entity: PhysicsBody3D) -> EntityHealthComponent:
 	return entity_health_component;
 
 
-func from_entity_as_object(object: Object) -> EntityHealthComponent:
+static func from_entity_as_object(object: Object) -> EntityHealthComponent:
 	if not object:
 		return null;
 
@@ -61,7 +61,7 @@ func _init() -> void:
 func heal(by_healing_request: EntityHealthHealingRequest) -> void:
 	if not by_healing_request: return;
 	if not by_healing_request.is_valid(): return;
-	if not is_request_allowed_to_heal(by_healing_request): return;
+	if not can_request_heal(by_healing_request): return;
 
 	var old_health: float = _current_health;
 	var new_health: float = clampf(old_health + by_healing_request.amount, 0.0, _maximum_health);
@@ -82,7 +82,7 @@ func heal(by_healing_request: EntityHealthHealingRequest) -> void:
 func damage(by_damage_request: EntityHealthDamageRequest) -> void:
 	if not by_damage_request: return;
 	if not by_damage_request.is_valid(): return;
-	if not is_request_allowed_to_damage(by_damage_request): return;
+	if not can_request_damage(by_damage_request): return;
 
 	var old_health: float = _current_health;
 	var new_health: float = clampf(old_health - by_damage_request.amount, 0.0, _maximum_health);
@@ -100,7 +100,7 @@ func damage(by_damage_request: EntityHealthDamageRequest) -> void:
 	);
 
 
-func is_request_allowed_to_heal(request: EntityHealthHealingRequest) -> bool:
+func can_request_heal(request: EntityHealthHealingRequest) -> bool:
 	if not request:
 		return false;
 
@@ -113,7 +113,7 @@ func is_request_allowed_to_heal(request: EntityHealthHealingRequest) -> bool:
 	return true;
 
 
-func is_request_allowed_to_damage(request: EntityHealthDamageRequest) -> bool:
+func can_request_damage(request: EntityHealthDamageRequest) -> bool:
 	if not request.is_valid(): 
 		return false;
 

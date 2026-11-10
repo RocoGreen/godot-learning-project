@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://jl4so03ks0ss"]
+
+[ext_resource type="Script" uid="uid://coqfa8h5ryhig" path="res://entities/_shared/components/status_effect_receiver_hub/status_effects/damage_received_reduction/entity_damage_received_reduction_status_effect_receiver.gd" id="1_alp4y"]
+
+[node name="EntityDamageReceivedReductionStatusEffectReceiver" type="Node" unique_id=659891774]
+script = ExtResource("1_alp4y")

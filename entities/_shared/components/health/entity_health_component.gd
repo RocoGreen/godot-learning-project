@@ -89,6 +89,18 @@ func damage(by_damage_request: EntityHealthDamageRequest) -> void:
 
 	if old_health == new_health: return;
 
+	var entity_damage_received_reduction_status_effect_receiver := \
+			EntityDamageReceivedReductionStatusEffectReceiver.from_entity(_entity);
+
+	if entity_damage_received_reduction_status_effect_receiver and new_health > 0.0:
+		if entity_damage_received_reduction_status_effect_receiver.is_active():
+			new_health -= _percentage_of_float(
+					entity_damage_received_reduction_status_effect_receiver.get_total_damage_reduction_percentage(),
+					new_health,
+			);
+
+			new_health = maxf(0.0, new_health);
+
 	_current_health = new_health;
 
 	health_changed.emit(old_health, new_health);
@@ -139,6 +151,17 @@ func get_current_health() -> float:
 
 func get_maximum_health() -> float:
 	return _maximum_health;
+
+
+# TODO: Create a class like NumberUtils for example that'll have this (static) method.
+func _percentage_of_float(percentage: int, of: float) -> float:
+	if percentage <= 0: 
+		return 0.0;
+
+	if of == 0.0:
+		return 0.0;
+
+	return (float(percentage) * of) / 100.0;
 
 
 ## Called when the entity got healed and processed here to print debug information about what happened.

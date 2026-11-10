@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bxkdtemvihqgy"]
+
+[ext_resource type="Script" uid="uid://cix7bdce5r8rw" path="res://entities/_shared/components/status_effect_receiver_hub/status_effects/healing_received_reduction/entity_healing_received_reduction_status_effect_receiver.gd" id="1_wollp"]
+
+[node name="EntityHealingReceivedReductionStatusEffectReceiver" type="Node" unique_id=2069227021]
+script = ExtResource("1_wollp")

@@ -8,6 +8,8 @@ extends Node
 @export var entity_component: EntityComponent;
 
 @onready var damage_boost_receiver: EntityDamageBoostStatusEffectReceiver = %DamageBoost;
+@onready var healing_received_reduction_receiver: EntityHealingReceivedReductionStatusEffectReceiver = \
+		%HealingReceivedReduction;
 
 
 static func from_entity(entity: PhysicsBody3D) -> EntityStatusEffectReceiverHubComponent:
